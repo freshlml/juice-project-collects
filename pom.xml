@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>project-reactor</module>
+        <module>project-normal</module>
+    </modules>
+
+    <parent>
+        <groupId>com.project</groupId>
+        <artifactId>project-common-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath/>
+    </parent>
+    <artifactId>project-collects</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>project-collects</name>
+    <url>http://www.example.com</url>
+
+    <properties>
+        <project-reactor.version>1.0.0.SNAPSHOT</project-reactor.version>
+        <project-normal.version>1.0.0.SNAPSHOT</project-normal.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.project</groupId>
+                <artifactId>project-common-dependencies</artifactId>
+                <version>1.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.project</groupId>
+                <artifactId>project-reactor</artifactId>
+                <version>${project-reactor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.project</groupId>
+                <artifactId>project-normal</artifactId>
+                <version>${project-normal.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+
+</project>

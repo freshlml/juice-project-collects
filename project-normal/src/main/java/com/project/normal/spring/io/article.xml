@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="com.zltech.xiaoyuan.information.mapper.ArticleMapper">
+
+    <select id="selectArticleByRail"
+            parameterType="com.zltech.xiaoyuan.information.vo.TagPageDto"
+            resultMap="articleByRailMap">
+        select arti.id, arti.title, arti.subject_id, arti.subject_type, arti.subject_type as subject_type_code, arti.subject_user, arti.subject_compus,
+        arti.subject_city, arti.subject_time, arti.article_top, arti.article_top as article_top_code, arti.read_count,
+        ( select count(arti_com.id)
+        from article_comment arti_com
+        where arti_com.article_id=arti.id and arti_com.status = 'NORMAL'
+        <if test="switchCommendCalType">
+            <if test="articleCommendCalTypeCode == 'ARTICLE'">
+                and arti_com.comment_type = 'ARTICLE'
+            </if>
+            <if test="articleCommendCalTypeCode == 'ARTICLE_COMMENT'">
+                and (arti_com.comment_type = 'ARTICLE' or arti_com.comment_type = 'COMMENT')
+            </if>
+            <if test="articleCommendCalTypeCode == 'ARTICLE_COMMENT_REPLY'">
+                and (arti_com.comment_type = 'ARTICLE' or arti_com.comment_type = 'COMMENT' or arti_com.comment_type = 'REPLY')
+            </if>
+        </if>
+        ) as article_commentnum
+
+        from article arti left join article_tag art_t on arti.id = art_t.article_id
+        left join tag t on t.id = art_t.tag_id
+        <include refid="selectArtByRailSQL"></include>
+        order by arti.article_top desc, arti.subject_time desc
+        limit #{page}, #{pageSize}
+    </select>
+</mapper>
