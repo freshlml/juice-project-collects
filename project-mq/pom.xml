@@ -3,7 +3,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.project</groupId>
         <artifactId>project-collects</artifactId>
@@ -11,10 +10,10 @@
     </parent>
 
     <groupId>com.project</groupId>
-    <artifactId>project-reactor</artifactId>
-    <version>${project-reactor.version}</version>
+    <artifactId>project-mq</artifactId>
+    <version>${project-mq.version}</version>
     <packaging>jar</packaging>
-    <name>project-reactor</name>
+    <name>project-mq</name>
 
     <properties>
         <skipTests>true</skipTests>
@@ -25,13 +24,10 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
         </dependency>
     </dependencies>
 

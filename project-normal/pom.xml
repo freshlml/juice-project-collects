@@ -11,7 +11,7 @@
 
     <groupId>com.project</groupId>
     <artifactId>project-normal</artifactId>
-    <version>1.0.0.SNAPSHOT</version>
+    <version>${project-normal.version}</version>
     <packaging>jar</packaging>
     <name>project-normal</name>
 

@@ -1,7 +1,8 @@
-package com.project.reactor;
+package com.project.mq;
 
 public class Application {
+
     public static void main(String argv[]) {
-        System.out.println("hello reactor");
+        System.out.println("Hello mq");
     }
 }
