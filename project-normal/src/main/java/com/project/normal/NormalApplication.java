@@ -1,7 +1,8 @@
 package com.project.normal;
 
-public class Application {
+public class NormalApplication {
+
     public static void main(String argv[]) {
-        System.out.println("Hello Normal");
+        System.out.println("hello 中");
     }
 }
