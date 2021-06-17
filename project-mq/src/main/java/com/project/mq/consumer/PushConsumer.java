@@ -1,6 +1,6 @@
 package com.project.mq.consumer;
 
-import com.project.mq.constants.MQConstants;
+import com.project.mq.config.FlDefaultMQSample;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -13,19 +13,7 @@ public class PushConsumer {
 
     public static void main(String argv[]) {
 
-        //创建Consumer，with consumer group
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(MQConstants.DEFAULT_CONSUMER_GROUP);
-
-        //设置nameserver
-        consumer.setNamesrvAddr(MQConstants.LOCAL_SINGLE_NAMESERVER);
-
-        try {
-            //订阅topic
-            consumer.subscribe(MQConstants.DEFAULT_TOPIC, "*");
-        } catch (MQClientException e) {
-            e.printStackTrace();
-            return ;
-        }
+        DefaultMQPushConsumer consumer = FlDefaultMQSample.mqPushConsumer1();
 
         //注册消费监听器,一个Consumer，内部使用线程池，对所有messageQueue上的消息多线程消费
         consumer.registerMessageListener(new MessageListenerConcurrently() {

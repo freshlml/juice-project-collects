@@ -1,6 +1,6 @@
 package com.project.mq.producer;
 
-import com.project.mq.constants.MQConstants;
+import com.project.mq.config.FlDefaultMQSample;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -17,23 +17,14 @@ public class OrderedProducer {
 
     public static void main(String argv[]) {
 
-        DefaultMQProducer producer = new DefaultMQProducer(MQConstants.DEFAULT_PRODUCER_GROUP);
-
-        producer.setNamesrvAddr(MQConstants.LOCAL_SINGLE_NAMESERVER);
-
-        try {
-            producer.start();
-        } catch (MQClientException e) {
-            e.printStackTrace();
-            return ;
-        }
-
+        DefaultMQProducer producer = FlDefaultMQSample.defaultMQProducer();
+        String[] tags = FlDefaultMQSample.TAGS_D;
         try {
             try {
-                String[] tags = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
+
                 for(int i=0; i<20; i++) {
                     int orderId = i % 10;
-                    Message msg = new Message(MQConstants.DEFAULT_ORDERED_TOPIC, tags[i % tags.length], "KEY" + i,
+                    Message msg = new Message(FlDefaultMQSample.PRODUCER_TOPIC, tags[i % tags.length], "ORDER_KEY_" + i,
                             ("Hello 中 " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
                     SendResult sendResult = producer.send(msg, new MessageQueueSelector() {
                             @Override
@@ -44,6 +35,14 @@ public class OrderedProducer {
                             }
                     }, orderId);
                     System.out.printf("%s, msg: %s%n", sendResult, new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET));
+
+                    //SendResult的处理
+                    //1、记录SendResult日志
+                    //2、当前工作模式时SYNC_MASTER,则如果收到SEND_OK,可以认为(99.99%)消息成功存储到broker了
+                    //   如果是其他状态，则应该手动重新发送(为了保证顺序，后续的消息发送暂停)，直到当前消息发送成功或者实在是发送不成功则跳过当前消息继续后续的消息
+
+                    //如果发送遇到异常,应该手动重新发送(为了保证顺序，后续的消息发送暂停)，直到当前消息发送成功或者实在是发送不成功则跳过当前消息继续后续的消息，
+                    // "发送端不回滚",考虑两种情况1:消息真的发送失败；2:消息发送假失败
                 }
             } catch (MQClientException e) {
                 e.printStackTrace();

@@ -1,6 +1,6 @@
 package com.project.mq.producer;
 
-import com.project.mq.constants.MQConstants;
+import com.project.mq.config.FlDefaultMQSample;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendCallback;
@@ -14,37 +14,32 @@ import java.util.concurrent.CountDownLatch;
 public class AsyncProducer {
 
     public static void main(String argv[]) {
-        //创建Producer，with producer group
-        DefaultMQProducer producer = new DefaultMQProducer(MQConstants.DEFAULT_PRODUCER_GROUP);
-        //设置nameserver
-        producer.setNamesrvAddr(MQConstants.LOCAL_SINGLE_NAMESERVER);
 
-        try {
-            producer.start();
-        } catch (MQClientException e) {
-            e.printStackTrace();
-            return ;
-        }
+        DefaultMQProducer producer = FlDefaultMQSample.defaultMQProducer();
         producer.setRetryTimesWhenSendAsyncFailed(0);
 
-
+        String[] tags = FlDefaultMQSample.TAGS_B;
         int messageCount = 100;
         CountDownLatch countDownLatch = new CountDownLatch(messageCount);
         try {
             for(int i=0; i<messageCount; i++) {
                 try {
                     final int index = i;
-                    Message msg = new Message(MQConstants.DEFAULT_TOPIC, MQConstants.ASYNC_TAG,
-                            "Hello 中".getBytes(RemotingHelper.DEFAULT_CHARSET));
+                    Message msg = new Message(FlDefaultMQSample.PRODUCER_TOPIC,
+                                         tags[i % tags.length],
+                                    "ASYNC_KEY_" + i,
+                                        "Hello 中".getBytes(RemotingHelper.DEFAULT_CHARSET));
                     //send async,发送任务提交到线程池中执行
                     producer.send(msg, new SendCallback() {
                         @Override
                         public void onSuccess(SendResult sendResult) {
                             countDownLatch.countDown();
                             System.out.printf("[%s] %-10d OK %s %n", Thread.currentThread().getName(), index, sendResult.getMsgId());
+                            //SendResult的处理: 见SyncProducer
                         }
                         @Override
                         public void onException(Throwable e) {
+                            //如果发生异常: 见SyncProducer
                             countDownLatch.countDown();
                             System.out.printf("[%s] %-10d Exception %s %n", Thread.currentThread().getName(), index, e);
                             e.printStackTrace();

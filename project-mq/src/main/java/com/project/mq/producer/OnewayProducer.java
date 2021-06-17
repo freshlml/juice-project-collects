@@ -1,34 +1,26 @@
 package com.project.mq.producer;
 
-import com.project.mq.constants.MQConstants;
+import com.project.mq.config.FlDefaultMQSample;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.apache.rocketmq.remoting.exception.RemotingException;
-
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 public class OnewayProducer {
 
 
-    public static void main(String argv[]) throws UnsupportedEncodingException {
-        //创建Producer，with producer group
-        DefaultMQProducer producer = new DefaultMQProducer(MQConstants.DEFAULT_PRODUCER_GROUP);
-        //设置nameserver
-        producer.setNamesrvAddr(MQConstants.LOCAL_SINGLE_NAMESERVER);
+    public static void main(String argv[]) {
+        DefaultMQProducer producer = FlDefaultMQSample.defaultMQProducer();
 
-        try {
-            producer.start();
-        } catch (MQClientException e) {
-            e.printStackTrace();
-            return ;
-        }
+        String[] tags = FlDefaultMQSample.TAGS_C;
         try {
             for (int i = 0; i < 100; i++) {
                 try {
-                    Message msg = new Message(MQConstants.DEFAULT_TOPIC, MQConstants.ONEWAY_TAG,
+                    Message msg = new Message(FlDefaultMQSample.PRODUCER_TOPIC,
+                            tags[i % tags.length],
+                            "ONEWAY_KEY_" + i,
                             "Hello 中".getBytes(RemotingHelper.DEFAULT_CHARSET));
                     //send, async发送，将message发给broker，不会等待broker的响应
                     //1、发送之前check最大message size，当大于defaultMQProducer.getMaxMessageSize()时，抛出MQClientException
@@ -38,6 +30,10 @@ public class OnewayProducer {
                     //5、异步发送，带超时，如果超时，抛出RemotingException
                     // 异步发送给broker，不会等待broker的响应，不能保证message被broker正确存储
                     producer.sendOneway(msg);
+
+                    //没有返回值处理
+
+                    //抛出异常也没关系
                 } catch (MQClientException e) {
                     e.printStackTrace();
                 } catch (RemotingException e) {

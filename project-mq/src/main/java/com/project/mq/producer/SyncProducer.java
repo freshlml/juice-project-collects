@@ -1,6 +1,6 @@
 package com.project.mq.producer;
 
-import com.project.mq.constants.MQConstants;
+import com.project.mq.config.FlDefaultMQSample;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -12,28 +12,17 @@ import java.io.UnsupportedEncodingException;
 
 public class SyncProducer {
 
-
     public static void main(String argv[]) {
-        //创建Producer，with producer group name
-        DefaultMQProducer producer = new DefaultMQProducer(MQConstants.DEFAULT_PRODUCER_GROUP);
 
-        //指定nameserver
-        producer.setNamesrvAddr(MQConstants.LOCAL_SINGLE_NAMESERVER);
-
-        try {
-            producer.start();
-        } catch (MQClientException e) {
-            e.printStackTrace();
-            return ;
-        }
-        //producer.setRetryTimesWhenSendFailed(1);
-
+        DefaultMQProducer producer = FlDefaultMQSample.defaultMQProducer();
+        String[] tags = FlDefaultMQSample.TAGS_A;
         try {
             for(int i=0; i<100; i++) {
                 try {
-                    //创建Message，with topic and message body
-                    Message msg = new Message(MQConstants.DEFAULT_TOPIC, MQConstants.SYNC_TAG,
-                            "Hello 中".getBytes(RemotingHelper.DEFAULT_CHARSET));
+                    Message msg = new Message(FlDefaultMQSample.PRODUCER_TOPIC,
+                                        tags[i % tags.length],
+                                        "SYNC_KEY_" + i,
+                                        "Hello 中".getBytes(RemotingHelper.DEFAULT_CHARSET));
                     //sync send message
                     //1、发送之前check最大message size，当大于defaultMQProducer.getMaxMessageSize()时，抛出MQClientException
                     //2、发送之前check topic信息，如果没有此topic，抛出MQClientException("No route info of this topic")
@@ -50,6 +39,14 @@ public class SyncProducer {
                     //Broker's role=SYNC_MASTER，如果同步复制到slave用时>MessageStoreConfig.syncFlushTimeout，则返回FLUSH_SLAVE_TIMEOUT
                     //Broker's role=SYNC_MASTER，如果没有slave，返回SLAVE_NOT_AVAILABLE
                     System.out.printf("%s%n", result);
+
+                    //SendResult的处理
+                    //1、记录SendResult日志
+                    //2、当前工作模式时SYNC_MASTER,则如果收到SEND_OK,可以认为(99.99%)消息成功存储到broker了，如果是其他状态，则应该手动写代码添加相关重试逻辑(异步)
+                    //3、如果对发送端数据一致性要求高，可以使用事务性消息
+
+                    //如果发送抛出异常,则应该手动写代码添加相关重试逻辑(异步)，"发送端不回滚",考虑两种情况1:消息真的发送失败；2:消息发送假失败
+                    //如果对发送端数据一致性要求高，可以使用事务性消息
                 } catch (MQClientException e) {
                     e.printStackTrace();
                 } catch (RemotingException e) {
