@@ -18,7 +18,7 @@ public class MethodParameterTest {
         Type genericParameterType = methodParameter.getGenericParameterType();
 
         methodParameter.increaseNestingLevel(); //or nested()
-        methodParameter.setTypeIndexForCurrentLevel(1);
+        methodParameter.setTypeIndexForCurrentLevel(1); //0-第一个;1-第二个
 
         Class<?> nestedParameterType = methodParameter.getNestedParameterType();
         Type nestedGenericParameterType = methodParameter.getNestedGenericParameterType();
