@@ -12,7 +12,7 @@ public class LoaderTest {
          * 使用Classloader加载资源
          */
         //bootstrap-classloader从sun.boot.class.path路径中加载资源
-        //JDK安装目录\jre\lib\resources.jar、rt.jar、sunrsasign.jar、jsse.jar、jce.jar、charsets.jar、jfr.jar、
+        //JDK安装目录\jre\lib\resources.jar、rt.jar、sunrsasign.jar、jsse.jar、jce.jar、charsets.jar、jfr.jar
         //JDK安装目录\jre\classes
         System.out.println("sun.boot.class.path: " + System.getProperty("sun.boot.class.path"));
         //Ext-classloader从java.ext.dirs路径中加载资源
@@ -20,8 +20,8 @@ public class LoaderTest {
         //~\Sun\Java\lib\ext，eg:windows上C:\WINDOWS\Sun\Java\lib\ext
         System.out.println("java.ext.dirs: " + System.getProperty("java.ext.dirs"));
         //App-Classloader从java.class.path路径中，MANIFEST.MF的Class-Path 加载资源
-        //JDK安装目录\jre\lib\charsets.jar、deploy.jar、javaws.jar、jce.jar、jfr.jar、jfxswt.jar、jsse.jar、management-agent.jar、plugin.jar、resources.jar、rt.jar
-        //JDK安装目录\jre\lib\ext\access-bridge-64.jar、cldrdata.jar、dnsns.jar、jaccess.jar、jfxrt.jar、localedata.jar、nashorn.jar、sunec.jar、sunjce_provider.jar、sunmscapi.jar、sunpkcs11.jar、zipfs.jar
+        //idea中运行额外: JDK安装目录\jre\lib\charsets.jar、deploy.jar、javaws.jar、jce.jar、jfr.jar、jfxswt.jar、jsse.jar、management-agent.jar、plugin.jar、resources.jar、rt.jar
+        //idea中运行额外: JDK安装目录\jre\lib\ext\access-bridge-64.jar、cldrdata.jar、dnsns.jar、jaccess.jar、jfxrt.jar、localedata.jar、nashorn.jar、sunec.jar、sunjce_provider.jar、sunmscapi.jar、sunpkcs11.jar、zipfs.jar
         //当前工作空间所在目录: System.getProperty("user.dir")
         //    idea中运行为当前应用打包输出的路径,如D:\ideaProject\NormalProject\target\classes
         //    如果通过C:\Users\DELL\Desktop>java -jar NormalProject.jar 运行，user.dir = C:\Users\DELL\Desktop
@@ -42,6 +42,9 @@ public class LoaderTest {
 
 
         /**项目打包方式 */
+
+        //项目打成jar包，依赖jar包的内容合并到项目jar包
+
 
         //项目打成jar
         //依赖的jar包放到某个目录(可以是项目jar包内部目录或者磁盘的任意目录),需要在项目jar包中的MANIFEST.MF文件中通过Class-Path: ./lib/commons-loggings.jar 指定依赖的jar包位置
