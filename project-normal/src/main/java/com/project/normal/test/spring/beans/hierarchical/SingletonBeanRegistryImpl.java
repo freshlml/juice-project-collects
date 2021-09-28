@@ -1,6 +1,6 @@
-package com.project.normal.test.spring.bean.factory;
+package com.project.normal.test.spring.beans.hierarchical;
 
-public class FlDefaultSingletonBeanRegistry extends FlSimpleAliasRegistry implements FlSingletonBeanRegistry {
+public class SingletonBeanRegistryImpl extends AliasRegistryImpl implements SingletonBeanRegistryInter {
     @Override
     public void registerSingleton(String name, Object bean) {
         System.out.println("registerSingleton");

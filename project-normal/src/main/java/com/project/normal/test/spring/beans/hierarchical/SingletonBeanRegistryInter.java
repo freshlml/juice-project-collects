@@ -1,6 +1,6 @@
-package com.project.normal.test.spring.bean.factory;
+package com.project.normal.test.spring.beans.hierarchical;
 
-public interface FlSingletonBeanRegistry {
+public interface SingletonBeanRegistryInter {
     void registerSingleton(String name, Object bean);
     Object getSingleton(String name);
     boolean containsSingleton(String name);

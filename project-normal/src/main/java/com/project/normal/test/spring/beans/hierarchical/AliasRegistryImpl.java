@@ -1,6 +1,6 @@
-package com.project.normal.test.spring.bean.factory;
+package com.project.normal.test.spring.beans.hierarchical;
 
-public class FlSimpleAliasRegistry implements FlAliasRegistry {
+public class AliasRegistryImpl implements AliasRegistryInter {
     @Override
     public void registerAlias(String name, String alias) {
         System.out.println("registerAlias");

@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.bean.bfs;
+package com.project.normal.test.spring.beans.bfs;
 
 
 import org.springframework.beans.factory.InitializingBean;
