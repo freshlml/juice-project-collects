@@ -1,4 +1,4 @@
-package com.project.normal.test.paths;
+package com.project.normal.test.spring.io;
 
 import java.io.File;
 import java.net.URL;
@@ -33,9 +33,8 @@ public class PathsTest {
          */
 
         /**
-         * linux机上绝对路径
-         *  根目录
-         *  win机上相对于当前工作空间所在盘符如C://
+         * /: linux机上绝对路径, 根目录
+         * /: win机上相对路径，相对于当前工作空间所在盘符
          */
         File af = new File("/Users/DELL/Desktop/NormalProject.jar");
         System.out.println(af.exists());
@@ -43,6 +42,7 @@ public class PathsTest {
 
         /**
          * 使用类加载器加载资源
+         * @see LoaderTest
          */
         URL classesPath = PathsTest.class.getClassLoader().getResource("com/freshjuice/fl/resources/Resources.class");
         System.out.println(classesPath);
