@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.beans.bfs;
+package com.project.normal.test.spring.beans;
 
 
 import org.springframework.beans.factory.BeanNameAware;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.Bean;
 
-public class TBeanFactoryTest {
+public class BeanFactoryTest2 {
 
 
     public static void main(String argv[]) {

@@ -1,5 +1,5 @@
 package com.project.normal.test.spring.beans;
 
-public class FlBeanTest {
+public class TestBean {
     private String name;
 }

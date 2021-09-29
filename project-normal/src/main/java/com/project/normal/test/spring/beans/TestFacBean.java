@@ -2,10 +2,10 @@ package com.project.normal.test.spring.beans;
 
 import org.springframework.beans.factory.FactoryBean;
 
-public class FlFacBeanTest implements FactoryBean<FlFacBeanTest.Obj> {
+public class TestFacBean implements FactoryBean<TestFacBean.Obj> {
 
     private final Obj obj;
-    public FlFacBeanTest() {
+    public TestFacBean() {
         obj = new Obj();
     }
     @Override

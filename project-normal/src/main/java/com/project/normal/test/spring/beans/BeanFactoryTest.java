@@ -6,15 +6,15 @@ import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import java.util.Arrays;
 
 
-public class FlBeansTest {
+public class BeanFactoryTest {
 
     public static void main(String argv[]) {
 
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         AnnotatedBeanDefinitionReader beanDefinitionReader = new AnnotatedBeanDefinitionReader(beanFactory);
 
-        beanDefinitionReader.register(FlFacBeanTest.class);
-        beanDefinitionReader.register(FlBeanTest.class);
+        beanDefinitionReader.register(TestFacBean.class);
+        beanDefinitionReader.register(TestBean.class);
 
         //String[] ns = beanFactory.getBeanNamesForType(FlFacBeanTest.class);
 
