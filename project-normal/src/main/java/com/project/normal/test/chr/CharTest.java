@@ -7,7 +7,7 @@ public class CharTest {
     /**
      *第一: unicode码/unicode字符集
      *  unicode码的概念: 对世界上所有可能出现的字符，分配一个唯一的数字值表示;
-     *                 unicode字符集只是规定字符的二进制值，而没有规定二进制值的存储格式
+     *                 unicode字符集只是规定字符的数字值，而没有规定数字值的存储格式
      *
      *  码点(code point): unicode字符集中某个字符对应的数字值,目前unicode的码点范围为 U+0000 ~ U+10FFFF，共1114112个码点,1 0000 1111 1111 1111 1111（21个比特位）
      *
@@ -137,21 +137,108 @@ public class CharTest {
         System.out.println("--------2-------");
 
 
+
         //utf-8、utf-16、utf-32: 对unicode码点的不同存储格式实现，相互转化没有问题
-        String str = ", h 中 𝕆 /";
+        //                      并且就算不同编码规范的码点值不同，只要码点值能够很好的映射，也是可以实现转换而不乱码的，@see如下说明
+        String str = ", h 𝕆 中 😚 符 >";  //char[], 每一个char表示UTF-16的代码单元
         byte[] bys = str.getBytes(Charset.forName("utf-8"));
-        System.out.println(new String(bys, Charset.forName("utf-8")));        //, h 中 𝕆 /
+        System.out.println(new String(bys, Charset.forName("utf-8")));        //, h 𝕆 中 😚 符 >
         bys = str.getBytes(Charset.forName("utf-16"));
-        System.out.println(new String(bys, Charset.forName("utf-16")));        //, h 中 𝕆 /
+        System.out.println(new String(bys, Charset.forName("utf-16")));        //, h 𝕆 中 😚 符 >
         bys = str.getBytes(Charset.forName("utf-32"));
-        System.out.println(new String(bys, Charset.forName("utf-32")));        //, h 中 𝕆 /
+        System.out.println(new String(bys, Charset.forName("utf-32")));        //, h 𝕆 中 😚 符 >
 
 
-        bys = str.getBytes(Charset.forName("gbk"));    //gbk的中文码点和unicode保持一致，gbk在此基础上扩充了中文字符，只看中文，gbk是unicode的超集
-        System.out.println(new String(bys, Charset.forName("gbk")));           //, h 中 ? /
+
+        /*
+https://www.qqxiuzi.cn/bianma/zifuji.php
+, h 𝕆 中 😚 符 > 的编码值比较
+,
+GBK         2C
+GB18030     2C
+Unicode     0000002C
+UTF-8       2C
+UTF-16BE    002C
+UTF-16LE    2C00
+
+h
+GBK         68
+GB18030     68
+Unicode     00000068
+UTF-8       68
+UTF-16BE    0068
+UTF-16LE    6800
+
+𝕆
+GBK         没有
+GB18030     9433AA38
+Unicode     0001D546
+UTF-8       F09D9586
+UTF-16BE    D835DD46
+UTF-16LE    35D846DD
+
+中
+GBK         D6D0
+GB18030     D6D0
+Unicode     00004E2D
+UTF-8       E4B8AD
+UTF-16BE    4E2D
+UTF-16LE    2D4E
+
+😚
+GBK         没有
+GB18030     95308132
+Unicode     0001F61A
+UTF-8       F09F989A
+UTF-16BE    D83DDE1A
+UTF-16LE    3DD81ADE
+
+符
+GBK         B7FB
+GB18030     B7FB
+Unicode     00007B26
+UTF-8       E7ACA6
+UTF-16BE    7B26
+UTF-16LE    267B
+
+>
+GBK         3E
+GB18030     3E
+Unicode     0000003E
+UTF-8       3E
+UTF-16BE    003E
+UTF-16LE    3E00
+
+note1: 键盘上的英文字符，符号，数字，GBK、GB18030、unicode有相同的码点值
+note2: 基本中文字符，GBK、GB18030有相同的码点值，和unicode码点值不同
+note3: 特殊字符如😚、𝕆，GBK没有、GB18030有码点值，和unicode码点值不同
+
+
+编码转化过程: 1、转化: unicode码点对应的字符映射到其他"编码"对应的字符，如果能够映射，按其他"编码"的规范得到编码值，如果没有映射，将使用其他"编码"的替代字符代替
+           2、转回: 其他"编码"的字节流按其他"编码"找到字符，使用字符映射到unicode字符，如果能够映射，将unicode字符按照UTF-16规范转化成字节存到char，如果没有映射，将使用替代字符代替
+编码转换原则: unicode码点对应的字符通过某个算法可以映射到其他"编码"对应的字符，则unicode码点可以转化成其他"编码"的字节流(通过str.getBytes("其他编码"))，其他"编码"的字节流也可以转化回unicode码点(new String(bys, "其他编码"))
+           如果存在某些字符不能映射到其他"编码"，那么转化成其他"编码"后的字节流就会修改原来的信息，这些字符将不能转化回去
+编码转换的核心: 字符映射
+         */
+
+        bys = str.getBytes(Charset.forName("gbk"));   //按gbk编码: 字符映射到gbk，取gbk中对应字符的编码值，如果没有映射，计为'?'(3F)
+        for(byte by : bys) {
+            System.out.print(Integer.toHexString(by));   //2c   20   68   20   3f   20   ffffffd6   ffffffd0   20   3f   20   ffffffb7   fffffffb   20   3e
+            System.out.print("   "); //在gbk中, 2c对应',' 20对应' '  68对应'h'  3F对应'?'  D6D0对应'中' B7FB对应'符' 3E对应'>'
+            //此时的bys中，不能映射的字符实际存的3F，这样原信息丢失了没办法转回去了
+        }
+        String gbkStr = new String(bys, Charset.forName("gbk"));  //gbk的字节流按gbk解码成gbk中的字符: 2c对应',' 20对应' '  68对应'h'  3F对应'?'  D6D0对应'中' B7FB对应'符' 3E对应'>'，得到", h ? 中 ? 符 >"
+                                                                  //按字符映射到unicode: unicode中, ','对应2C  ' '对应20  'h'对应68  '?'对应3F  '中'对应4E2D  '符'对应7B26  '>'对应3E
+                                                                  //取对应字符的unicode码点值，将unicode码点值按UTF-16规则转化
+        System.out.println(gbkStr);                                           //, h ? 中 ? 符 >
+
+
+        bys = str.getBytes(Charset.forName("gb18030"));
+        System.out.println(new String(bys, Charset.forName("gb18030")));       //, h 𝕆 中 😚 符 >
+
 
         bys = str.getBytes(Charset.forName("iso-8859-1"));
-        System.out.println(new String(bys, Charset.forName("iso-8859-1")));    //, h ? ? /
+        System.out.println(new String(bys, Charset.forName("iso-8859-1")));    //, h ? ? ? ? >
 
         System.out.println("--------3-------");
 
