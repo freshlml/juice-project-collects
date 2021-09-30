@@ -59,6 +59,7 @@ public class CharTest {
      *
      *      (U+FFFF, U+10FFFF] [0000 0000 0001 0000 0000 0000 0000, 0001 0000 1111 1111 1111 1111]，最多21个比特位，取码点存储在四个字节，1111 0xxx 10xx xxxx 10xx xxxx 10xx xxxx，最高位1111表示用四个字节存储,10表示是多字节中的一个字节，x保存具体的码点二进制值
      *
+     *      多个字节时，每个字节以10开头、110开头、1110开头、1111开头，因此每个字节都比U+7f(127)大，而0-127为ASKII，这应该是有意为之
      *
      *  UTF-16
      *      [U+0, U+FFFF] 两个字节存储，(U+FFFF, U+10FFFF] 四个字节存储
@@ -90,11 +91,23 @@ public class CharTest {
      *      空间浪费，在网络传输时效率低
      *
      * Byte order mark
-     *  UTF-8	            EF BB BF       1110 1111 1011 1011 1111
-     *  UTF-16 (BE)	        FE FF          1111 1110 1111 1111
-     *  UTF-16 (LE)	        FF FE          1111 1111 1111 1110
-     *  UTF-32 (BE)	        00 00 FE FF    0000 0000 0000 0000 1111 1110 1111 1111
-     *  UTF-32 (LE)	        FF FE 00 00    1111 1111 1111 1110 0000 0000 0000 0000
+     * 小字节序: 如            0xff 0xfe 0x2d 0x4e
+     *      小字节序开头两个字节0xff 0xfe,后续字节需要转换顺序: 0x4e 0x2d
+     * 大字节序: 如            0xfe 0xff 0x4e 0x2d
+     *      大字节序开头两个字节0xfe 0xff,后续字节无需转换顺序: 0x4e 0x2d
+     *
+     * UTF-16BE: UTF-16大字节序            0xfe 0xff
+     * UTF-16LE: UTF-16小字节序            0xff 0xfe
+     * UTF-32BE: UTF-32大字节序            0x00 0x00 0xfe 0xff
+     * UTF-32LE: UTF-32小字节序            0xff 0xfe 0x00 0x00
+     *
+     * UTF-8理论上可以不用BOM，但是某些windows应用如notepad++,它支持给UTF-8加上BOM,excel中会根据字节序列的开头是不是0xef 0xbb 0xbf来判断是否是UTF-8字节序列
+     *  UTF-8	  0xef 0xbb 0xbf
+     *
+     * java中，使用utf-8编码时，不添加bom
+     *        使用utf-16时，默认使用大字节序并添加bom
+     *        使用utf-16be时，使用大字节序但不添加bom
+     *        使用utf-16le时，使用小字节序但不添加bom
      *
      *
      *第三: java中char类型
@@ -150,7 +163,7 @@ public class CharTest {
         //StringCoding类外部不可见
 
         /*第一: 在"utf编码"中编码与解码
-            1、utf-8、utf-16、utf-32使用的都是unicode字符码点
+            1、utf-8、utf-16、utf-32使用的都是unicode字符的码点
             2、编码过程: 以utf-8为例 (真实代码并不一定这样写，但效果是一样的)
                 根据char[]计算得出字符的码点(如果是代理需要处理代理), 根据码点按照utf-8规范转换成字节序列
             3、解码过程: 以utf-8为例
@@ -159,12 +172,41 @@ public class CharTest {
         String str = ", h 𝕆 中 😚 符 >";
         //编码: 将unicode字符序列按照"utf-8编码"转换成字节序列      值得注意的是，这里的"unicode字符序列"的说法是不准确的(在java中)，因为java中String使用char[]表示字符序列，每个char存unicode码点按照utf-16转化的值，不过这和char直接存储unicode字符的码点没有多大区别(至少是在"unicode字符序列这一说法上")
         byte[] bys = str.getBytes(Charset.forName("utf-8"));
+        for (byte by : bys) {
+            //utf-8编码的字节序列前面并没有添加bom
+            //','的utf-8编码:0x2c，' 'utf-8编码:0x20，'h'的utf-8编码:0x68，'𝕆'的utf-8编码:0xf09d9586，'中'的utf-8编码:0xe4b8ad，'😚'的utf-8编码:0xf09f989a，'符'的utf-8编码:0xe7aca6，'>'的utf-8编码: 0x3e
+            //System.out.print(Integer.toHexString(by));
+            //System.out.print("   ");
+        }
         //解码: 将utf-8字节序列按照"utf-8编码"转换成unicode字符序列
         System.out.println(new String(bys, Charset.forName("utf-8")));        //, h 𝕆 中 😚 符 >
-        bys = str.getBytes(Charset.forName("utf-16"));
+
+        bys = str.getBytes(Charset.forName("utf-16"));//默认使用大字节序
+        for (byte by : bys) {
+            //0xfe 0xff大字节序标记
+            //','的utf-16be编码:0x002c，' 'utf-16be编码:0x0020，'h'的utf-16be编码:0x0068，'𝕆'的utf-16be编码:0xd835dd46，'中'的utf-16be编码:0x4e2d，'😚'的utf-16be编码:0xd83dde1a，'符'的utf-16be编码:0x7b26，'>'的utf-16be编码: 0x003e
+            //System.out.print(Integer.toHexString(by));
+            //System.out.print("   ");
+        }
         System.out.println(new String(bys, Charset.forName("utf-16")));        //, h 𝕆 中 😚 符 >
-        bys = str.getBytes(Charset.forName("utf-32"));
-        System.out.println(new String(bys, Charset.forName("utf-32")));        //, h 𝕆 中 😚 符 >
+
+        bys = str.getBytes(Charset.forName("utf-16le"));//小字节序
+        for (byte by : bys) {
+            //使用utf-16le时无bom
+            //','的utf-16le编码:0x2c00，' 'utf-16le编码:0x2000，'h'的utf-16le编码:0x6800，'𝕆'的utf-16le编码:0x35d846dd，'中'的utf-16le编码:0x2d4e，'😚'的utf-16le编码:0x3dd81ade，'符'的utf-16le编码:0x267b，'>'的utf-16le编码: 0x3e00
+            //System.out.print(Integer.toHexString(by));
+            //System.out.print("   ");
+        }
+        System.out.println(new String(bys, Charset.forName("utf-16le")));        //, h 𝕆 中 😚 符 >
+
+        bys = str.getBytes(Charset.forName("utf-16be"));//大字节序
+        for (byte by : bys) {
+            //使用utf-16be时无bom
+            //','的utf-16be编码:0x002c，' 'utf-16be编码:0x0020，'h'的utf-16be编码:0x0068，'𝕆'的utf-16be编码:0xd835dd46，'中'的utf-16be编码:0x4e2d，'😚'的utf-16be编码:0xd83dde1a，'符'的utf-16be编码:0x7b26，'>'的utf-16be编码: 0x003e
+            //System.out.print(Integer.toHexString(by));
+            //System.out.print("   ");
+        }
+        System.out.println(new String(bys, Charset.forName("utf-16be")));        //, h 𝕆 中 😚 符 >
 
         //第二: 其他编码规范中的编码与解码,eg: gbk、gb18030
         /* 1、字符在不同编码规范下的对比
@@ -193,13 +235,14 @@ public class CharTest {
             5)、如果在编码和解码过程中出现字符不能映射，字元原信息将丢失，就没办法转化回原来的字符了
          */
         bys = str.getBytes(Charset.forName("gbk"));
-        for(byte by : bys) {
-            System.out.print(Integer.toHexString(by));   //2c   20   68   20   3f   20   ffffffd6   ffffffd0   20   3f   20   ffffffb7   fffffffb   20   3e
-            System.out.print("   "); //在gbk中, 2c对应',' 20对应' '  68对应'h'  3F对应'?'  D6D0对应'中' B7FB对应'符' 3E对应'>'
+        for (byte by : bys) {
+            //在gbk中, 0x2c对应','，0x20对应' '，0x68对应'h'，0x3F对应'?'，0xD6D0对应'中'，0xB7FB对应'符'，0x3E对应'>'
+            //System.out.print(Integer.toHexString(by));
+            //System.out.print("   ");
         }
         String gbkStr = new String(bys, Charset.forName("gbk"));  //gbk的字节序列按gbk规范转换成gbk中的码点(字符): 2c对应',' 20对应' '  68对应'h'  3F对应'?'  D6D0对应'中' B7FB对应'符' 3E对应'>'，得到", h ? 中 ? 符 >"
-                                                                  //按gbk码点(字符)映射到unicode: unicode中, ','对应2C  ' '对应20  'h'对应68  '?'对应3F  '中'对应4E2D  '符'对应7B26  '>'对应3E
-                                                                  //取对应字符的unicode码点，按UTF-16规范转化并存储到char[]中
+        //按gbk码点(字符)映射到unicode: unicode中, ','对应2C  ' '对应20  'h'对应68  '?'对应3F  '中'对应4E2D  '符'对应7B26  '>'对应3E
+        //取对应字符的unicode码点，按UTF-16规范转化并存储到char[]中
         System.out.println(gbkStr);                                           //, h ? 中 ? 符 >
 
         bys = str.getBytes(Charset.forName("gb18030"));
@@ -210,8 +253,13 @@ public class CharTest {
 
         System.out.println("--------3-------");
 
+
+        String ty = "中";
+        byte[] tys = ty.getBytes("utf-16");
+        for (byte by : tys) {
+            System.out.println(Integer.toHexString(by));
+        }
+
     }
-
-
 
 }
