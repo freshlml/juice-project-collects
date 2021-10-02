@@ -8,7 +8,13 @@ public class TestBeanConfig {
 
     @Bean
     public TestContextBean testContextBean() {
-        return new TestContextBean();
+        TestContextBean testContextBean = new TestContextBean();
+        return testContextBean;
+    }
+
+    @Bean
+    public TestContextBean2 testContextBean2() {
+        return new TestContextBean2();
     }
 
 }
