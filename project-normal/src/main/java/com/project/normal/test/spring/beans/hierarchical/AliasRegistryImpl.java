@@ -6,6 +6,7 @@ public class AliasRegistryImpl implements AliasRegistryInter {
         System.out.println("registerAlias");
     }
 
+    //此标记有两条线,下箭头和上箭头，表示，子类的接口的实现
     public void resolveAlias(String name) {
         System.out.println("resolveAlias");
     }
