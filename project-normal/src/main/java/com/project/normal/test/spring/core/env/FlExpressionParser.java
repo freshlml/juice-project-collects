@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.env;
+package com.project.normal.test.spring.core.env;
 
 
 import java.util.ArrayList;

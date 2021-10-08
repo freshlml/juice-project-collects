@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.io;
+package com.project.normal.test.spring.core.io;
 
 import java.io.File;
 import java.net.URL;

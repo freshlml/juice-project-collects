@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.env;
+package com.project.normal.test.spring.core.env;
 
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;

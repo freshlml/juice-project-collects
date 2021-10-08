@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.env;
+package com.project.normal.test.spring.core.env;
 
 import java.util.function.Supplier;
 
@@ -31,6 +31,7 @@ public abstract class AssertUtils {
                 throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
+
     public enum ExpressionType {
         None, IllegalArgumentException
     }

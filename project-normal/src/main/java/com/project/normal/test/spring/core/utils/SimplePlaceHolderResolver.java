@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.utils;
+package com.project.normal.test.spring.core.utils;
 
 /**
  * PlaceHolder解析器，对给定的String,解析替换其中的placeholder

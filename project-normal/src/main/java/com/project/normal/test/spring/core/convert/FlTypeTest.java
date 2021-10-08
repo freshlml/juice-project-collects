@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.convert;
+package com.project.normal.test.spring.core.convert;
 
 import org.springframework.core.ResolvableType;
 
