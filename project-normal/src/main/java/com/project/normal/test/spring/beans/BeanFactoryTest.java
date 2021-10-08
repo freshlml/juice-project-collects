@@ -1,7 +1,9 @@
 package com.project.normal.test.spring.beans;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
+import org.springframework.core.ResolvableType;
 
 import java.util.Arrays;
 
@@ -10,47 +12,45 @@ public class BeanFactoryTest {
 
     public static void main(String argv[]) {
 
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-        AnnotatedBeanDefinitionReader beanDefinitionReader = new AnnotatedBeanDefinitionReader(beanFactory);
-
-        beanDefinitionReader.register(TestFacBean.class);
-        beanDefinitionReader.register(TestBean.class);
-
-        //String[] ns = beanFactory.getBeanNamesForType(FlFacBeanTest.class);
-
-        //Object facBeanOf = beanFactory.getBean("flFacBeanTest");
-        //facBeanOf = beanFactory.getBean("&flFacBeanTest");
-
-        //FlFacBeanTest oneOrTwo = beanFactory.getBean(FlFacBeanTest.class);
-        //FlFacBeanTest.Obj oneOrTwo2 = beanFactory.getBean(FlFacBeanTest.Obj.class);
-
-        //System.out.println(beanFactory.containsBean("flFacBeanTest"));
-        //System.out.println(beanFactory.containsBean("&flFacBeanTest"));
-        //System.out.println(beanFactory.getType("flFacBeanTest"));
-        //System.out.println(beanFactory.getType("&flFacBeanTest"));
-
-        //System.out.println(beanFactory.isTypeMatch("flFacBeanTest", FlFacBeanTest.class));
-        //System.out.println(beanFactory.isTypeMatch("&flFacBeanTest", FlFacBeanTest.class));
-
-        //System.out.println(beanFactory.isFactoryBean("flFacBeanTest"));
-        //System.out.println(beanFactory.isFactoryBean("&flFacBeanTest"));
-
-        //beanFactory.registerAlias("flBeanTest", "flBeanTest_al");
-        //Arrays.stream(beanFactory.getAliases("flBeanTest_al")).forEach(System.out::print);
-
-        beanFactory.registerAlias("flFacBeanTest", "flFacBeanTest_al");
-        Arrays.stream(beanFactory.getAliases("flFacBeanTest")).forEach(System.out::println);
-        Arrays.stream(beanFactory.getAliases("flFacBeanTest_al")).forEach(System.out::println);
-        Arrays.stream(beanFactory.getAliases("&flFacBeanTest")).forEach(System.out::println);
-        Arrays.stream(beanFactory.getAliases("&flFacBeanTest_al")).forEach(System.out::println);
-
-        if(false || true && true) {
-            System.out.println(1);
-        }
-
+        testIsTypeMatch();
 
         System.out.println("hello");
     }
+
+
+    public static void testIsTypeMatch() {
+
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        AnnotatedBeanDefinitionReader beanDefinitionReader = new AnnotatedBeanDefinitionReader(beanFactory);
+
+        //register方法注册带泛型参数的bean
+        beanDefinitionReader.register(TestGenericBean.class);
+
+        //注册的BeanDefinition保存了Class<?> beanClass，通过Class仅能得到TypeVariable{T}
+        BeanDefinition beanDefinition = beanFactory.getBeanDefinition("testGenericBean");
+        //merged BeanDefinition,RootBeanDefinition的targetType==null
+        BeanDefinition mergedBeanDefinition = beanFactory.getMergedBeanDefinition("testGenericBean");
+
+        //false: TestGenericBean with generic[String.class]
+        System.out.println(beanFactory.isTypeMatch("testGenericBean", ResolvableType.forClassWithGenerics(TestGenericBean.class, String.class)));
+        //true
+        System.out.println(beanFactory.isTypeMatch("testGenericBean", ResolvableType.forClass(TestGenericBean.class)));
+
+
+        beanDefinitionReader.register(TestGenericBeanA.class); //A extends TestGenericBean<String>
+        beanDefinitionReader.register(TestGenericBeanB.class); //B extends TestGenericBean<Integer>
+
+        ResolvableType superType = ResolvableType.forClass(TestGenericBean.class);
+        ResolvableType superWithStrGenerics = ResolvableType.forClassWithGenerics(TestGenericBean.class, String.class);
+        ResolvableType superWithIntGenerics = ResolvableType.forClassWithGenerics(TestGenericBean.class, Integer.class);
+        System.out.println(beanFactory.isTypeMatch("testGenericBeanA", superType));  //true
+        System.out.println(beanFactory.isTypeMatch("testGenericBeanA", superWithStrGenerics)); //true
+        System.out.println(beanFactory.isTypeMatch("testGenericBeanA", superWithIntGenerics)); //false
+
+
+    }
+
+
 
 
 }
