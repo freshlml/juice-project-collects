@@ -1,14 +1,12 @@
-package com.project.normal.test.spring.beans;
+package com.project.normal.test.spring.beans.typeMatchTest;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.core.ResolvableType;
 
-import java.util.Arrays;
 
-
-public class BeanFactoryTest {
+public class BeanFactoryTypeMatchTest {
 
     public static void main(String argv[]) {
 
@@ -24,7 +22,7 @@ public class BeanFactoryTest {
         AnnotatedBeanDefinitionReader beanDefinitionReader = new AnnotatedBeanDefinitionReader(beanFactory);
 
         //register方法注册带泛型参数的bean
-        beanDefinitionReader.register(TestGenericBean.class);
+        beanDefinitionReader.register(TypeMatchGenericBean.class);
 
         //注册的BeanDefinition保存了Class<?> beanClass，通过Class仅能得到TypeVariable{T}
         BeanDefinition beanDefinition = beanFactory.getBeanDefinition("testGenericBean");
@@ -32,17 +30,17 @@ public class BeanFactoryTest {
         BeanDefinition mergedBeanDefinition = beanFactory.getMergedBeanDefinition("testGenericBean");
 
         //false: TestGenericBean with generic[String.class]
-        System.out.println(beanFactory.isTypeMatch("testGenericBean", ResolvableType.forClassWithGenerics(TestGenericBean.class, String.class)));
+        System.out.println(beanFactory.isTypeMatch("testGenericBean", ResolvableType.forClassWithGenerics(TypeMatchGenericBean.class, String.class)));
         //true
-        System.out.println(beanFactory.isTypeMatch("testGenericBean", ResolvableType.forClass(TestGenericBean.class)));
+        System.out.println(beanFactory.isTypeMatch("testGenericBean", ResolvableType.forClass(TypeMatchGenericBean.class)));
 
 
-        beanDefinitionReader.register(TestGenericBeanA.class); //A extends TestGenericBean<String>
-        beanDefinitionReader.register(TestGenericBeanB.class); //B extends TestGenericBean<Integer>
+        beanDefinitionReader.register(TypeMatchGenericBeanA.class); //A extends TestGenericBean<String>
+        beanDefinitionReader.register(TypeMatchGenericBeanB.class); //B extends TestGenericBean<Integer>
 
-        ResolvableType superType = ResolvableType.forClass(TestGenericBean.class);
-        ResolvableType superWithStrGenerics = ResolvableType.forClassWithGenerics(TestGenericBean.class, String.class);
-        ResolvableType superWithIntGenerics = ResolvableType.forClassWithGenerics(TestGenericBean.class, Integer.class);
+        ResolvableType superType = ResolvableType.forClass(TypeMatchGenericBean.class);
+        ResolvableType superWithStrGenerics = ResolvableType.forClassWithGenerics(TypeMatchGenericBean.class, String.class);
+        ResolvableType superWithIntGenerics = ResolvableType.forClassWithGenerics(TypeMatchGenericBean.class, Integer.class);
         System.out.println(beanFactory.isTypeMatch("testGenericBeanA", superType));  //true
         System.out.println(beanFactory.isTypeMatch("testGenericBeanA", superWithStrGenerics)); //true
         System.out.println(beanFactory.isTypeMatch("testGenericBeanA", superWithIntGenerics)); //false
