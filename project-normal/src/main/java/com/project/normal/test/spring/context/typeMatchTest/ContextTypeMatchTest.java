@@ -1,4 +1,4 @@
-package com.project.normal.test.spring.context;
+package com.project.normal.test.spring.context.typeMatchTest;
 
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -12,7 +12,7 @@ public class ContextTypeMatchTest {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
         //context.register(TestBeanConfig.class);
-        context.scan("com.project.normal.test.spring.context");
+        context.scan("com.project.normal.test.spring.context.typeMatchTest");
 
         context.refresh();
 
@@ -20,9 +20,9 @@ public class ContextTypeMatchTest {
         //ResolvableType factoryMethodReturnType域保存了@Bean方法的返回值类型
         BeanDefinition mergedBeanDefinition = context.getBeanFactory().getMergedBeanDefinition("testContextGenericBean1");
 
-        ResolvableType noGeneric = ResolvableType.forClass(ContextTypeMatchGenericBean.class);
-        ResolvableType superWithStrGenerics = ResolvableType.forClassWithGenerics(ContextTypeMatchGenericBean.class, String.class);
-        ResolvableType superWithIntGenerics = ResolvableType.forClassWithGenerics(ContextTypeMatchGenericBean.class, Integer.class);
+        ResolvableType noGeneric = ResolvableType.forClass(TypeMatchGenericBean.class);
+        ResolvableType superWithStrGenerics = ResolvableType.forClassWithGenerics(TypeMatchGenericBean.class, String.class);
+        ResolvableType superWithIntGenerics = ResolvableType.forClassWithGenerics(TypeMatchGenericBean.class, Integer.class);
 
         System.out.println(context.isTypeMatch("testContextGenericBean1", noGeneric));            //true
         System.out.println(context.isTypeMatch("testContextGenericBean1", superWithStrGenerics)); //true
