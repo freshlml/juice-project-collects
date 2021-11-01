@@ -230,9 +230,9 @@ public class CharTest {
             3)、编码过程: 以gbk为例 (真实代码并不一定这样写，但效果是一样的)
                 根据char[]计算得出字符的码点(如果是代理需要处理代理), 根据unicode码点映射到gbk，如果能够映射到相同的字符，取gbk码点，按gbk规范转换成字节序列
                 如果没有映射，使用gbk中的'?'(3F)字符作为替代字符转换成字节序列
-            4)、解码过程: 以utf-8为例
+            4)、解码过程
                 取gbk字节序列, 按照gbk规范转换成码点序列, 每一个码点映射到unicode, 如果能够映射到相同的字符，取unicode码点，按按UTF-16规范转化并存储到char[]中
-            5)、如果在编码和解码过程中出现字符不能映射，字元原信息将丢失，就没办法转化回原来的字符了
+            5)、如果在编码和解码过程中出现字符不能映射，字节原信息将丢失，就没办法转化回原来的字符了
          */
         bys = str.getBytes(Charset.forName("gbk"));
         for (byte by : bys) {
@@ -253,13 +253,7 @@ public class CharTest {
 
         System.out.println("--------3-------");
 
-
-        String ty = "中";
-        byte[] tys = ty.getBytes("utf-16");
-        for (byte by : tys) {
-            System.out.println(Integer.toHexString(by));
-        }
-
+        
     }
 
 }
