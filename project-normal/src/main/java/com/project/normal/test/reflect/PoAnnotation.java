@@ -7,5 +7,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Repeatable(PosAnnotation.class)
 public @interface PoAnnotation {
-
+    String name();
 }

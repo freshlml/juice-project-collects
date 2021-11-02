@@ -1,4 +1,4 @@
-package com.project.normal.test.reflect;
+package com.project.normal.test.reflect.interhyr;
 
 public interface AllInter {
     void inter();

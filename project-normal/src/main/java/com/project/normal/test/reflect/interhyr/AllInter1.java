@@ -1,4 +1,4 @@
-package com.project.normal.test.reflect;
+package com.project.normal.test.reflect.interhyr;
 
 public interface AllInter1 extends AllInter {
     void inter1();  //abstract方法: 子接口可以重写

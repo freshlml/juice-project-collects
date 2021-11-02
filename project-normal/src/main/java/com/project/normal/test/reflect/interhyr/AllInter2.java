@@ -1,4 +1,4 @@
-package com.project.normal.test.reflect;
+package com.project.normal.test.reflect.interhyr;
 
 public interface AllInter2 extends AllInter1, AllInterE {
     void inter2();
