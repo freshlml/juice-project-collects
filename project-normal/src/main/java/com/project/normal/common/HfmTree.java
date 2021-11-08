@@ -1,4 +1,4 @@
-package com.project.normal.test;
+package com.project.normal.common;
 
 public class HfmTree {
 
