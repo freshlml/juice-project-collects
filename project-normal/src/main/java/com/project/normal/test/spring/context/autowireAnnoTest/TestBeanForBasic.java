@@ -70,4 +70,14 @@ public class TestBeanForBasic {
     }
 
 
+
+    //@Resource与@Autowired的比较
+    //@Resource放在Field、Method，@Autowired可放在Parameter、Constructor
+    //@Resource注解放在Method上时，必须要求Method只能有一个参数，并且如果name属性为空则其方法名称还必须是set开头
+    //@Resource注解解析依赖的方法不同: name属性(默认为空"")、type属性(默认为Object.class)
+    //  1、如果name属性不为空，支持string resolve，否则解析注入点的名称
+    //  2、如果type属性不为Object.class，check注入点的类型匹配，否则获取注入点的Class类型
+    //  3、一般情况下getBean(名称, 类型), 但也可以控制采用resolveDependency
+
+
 }
