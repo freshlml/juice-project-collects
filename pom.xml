@@ -7,6 +7,7 @@
         <module>project-reactor</module>
         <module>project-normal</module>
         <module>project-mq</module>
+        <module>project-alg</module>
     </modules>
 
     <parent>
@@ -25,6 +26,7 @@
         <project-reactor.version>1.0.0.SNAPSHOT</project-reactor.version>
         <project-normal.version>1.0.0.SNAPSHOT</project-normal.version>
         <project-mq.version>1.0.0.SNAPSHOT</project-mq.version>
+        <project-alg.version>1.0.0.SNAPSHOT</project-alg.version>
     </properties>
 
     <dependencyManagement>
@@ -51,6 +53,11 @@
                 <groupId>com.project</groupId>
                 <artifactId>project-mq</artifactId>
                 <version>${project-mq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.project</groupId>
+                <artifactId>project-alg</artifactId>
+                <version>${project-alg.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
