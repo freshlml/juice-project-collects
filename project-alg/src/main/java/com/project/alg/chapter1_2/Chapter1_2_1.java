@@ -130,6 +130,12 @@ public class Chapter1_2_1 {
     }
 
 
+    //练习2.3-7
+    //1.先归并排序，再二分查找
+    //2.n个元素，任取两个元素: C(2,n)=n*(n-1)/2
+    //3.todo
+
+
     public static void main(String argv[]) {
 
         int[] a = {1,2,2,3,4,4,5,6};
