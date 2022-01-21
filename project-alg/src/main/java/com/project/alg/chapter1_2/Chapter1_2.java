@@ -85,12 +85,12 @@ public class Chapter1_2 {
      *  ...
      *  [1],[1],...[1]                                              第x层   2^x份   2^(x-1)次merge
      *
-     *  2^x = n ==>  x = log2N
+     *  2^x = n ==>  x = log2(n)
      *
-     *T(n) = C*(2^0 + 2^1 +...+ 2^x) + [ 2^(x-1) * 2 + 2^(x-2) * 2^2 +...+ 2^0 * 2^x ]
-     *     = C*n + x*2^x
-     *     = C*n + n*log2N
-     *时间复杂度Ω=n*log2N
+     *T(n) = C1*(2^0 + 2^1 +...+ 2^x) + [ 2^(x-1) * 2 + 2^(x-2) * 2^2 +...+ 2^0 * 2^x ]
+     *     = C1*n + x*2^x
+     *     = C1*n + n*log2(n)
+     *时间复杂度Ω=n*log2(n)
      */
     public static void merge_sort(int a[]) {
         if(a == null) return;
