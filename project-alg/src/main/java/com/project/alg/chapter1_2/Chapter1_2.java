@@ -46,10 +46,13 @@ public class Chapter1_2 {
      * 终止: j=n时终止，此时A{0,1,...,n-1}有序
      *
      *insertion_sort运行时间分析(假设每条语句运行的时间是一个常数C)
-     * T(n) = C*n + C*(n-1) + C*ΣPj,j=1 to n-1 + C*(ΣPj - 1)
+     * T(n) = C1*n + C2*(n-1) + C3*ΣPj,j=1 to n-1 + C4*(ΣPj - 1)
      * 其中ΣPj'max = 1 + 2 + 3 + ... + (n-1) = n*(n-1)/2
      *    ΣPj'min = 1 + 1 + 1 + ... + 1 = n-1
-     * T(n)'max = C*n + C*(n-1) + C*[n*(n-1)/2] + C*[n*(n-1)/2 - 1]
+     * T(n)'max = C1*n + C2*(n-1) + C3*[n*(n-1)/2] + C4*[n*(n-1)/2 - 1]
+     *          = C1*n + C2*n - C2 + (C3+C4)/2*n^2 - (C3+C4)/2*n - C4
+     *          ≈ C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n
+     *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中语句一次执行的时间之和; C1=for外围; C2=for中while外围
      *时间复杂度Ω=n^2
      *
      */
@@ -87,9 +90,10 @@ public class Chapter1_2 {
      *
      *  2^x = n ==>  x = log2(n)
      *
-     *T(n) = C1*(2^0 + 2^1 +...+ 2^x) + [ 2^(x-1) * 2 + 2^(x-2) * 2^2 +...+ 2^0 * 2^x ]
-     *     = C1*n + x*2^x
-     *     = C1*n + n*log2(n)
+     *T(n) = C1*(2^0 + 2^1 +...+ 2^x) + [ 2^(x-1) * [C2+C3*2^1+C4*(2^1-1))] + 2^(x-2) * [C2+C3*2^2+C4*(2^2-1)] +...+ 2^0 * [C2+C3*2^x+C4*(2^x-1)] ]
+     *     = 2*C1*n - C1 + C2*n - C2 + (C3+C4)*x*2^x - C4*n
+     *     ≈ 2*C1*n + C2*n + (C3+C4)*n*log2(n) - C4*n
+     *     ≈ (C3+C4)*n*log2(n) ,C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
      *时间复杂度Ω=n*log2(n)
      */
     public static void merge_sort(int a[]) {
