@@ -42,7 +42,7 @@ public class Chapter1_2_1 {
      */
 
 
-    //练习2.3-5，二分查找法,Ω=log2N
+    //练习2.3-5，二分查找法,Ω=log2(n)
     public static boolean binary_search(int a[], int key) {
         if(a == null) return false;
         if(a.length == 0) return false;
@@ -68,7 +68,7 @@ public class Chapter1_2_1 {
     }
 
     //练习2.3-6
-    //1.递增序列找到第一个<=的
+    //1.递增序列找到第一个(逆序来看)<=的
     public static int binary_search_af(int a[], int key) {
         if(a == null) return -1;
         if(a.length == 0) return -1;
@@ -91,7 +91,7 @@ public class Chapter1_2_1 {
 
         return pos;
     }
-    //2.并不能做到Ω=n*log2N,实际还是Ω=n^2
+    //2.并不能做到Ω=n*log2(n),实际还是Ω=n^2
     public static int binary_search_af_mv(int a[], int begin, int end, int key) {
 
         int n = end - begin;
