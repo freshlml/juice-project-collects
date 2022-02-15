@@ -53,7 +53,7 @@ public class Chapter1_2 {
      *          = C1*n + C2*n - C2 + (C3+C4)/2*n^2 - (C3+C4)/2*n - C4
      *          ≈ C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n
      *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中语句一次执行的时间之和; C1=for外围; C2=for中while外围
-     *时间复杂度Ω=n^2
+     *O=n^2
      *
      */
 
@@ -94,7 +94,7 @@ public class Chapter1_2 {
      *     = 2*C1*n - C1 + C2*n - C2 + (C3+C4)*x*2^x - C4*n
      *     ≈ 2*C1*n + C2*n + (C3+C4)*n*log2(n) - C4*n
      *     ≈ (C3+C4)*n*log2(n) ,C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
-     *时间复杂度Ω=n*log2(n)
+     *O=n*log2(n)
      */
     public static void merge_sort(int a[]) {
         if(a == null) return;
