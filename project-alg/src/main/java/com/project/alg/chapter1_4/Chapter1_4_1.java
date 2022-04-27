@@ -39,6 +39,20 @@ public class Chapter1_4_1 {
     }
 
     //分治法
+    /* T(n) = 8*T(n/2) + n^2
+    此分治法的递归树
+                [n]
+        [n/2] ...                   第1层,n/2          1次merge, 1*n^2
+        [n/4] ...                   第2层,n/4          8次merge, 8*(n/2)^2
+        ...
+                [1]                 第x层,n/2^x        8^(x-1)次merge, 8^(x-1) * [n/x^(x-1)]^2
+
+      高度: n/2^x = 1 ==> 2^x = n ==> x=log2(n)
+      merge消耗:
+        = 1/15*n^2*16^x - 1/15*n^2
+        = 4/15*n^3 - 1/15*n^2
+      可见，此分治并不非常优于暴力
+     */
     public static int[][] fzMatrixMulti(int[][] a, int[][] b) {
         if(a == null || b == null) return null;
         if(a.length == 0 || b.length == 0 || a[0].length == 0 || b[0].length == 0) return null;
