@@ -110,7 +110,7 @@ public class Chapter1_5_1 {
         return c;
     }
 
-    int[][] invalids(int m ,int n) {
+    int[][] invalids_o(int m ,int n) {
         int[][] invalids = new int[(int)Math.pow(2, m)-n][m];
         for(int j=0, k=0, l=m; j < (Math.pow(2, m)-n) && k < m; j++) {
 
@@ -135,18 +135,86 @@ public class Chapter1_5_1 {
 
         return invalids;
     }
+
+    int[][] invalids(int m ,int n) {
+
+        if(m <= 0) return null;
+        int s = (int)Math.pow(2, m);
+        if(s <= n) return null;
+        if(n < 0) n = 0;
+
+        int[][] invalids = new int[s-n][m];
+
+        for(int j=0, l=m; l>=0; l--) {
+            int[] r = new int[m];
+
+            for(int k=0; k<l; k++) {
+                r[k] = 1;
+            }
+
+            if(l == m) {
+                invalids[j++] = r;
+                if(j >= invalids.length) break;
+            } else if(l == m-1) {
+                r[l] = 0;
+                invalids[j++] = r;
+                if(j >= invalids.length) break;
+            } else {
+                r[l] = 0;
+                int c_m = m - l - 1;
+                int c_n = (int)Math.pow(2, c_m) - (invalids.length-j);
+                int[][] c_invalids = invalids(c_m, c_n);
+                //if(c_invalids == null) continue;
+
+                boolean end = false;
+                for(int p=0; p<c_invalids.length; p++) {
+                    int[] c_r = Arrays.copyOf(r, r.length);
+                    for(int q=0; q < c_invalids[p].length; q++) {
+                        c_r[l+1+q] = c_invalids[p][q];
+                    }
+                    invalids[j++] = c_r;
+                    if(j >= invalids.length) {end = true; break;}
+                }
+                if(end) break;
+
+            }
+
+        }
+
+        return invalids;
+    }
+
+
     int RANDOM_0_1() {return 0/1;}
     boolean contains(int[][] b, int[] a) {return false;}
 
 
     public static void main(String argv[]) {
         Chapter1_5_1 c = new Chapter1_5_1();
-        int[][] ins = c.invalids(3, 1);
+        int[][] ins = c.invalids_o(3, 1);
 
         ins = c.invalids2(3, 1);
         ins = c.invalids2(3, 2);
         ins = c.invalids2(3, 5);
         ins = c.invalids2(3, 8);
+
+
+        ins = c.invalids(-1, 10);
+        ins = c.invalids(0, 10);
+
+        ins = c.invalids(1, -1);
+        ins = c.invalids(1, 0);
+        ins = c.invalids(1, 1);
+        ins = c.invalids(1, 2);
+
+        ins = c.invalids(4, -100);
+        ins = c.invalids(4, 0);
+        ins = c.invalids(4, 1);
+        ins = c.invalids(4, 4);
+        ins = c.invalids(4, 5);
+        ins = c.invalids(4, 16);
+        ins = c.invalids(4, 17);
+
 
 
         System.out.println("hello");
