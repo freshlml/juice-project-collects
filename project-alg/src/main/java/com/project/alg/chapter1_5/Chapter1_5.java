@@ -6,10 +6,11 @@ public class Chapter1_5 {
      *雇用问题(找最值)
      *  依次n个应聘者，如果发现当前面试者更合适，就雇用当前的，直到面完第n个
      *
-     *person = Integer.MIN_VALUE;
+     *list[n]
+     *person = lowest;
      *for i from 1 to n:
-     *   if(decide(i, person)):  # 如果当前面试者更合适
-     *      person = i  # 辞掉person, 雇用当前面试者，雇用一个面试者花费费用记为C
+     *   if(decide(list[i], person)):  # 如果当前面试者更合适
+     *      person = list[i]  # 辞掉person, 雇用当前面试者，雇用一个面试者花费费用记为C
      *
      *第一: 运行时间分析(时间复杂度)的角度
      *  = C1*n + C2*m ;C1为for,if语句的时间之和, C2为雇用面试者语句的时间
@@ -29,11 +30,12 @@ public class Chapter1_5 {
      *  P(X): P(1) p(2)  p(3)       P(n)
      *
      * 总费用: C*X
+     * 总费用期望: C*EX
      *
-     *输入序列的假设 {
-     *     假设应聘者以随机的顺序出现 (均匀随机排列)
+     *为了求P(X),合理假设输入序列是均匀随机的排列
+     *{
      *     第1位 第2位   第n位
-     *     1,    2, ..., n
+     * 编号 1,    2, ..., n
      *     rank(i)表示第i位应聘者的排名
      *     <rank(1), rank(2), ..., rank(n)>是其中一种排列方式
      *     <rank(2), rank(1), ..., rank(n)>也是
@@ -57,7 +59,36 @@ public class Chapter1_5 {
      *}
      *
      */
-    
+
+    /**
+     *随机算法
+     * RANDOM(1,n): 等可能(1/n概率)的随机的产生数字1 ~ n
+     *    将RANDOM(1, n)调用n次
+     *            i1 i2 i3 ... in     1/n*1/n*...*1/n= 1/n^n 概率  @link Chapter1_5-1
+     *
+     *    将RANDOM(1, n)调用n次，且i不重复
+     *            i1 i2 i3 ... in     1/n * [(1/n) / (n-1)/n] * [(1/n) / (n-2)/n] *... = 1/n!
+     *
+     *
+     *雇用问题改写: 使用随机数生成器产生n个数的随机序列，且该序列满足上述输入序列的假设（合理假设输入序列是均匀随机的排列）
+     *rd[n] = F[RANDOM(1, n)]... 不重复的产生n个数的随机序列
+     *list[n]
+     *person = lowest;
+     *for i from 1 to n:
+     *    r = rd[i]
+     *    if(decide(list[r], person)):  # 如果当前面试者更合适
+     *       person = list[r]  # 辞掉person, 雇用当前面试者，雇用一个面试者花费费用记为C
+     *
+     *
+     *person = lowest;
+     *list[n]
+     *for i from 1 to n:
+     *    r = RANDOM(i, n)
+     *    swap list[i], list[r]  ##秀
+     *
+     *
+     *
+     */
 
 
 }
