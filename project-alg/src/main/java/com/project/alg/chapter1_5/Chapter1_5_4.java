@@ -13,6 +13,13 @@ public class Chapter1_5_4 {
      *        break
      *    j++
      *
+     *第一: 最坏情况运行时间
+     *  = C*n ;C表示while，while中语句的时间之和
+     *  = O(n)
+     *
+     *第二: 平均情况运行时间
+     *  = C*EX ;C表示while，while中语句的时间之和
+     *  = C*（n/k）
      *随机变量X:  结束时，j的值
      *      X:  1    2   ,...,   n-k+1
      *    P(X): P(1) P(2)        P(n-k+1)
