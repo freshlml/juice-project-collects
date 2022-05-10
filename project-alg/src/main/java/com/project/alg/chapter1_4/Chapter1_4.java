@@ -25,7 +25,7 @@ public class Chapter1_4 {
      *    left(max), right(max), left(max) + left(all) + right(m)
      *    left(max) + left(all) + right(all) + right(max)
      *    left(m) + right(m), left(m) + right(all) + right(max)
-     * 4. 分治法的递归式，递归树求解O，递归式推出O，todo
+     * 4. 分治法的递归式，递归树求解O，递归式推出O
      */
     //暴力法
     public static SubArrayNode blMaxSubArray(int a[]) {
