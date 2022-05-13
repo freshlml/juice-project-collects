@@ -1,5 +1,7 @@
 package com.project.alg.chapter2_6;
 
+import java.util.Arrays;
+
 public class Chapter2_6 {
 
     /**
@@ -19,6 +21,8 @@ public class Chapter2_6 {
      *    1).每一层的最左节点的下标: i(x) = 2^0 + 2^1 + ... + 2^(x-2)
      *    2).叶子节点的下标: 下界(n/2), 下界(n/2)+1, ... , n-1
      *  2.下标i的节点，p(i) = 下界((i+1)/2)-1; left(i) = 2*(i+1)-1; right(i) = 2*(i+1)
+     *  3.A.length，堆中元素个数(数组大小)
+     *    heap_size: heap_size<=A.length
      *
      *  节点高度:  节点到叶节点的最长简单路径上边的数目
      *  树的高度:  根节点的高度
@@ -60,7 +64,7 @@ public class Chapter2_6 {
             int n = a.length;
             //从最后一个非叶子节点到第一个节点
             for(int i=n/2-1; i>=0; i--) {
-                max_heapify(i);
+                max_heapify(i, n);
             }
         }
 
@@ -73,38 +77,49 @@ public class Chapter2_6 {
             ===>    x = log2(n)
         树高h，最多递归到叶子节点，即最多递归h次，T(n) = log2(n) * O(1) = O(log2(n))
          */
-        private void max_heapify(int i) {
-            if(isLeaf(i)) return;
+        private void max_heapify(int i, int heap_size) {
+            if(isLeaf(i) || isOutRange(i, heap_size)) return;
 
             int li = 2*(i+1)-1;
-            int l = this.a[li];
             int ri = 2*(i+1);
 
-            if(this.a[i] >= l && (isOutRange(ri) || this.a[i] >= this.a[ri])) return;
-
-            int pos = li;
-            int max = l;
-            if(!isOutRange(ri) && this.a[ri] > max) {
-                pos = ri;
-                max = this.a[ri];
+            int max = i;
+            if(!isOutRange(li, heap_size) && this.a[i] < this.a[li]) {
+                max = li;
+            }
+            if(!isOutRange(ri, heap_size) && this.a[max] < this.a[ri]) {
+                max = ri;
             }
 
-            this.a[pos] = this.a[i];
-            this.a[i] = max;
+            if(max != i) {
+                int ex = this.a[max];
+                this.a[max] = this.a[i];
+                this.a[i] = ex;
+                max_heapify(max, heap_size);
+            }
 
-            max_heapify(pos);
         }
         private boolean isLeaf(int i) {
             return i>=this.a.length/2;
         }
-        private boolean isOutRange(int i) {
-            return i>=this.a.length;
+        private boolean isOutRange(int i, int heap_size) {
+            return i>=heap_size;
         }
 
 
+        @Override
+        public String toString() {
+            return "MaxHeap{" +
+                    "a=" + Arrays.toString(a) +
+                    '}';
+        }
     }
 
+    public static void main(String argv[]) {
+        int[] a = {14, 16, 2, 1, 7, 9, 3, 10, 4, 8};
+        MaxHeap maxHeap = new MaxHeap(a);
 
-
+        System.out.println(maxHeap);
+    }
 
 }
