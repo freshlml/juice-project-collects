@@ -107,6 +107,63 @@ public class Chapter2_6 {
         }
 
 
+        public void heap_sort_1() {
+
+            for(int i=this.a.length-1; i>0; i--) {
+
+                int pi = (i+1)/2 - 1;
+                int min_i = i;
+                for(int j=i-1; j>pi; j--) {
+                    if(this.a[j] < this.a[min_i]) {
+                        min_i = j;
+                    }
+                }
+
+                if(min_i != i) {
+                    int ex = this.a[min_i];
+                    this.a[min_i] = this.a[i];
+                    this.a[i] = ex;
+
+                    for(int ex_pi = (min_i+1)/2 - 1; ex_pi>0 && this.a[ex_pi] < this.a[min_i]; ) {
+                        ex = this.a[ex_pi];
+                        this.a[ex_pi] = this.a[min_i];
+                        this.a[min_i] = ex;
+
+                        min_i = ex_pi;
+                        ex_pi = (min_i+1)/2 - 1;
+                    }
+                }
+            }
+        }
+
+        /*
+        heap_size:  2       C1+max_heapify(0, 2)    ; C1为每次while执行时间之和
+                    3       C1+max_heapify(0, 3)
+                    4       C1+max_heapify(0, 4)
+                  ...
+                    n       C1+max_heapify(0, n)
+
+                 max_heapify(0, i) = C2*log2(i)   ; C2为max_heapify执行依次时间之和
+
+         最坏情况运行时间: C1*(n-1) + C2*[log2(2) + log2(3) + ... + log2(n)]
+                      = C1*(n-1) + C2*[n*ln(n)/ln2 - (n+2ln2-2)/ln2]
+                      ≈ C*n*lnn
+         */
+        public void heap_sort() {
+
+            int heap_size = this.a.length;
+            while (heap_size > 1) {
+
+                int ex = this.a[0];
+                this.a[0] = this.a[heap_size-1];
+                this.a[heap_size-1] = ex;
+
+                heap_size--;
+                max_heapify(0, heap_size);
+            }
+
+        }
+
         @Override
         public String toString() {
             return "MaxHeap{" +
@@ -116,10 +173,17 @@ public class Chapter2_6 {
     }
 
     public static void main(String argv[]) {
-        int[] a = {14, 16, 2, 1, 7, 9, 3, 10, 4, 8};
+        int[] a = {7, 3, 6, 2, 1, 4, 5, 1};
         MaxHeap maxHeap = new MaxHeap(a);
-
         System.out.println(maxHeap);
+        maxHeap.heap_sort_1();
+        System.out.println(maxHeap);
+
+        int[] b = {7, 3, 6, 2, 1, 4, 5, 1};
+        MaxHeap maxHeap2 = new MaxHeap(b);
+        System.out.println(maxHeap2);
+        maxHeap2.heap_sort();
+        System.out.println(maxHeap2);
     }
 
 }
