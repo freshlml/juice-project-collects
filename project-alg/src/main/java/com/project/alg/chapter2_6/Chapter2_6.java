@@ -77,17 +77,16 @@ public class Chapter2_6 {
             ===>    x = log2(n)
         树高h，最多递归到叶子节点，即最多递归h次，T(n) = log2(n) * O(1) = O(log2(n))
          */
-        private void max_heapify(int i, int heap_size) {
-            if(isLeaf(i) || isOutRange(i, heap_size)) return;
+        private void max_heapify(int i, int heap_size) { //heap_size必须<=this.a.length,否则IndexOutOfRangeError
 
             int li = 2*(i+1)-1;
             int ri = 2*(i+1);
 
             int max = i;
-            if(!isOutRange(li, heap_size) && this.a[i] < this.a[li]) {
+            if(!isOutRange(li, heap_size) && /*li<this.a.length &&*/ this.a[i] < this.a[li]) {
                 max = li;
             }
-            if(!isOutRange(ri, heap_size) && this.a[max] < this.a[ri]) {
+            if(!isOutRange(ri, heap_size) && /*ri<this.a.length &&*/ this.a[max] < this.a[ri]) {
                 max = ri;
             }
 
@@ -152,13 +151,13 @@ public class Chapter2_6 {
         public void heap_sort() {
 
             int heap_size = this.a.length;
-            while (heap_size > 1) {
+            while(heap_size > 1) {
+                heap_size--;
 
                 int ex = this.a[0];
-                this.a[0] = this.a[heap_size-1];
-                this.a[heap_size-1] = ex;
+                this.a[0] = this.a[heap_size];
+                this.a[heap_size] = ex;
 
-                heap_size--;
                 max_heapify(0, heap_size);
             }
 
@@ -173,13 +172,13 @@ public class Chapter2_6 {
     }
 
     public static void main(String argv[]) {
-        int[] a = {7, 3, 6, 2, 1, 4, 5, 1};
+        int[] a = {1000, 90000, 7, 3, 6, 2, 1, 4, 5, 1, 100, 1000, 0, -1 ,9000000};
         MaxHeap maxHeap = new MaxHeap(a);
         System.out.println(maxHeap);
         maxHeap.heap_sort_1();
         System.out.println(maxHeap);
 
-        int[] b = {7, 3, 6, 2, 1, 4, 5, 1};
+        int[] b = {1000, 90000, 7, 3, 6, 2, 1, 4, 5, 1, 100, 1000, 0, -1 ,9000000};
         MaxHeap maxHeap2 = new MaxHeap(b);
         System.out.println(maxHeap2);
         maxHeap2.heap_sort();
