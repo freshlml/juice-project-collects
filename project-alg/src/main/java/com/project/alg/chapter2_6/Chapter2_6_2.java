@@ -75,17 +75,16 @@ public class Chapter2_6_2 {
             return ret;
         }
 
-        private void max_heapify(int i, int heap_size) {
-            if(isLeaf(i) || isOutRange(i, heap_size)) return;
+        private void max_heapify(int i, int heap_size) { //heap_size必须<=this.queue.size(),否则IndexOutOfRangeError
 
             int li = 2*(i+1)-1;
             int ri = 2*(i+1);
 
             int max = i;
-            if(!isOutRange(li, heap_size) && this.queue.get(i).lt(this.queue.get(li))) {
+            if(!isOutRange(li, heap_size) && /*li < this.queue.size() &&*/ this.queue.get(i).lt(this.queue.get(li))) {
                 max = li;
             }
-            if(!isOutRange(ri, heap_size) && this.queue.get(max).lt(this.queue.get(ri))) {
+            if(!isOutRange(ri, heap_size) && /*ri < this.queue.size() &&*/ this.queue.get(max).lt(this.queue.get(ri))) {
                 max = ri;
             }
 
