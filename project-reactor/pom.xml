@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.project</groupId>
-        <artifactId>project-collects</artifactId>
+        <groupId>com.juice</groupId>
+        <artifactId>juice-project-collects</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.project</groupId>
+    <groupId>com.juice.reactor</groupId>
     <artifactId>project-reactor</artifactId>
     <version>${project-reactor.version}</version>
     <packaging>jar</packaging>
