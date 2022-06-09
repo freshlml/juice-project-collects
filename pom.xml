@@ -8,6 +8,7 @@
         <module>project-normal</module>
         <module>project-mq</module>
         <module>project-alg</module>
+        <module>project-spring</module>
     </modules>
 
     <parent>
@@ -27,6 +28,7 @@
         <project-normal.version>1.0.0</project-normal.version>
         <project-mq.version>1.0.0</project-mq.version>
         <project-alg.version>1.0.0</project-alg.version>
+        <project-spring.version>1.0.0</project-spring.version>
     </properties>
 
     <dependencyManagement>
@@ -58,6 +60,11 @@
                 <groupId>com.juice.alg</groupId>
                 <artifactId>project-alg</artifactId>
                 <version>${project-alg.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.juice.spring</groupId>
+                <artifactId>project-spring</artifactId>
+                <version>${project-spring.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
