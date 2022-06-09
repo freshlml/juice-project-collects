@@ -1,17 +1,17 @@
-package com.juice.normal.enums;
+package com.juice.normal.reflect.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.util.Arrays;
 
-public enum ScanTypeEnum2 {
-    SYSTEM("SYSTEM", "系统");
+public enum ScanTypeEnum {
+    SYSTEM("SYSTEM1", "系统");
 
     private String value;
 
     private String text;
 
-    ScanTypeEnum2(String value, String text) {
+    ScanTypeEnum(String value, String text) {
         this.value = value;
         this.text = text;
     }
@@ -25,8 +25,8 @@ public enum ScanTypeEnum2 {
     }
 
     @JsonCreator
-    public static ScanTypeEnum2 getByValue(String value) {
-        return Arrays.stream(ScanTypeEnum2.values()).filter(scan -> scan.getValue().equals(value)).findFirst().orElse(null);
+    public static ScanTypeEnum getByValue(String value) {
+        return Arrays.stream(ScanTypeEnum.values()).filter(scan -> scan.getValue().equals(value)).findFirst().orElse(null);
     }
 
 }

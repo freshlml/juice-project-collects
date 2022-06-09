@@ -1,6 +1,6 @@
 package com.juice.normal.reflect;
 
-import com.juice.normal.enums.ScanTypeEnum;
+import com.juice.normal.reflect.enums.ScanTypeEnum;
 import com.juice.normal.reflector.FlReflectorFactory;
 import com.juice.normal.xml.GenericSAXParser;
 import com.juice.normal.xml.GenericXpathXmlParser;
