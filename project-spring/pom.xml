@@ -61,6 +61,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.fresh</groupId>
+            <artifactId>fresh-common</artifactId>
+        </dependency>
     </dependencies>
 
 

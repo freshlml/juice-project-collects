@@ -29,6 +29,8 @@
         <project-mq.version>1.0.0</project-mq.version>
         <project-alg.version>1.0.0</project-alg.version>
         <project-spring.version>1.0.0</project-spring.version>
+
+        <fresh-common.verison>1.0.0</fresh-common.verison>
     </properties>
 
     <dependencyManagement>
@@ -65,6 +67,12 @@
                 <groupId>com.juice.spring</groupId>
                 <artifactId>project-spring</artifactId>
                 <version>${project-spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fresh</groupId>
+                <artifactId>fresh-common</artifactId>
+                <version>${fresh-common.verison}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
