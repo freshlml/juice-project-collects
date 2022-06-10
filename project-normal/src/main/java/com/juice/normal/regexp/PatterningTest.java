@@ -1,4 +1,4 @@
-package com.juice.spring.core.io;
+package com.juice.normal.regexp;
 
 public class PatterningTest {
 
