@@ -58,7 +58,7 @@ public class PathsTest {
 
         /**
          * 使用类加载器加载资源
-         * @see ClasspathResLoaderTest
+         * @see PathsLoaderTest
          */
     }
 

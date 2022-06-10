@@ -3,7 +3,7 @@ package com.juice.spring.core.io;
 import java.net.URL;
 import java.util.Enumeration;
 
-public class ClasspathResLoaderTest {
+public class PathsLoaderTest {
 
     public static void main(String argv[]) throws Exception {
 
