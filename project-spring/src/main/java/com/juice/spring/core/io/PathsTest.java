@@ -2,10 +2,13 @@ package com.juice.spring.core.io;
 
 import org.springframework.util.StringUtils;
 
-import java.io.File;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class PathsTest {
 
@@ -40,6 +43,7 @@ public class PathsTest {
         System.out.println(path.toString());
         System.out.println(path.isAbsolute());
         System.out.println(path.toAbsolutePath());
+        System.out.println(path.toUri());
         System.out.println("-----------相对路径----------");
 
         /**
@@ -66,17 +70,19 @@ public class PathsTest {
         /**
          *URL路径:
          *protocol://host:port/path?query
-         * 如: http://localhost:7001/user?id=1&name=q
+         * eg: http://localhost:7001/user?id=1&name=q
          *
          *文件URL:
-         *  file:/path?query   host,port为空, path是文件的绝对路径
+         *  file:/path      host,port为空, path是文件的绝对路径
          *windows
-         * file:/D:/ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
-         * jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar
+         *  file:/D:/ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
+         *linux
+         *  file://ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
+         *
+         *jar:file格式:
          * jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class
          *
-         *linux
-         * file://ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
+         * jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/
          *
          */
         /**
@@ -101,40 +107,79 @@ public class PathsTest {
         System.out.println(uri.getSchemeSpecificPart());  // //localhost:7001/user?id=1&name=q
         System.out.println("--------------1-----------");
 
-        //使用绝对路径构造，文件URL
+        //文件URL
         url = new URL("file:/D:/ideaProject3/juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java");
         System.out.println(url);   //  file:/D:/ideaProject3/juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java
         System.out.println(url.toURI()); //  file:/D:/ideaProject3/juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java
+        System.out.println(url.getProtocol()); // file
         System.out.println(url.getHost()); // 空
         //note: getPath调用有前置/
         System.out.println(url.getPath()); //  /D:/ideaProject3/juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java
         System.out.println("--------------2-----------");
 
-        //通过classloader加载资源，返回URL(文件URL)
+        //通过classloader加载资源,返回URL
         URL uu = PathsTest.class.getClassLoader().getResource("com/juice/spring/App.class");
         System.out.println(uu); //  file:/D:/ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
-        System.out.println(uu.toURI());  //  file:/D:/ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
-        System.out.println(uu.getProtocol()); // file
-        System.out.println(uu.getHost());     // 空
-        //note: getPath调用有前置/
-        System.out.println(uu.getPath()); //  /D:/ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
-        System.out.println(uu.toURI().getSchemeSpecificPart()); // /D:/ideaProject3/juice-project-collects/project-spring/target/classes/com/juice/spring/App.class
+        URL uu2 = PathsTest.class.getClassLoader().getResource("java/lang/String.class");
+        System.out.println(uu2); // jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class
         System.out.println("--------------3-----------");
 
-        //构造File,从File拿到绝对路径，构造URL
-        //构造File,Path.toURI调用
-        File f = new File("juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java");
-        System.out.println(f.getPath()); // juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java
-        Path path = f.toPath();
-        System.out.println(path.getFileName()); // App.java
-        System.out.println(path.isAbsolute());  // false
-        System.out.println(path.toAbsolutePath());  //D:\ideaProject3\juice-project-collects\project-spring\src\main\java\com\juice\spring\App.java
+        //jar:file格式
+        //PathsTest.class.getClassLoader().getResource("java/lang/String.class");
+        url = new URL("jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class");
+        System.out.println(url);   // jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class
+        System.out.println(url.getProtocol()); // jar
+        System.out.println(url.getHost()); // 空
+        System.out.println(url.getPath()); // file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class
+        System.out.println(url.toURI().getScheme()); // jar
+        System.out.println(url.toURI().getSchemeSpecificPart()); //  file:/C:/Program Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class
 
-        //note: 从Path得到的URI路径多了host前面的//
-        URI pu = path.toUri();
-        System.out.println(pu);  //  file:///D:/ideaProject3/juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java
-        System.out.println(pu.getHost());  // null
-        System.out.println(pu.getPath());  // /D:/ideaProject3/juice-project-collects/project-spring/src/main/java/com/juice/spring/App.java
+        InputStream is = url.openStream();
+        byte[] bys = new byte[512];
+        is.read(bys);
+        System.out.println(new String(bys));
+        System.out.println("--------------4-----------");
+
+        //jar:file格式
+        url = new URL("jar:file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar!/");
+        System.out.println(url);   // jar:file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar
+        System.out.println(url.getProtocol()); // jar
+        System.out.println(url.getHost()); //  空
+        System.out.println(url.getPath()); //  file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar
+        //InputStream iss = url.openStream();  //java.io.IOException: no entry name specified
+        //指向jar包的文件URL
+        url = new URL("file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar");
+        InputStream iss = url.openStream(); //读出的内容和使用File读出的内容一样，不太对
+
+        //使用File读取jar包内容
+        /*//1.得到jar包的绝对路径
+        String abPath = "E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar";
+        //2.创建File
+        File jarFile = new File(abPath);
+        System.out.println(jarFile.isDirectory()); //jar包被当成归档文件而不是目录
+        //3.读取jar包内容
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(jarFile), "gbk"));
+        String line = br.readLine();
+        int times = 1;
+        while(line != null && times < 50) {
+            System.out.println(line);
+            line = br.readLine();
+            times++;
+        }
+        br.close();
+        //读出来的内容不太对*/
+
+        //jar包内容读取方法: JarFile类
+        //1.得到jar包的绝对路径
+        String abPath = "E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar";
+        //2.创建JarFile
+        JarFile jarFile = new JarFile(abPath);
+        //3.得到所有的条目
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while(entries.hasMoreElements()) {
+            JarEntry et = entries.nextElement();
+            System.out.println(et.getName());
+        }
 
     }
 
