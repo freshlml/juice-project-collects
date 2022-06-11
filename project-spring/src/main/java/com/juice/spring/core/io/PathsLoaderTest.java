@@ -54,13 +54,14 @@ public class PathsLoaderTest {
 
 
         //Spring Boot中打包(通过spring-boot-maven-plugin插件打包)
-        //项目打成jar包，项目clazz文件不位于jar包的顶层目录而是在BOOT-INF/classes/目录，MANIFEST.MF中指定Spring-Boot-Classes: BOOT-INF/classes/
-        //依赖的jar包放到项目jar包里面的BOOT-INF\lib目录下面，MANIFEST.MF中指定Spring-Boot-Lib: BOOT-INF/lib/
+        //项目打成jar包，顶层package(如com)不在位于jar包的顶层，而是放到了BOOT-INF/classes目录下，MANIFEST.MF中指定Spring-Boot-Classes: BOOT-INF/classes/
+        //依赖的jar包放到了BOOT-INF/lib目录下，MANIFEST.MF中指定Spring-Boot-Lib: BOOT-INF/lib/
         //自定义ClassLoader，继承App-Classloader
 
         //因此如果一个非Spring Boot项目依赖Spring Boot项目
         //无法加载Spring Boot项目中的类
         //加载资源要加上BOOT-INF/classes/前缀,eg: BOOT-INF/classes/com/...
+        //但是import就不行了，因为import 以package开始
     }
 
 

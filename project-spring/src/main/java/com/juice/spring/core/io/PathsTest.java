@@ -88,6 +88,7 @@ public class PathsTest {
          *  file:/E:/apache-maven-3.6.1/.../a.zip
          * 特殊的jar:file
          *  jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/
+         *  jar:file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar!/com/fresh/common/a.jar
          */
         /**
          *URI路径
