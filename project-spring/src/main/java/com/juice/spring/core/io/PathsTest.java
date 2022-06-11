@@ -27,7 +27,7 @@ public class PathsTest {
         System.out.println("user.dir: " + System.getProperty("user.dir"));
 
         /**
-         * 相对路径
+         *相对路径
          * 相对于当前工作空间所在目录: System.getProperty("user.dir")
          * user.dir的值:
          *      C:\Users\DELL\Desktop>java -jar project-spring-1.0.0.jar
@@ -44,10 +44,11 @@ public class PathsTest {
         System.out.println(path.isAbsolute());
         System.out.println(path.toAbsolutePath());
         System.out.println(path.toUri());
+        //相对路径的问题: 相对路径在不同环境下不通用，取决于当前运行的目录
         System.out.println("-----------相对路径----------");
 
         /**
-         * win机上绝对路径
+         *win机上绝对路径
          * File f = new File("D:/ideaProject3/juice-project-collects/pom.xml");
          * File ff = new File("/D:/ideaProject3/juice-project-collects/pom.xml");
          */
@@ -58,10 +59,10 @@ public class PathsTest {
         File af = new File("/Users/DELL/Desktop/project-spring-1.0.0.jar");
         System.out.println(af.exists());
         System.out.println("-----------绝对路径----------");
-        //直接根据路径通常不太妙
+        //绝对路径的问题: 系统兼容性
 
         /**
-         * 使用类加载器加载资源
+         *classpath路径具有通用性。使用类加载器加载资源
          * @see PathsLoaderTest
          */
     }
