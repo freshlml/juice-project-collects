@@ -1,7 +1,6 @@
 package com.juice.alg.chapter2_7;
 
 import java.util.Arrays;
-import java.util.function.BiPredicate;
 
 public class Chapter2_7 {
     /**
@@ -90,7 +89,6 @@ public class Chapter2_7 {
         int i = begin;
         int j = end - 1;
         int q = j;
-        //int ex_times = 0;
 
         while(i < j) {
             while (i <= j - 1 && a[i] <= a[j]) {
@@ -101,7 +99,6 @@ public class Chapter2_7 {
             int ex = a[i];
             a[i] = a[j];
             a[j] = ex;
-            //ex_times++;
 
             q = i;
             j--;
@@ -113,21 +110,24 @@ public class Chapter2_7 {
             ex = a[i];
             a[i] = a[j];
             a[j] = ex;
-            //ex_times++;
 
             q = j;
             i++;
         }
-        //System.out.println("ex_times: " + ex_times);
         return q;
     }
     //只遍历一遍，求出q
-    //q的位置影响quick_sort效率
+    //全相等/有序 -->   i+1=end-1
+    //i+1=end-1 --/-> 全相等/有序; i+1=end-1 --> end-1处是最大值
+    //逆序       -->  i+1=begin
+    //i+1=begin --/-> 逆序; i+1=begin --> end-1处是最小值
     public int partition_book(int a[], int begin, int end) {
         int i = begin-1;
         int j = begin;
         int k = a[end-1];
-        //int t = 1;
+
+        int prev = begin-1;
+        boolean ordered = true;
 
         while(j < end-1) {
             if(a[j] <= k) {  //逆序: >=
@@ -135,14 +135,22 @@ public class Chapter2_7 {
                 int ex = a[i];
                 a[i] = a[j];
                 a[j] = ex;
-                //if(a[j] == k) t++;
+            } else {
+                ordered = false;
             }
+
+            if(ordered && prev >= begin) {
+                if(a[prev] > a[j]) ordered = false;
+            }
+            prev = j;
+
             j++;
         }
+        if(ordered) throw new RangeOrderedException(begin, end, i+1);
         //if(i+1 == end-1) { System.out.println("end-1处是最大值"); }
+        //if(i+1 == begin) { System.out.println("end-1处是最小值"); }
         a[end-1] = a[i+1];
         a[i+1] = k;
-        //if(t == end-begin) return (end+begin)/2;
         return i+1;
     }
     //快速排序
@@ -156,7 +164,13 @@ public class Chapter2_7 {
 
         if((end - begin) <= 1) return;
 
-        int q = partition_book(a, begin, end);
+        int q;
+        try {
+            q = partition_book(a, begin, end);
+        } catch (RangeOrderedException ro) {
+            //System.out.println(ro.getMessage());
+            return;
+        }
         quick_sort(a, begin, q);
         quick_sort(a, q + 1, end);
 
@@ -172,31 +186,34 @@ public class Chapter2_7 {
 
         a = new int[]{3987, 242342, 1978, 44324232, 489, 500, 110, 343, 100, 45, 56, 23, 1, 4, 3, 78};
         chapter2_7.partition_pos(a, 0, a.length, a.length/2);
-        Arrays.stream(a).forEach(i -> {
-            System.out.print(i + ", ");
-        });
-        System.out.println("\n-------------");*/
+        System.out.println(Arrays.toString(a));
+        System.out.println("-------------");*/
 
         int[] a = new int[]{100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
-        System.out.println(chapter2_7.partition(a, 0, a.length));
-        Arrays.stream(a).forEach(i -> {
-            System.out.print(i + ", ");
-        });
-        System.out.println("\n-------------");
+        System.out.println("q = " + chapter2_7.partition(a, 0, a.length));
+        System.out.println(Arrays.toString(a));
+        System.out.println("------partition-------");
 
         a = new int[]{100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
-        System.out.println(chapter2_7.partition_book(a, 0, a.length));
-        Arrays.stream(a).forEach(i -> {
-            System.out.print(i + ", ");
-        });
-        System.out.println("\n-------------");
+        System.out.println("q = " + chapter2_7.partition_book(a, 0, a.length));
+        System.out.println(Arrays.toString(a));
+        System.out.println("------partition_book1-------");
 
-        a = new int[]{1, 23, 100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
+        a = new int[]{1, 2, 3, 3, 5};
+        try {
+            int q = chapter2_7.partition_book(a, 0, a.length);
+            System.out.println("q = " + q);
+        } catch (RangeOrderedException ro) {
+            System.out.println(ro.getMessage());
+            System.out.println("q = " + ro.getQ());
+        }
+        System.out.println(Arrays.toString(a));
+        System.out.println("------partition_book2-------");
+
+        a = new int[]{1, 1, 3, 4, 5, 6, 888, 123, 123, 999};
         chapter2_7.quick_sort(a);
-        Arrays.stream(a).forEach(i -> {
-            System.out.print(i + ", ");
-        });
-        System.out.println("\n-------------");
+        System.out.println(Arrays.toString(a));
+        System.out.println("------quick_sort-------");
 
     }
 
