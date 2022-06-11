@@ -82,8 +82,12 @@ public class PathsTest {
          *jar:file格式:
          * jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/java/lang/String.class
          *
-         * jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/
-         *
+         *特殊:
+         * 指向jar包/zip压缩档的文件URL
+         *  file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar
+         *  file:/E:/apache-maven-3.6.1/.../a.zip
+         * 特殊的jar:file
+         *  jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/rt.jar!/
          */
         /**
          *URI路径
@@ -140,23 +144,23 @@ public class PathsTest {
         System.out.println(new String(bys));
         System.out.println("--------------4-----------");
 
-        //jar:file格式
+        //特殊的jar:file
         url = new URL("jar:file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar!/");
         System.out.println(url);   // jar:file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar
         System.out.println(url.getProtocol()); // jar
         System.out.println(url.getHost()); //  空
-        System.out.println(url.getPath()); //  file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar
+        System.out.println(url.getPath()); //  file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar!/
         //InputStream iss = url.openStream();  //java.io.IOException: no entry name specified
         //指向jar包的文件URL
         url = new URL("file:/E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar");
-        InputStream iss = url.openStream(); //读出的内容和使用File读出的内容一样，不太对
-
-        //使用File读取jar包内容
-        /*//1.得到jar包的绝对路径
+        InputStream iss = url.openStream(); //jar是一个归档文件，读出来的内容是jar包的归档信息和归档内容
+        iss.close();
+        /*//使用File读取jar包内容
+        //1.得到jar包的绝对路径
         String abPath = "E:/apache-maven-3.6.1/localRepository/com/fresh/fresh-common/1.0.0/fresh-common-1.0.0.jar";
         //2.创建File
         File jarFile = new File(abPath);
-        System.out.println(jarFile.isDirectory()); //jar包被当成归档文件而不是目录
+        System.out.println(jarFile.isDirectory()); //jar包是一个归档文件而不是目录
         //3.读取jar包内容
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(jarFile), "gbk"));
         String line = br.readLine();
@@ -167,7 +171,7 @@ public class PathsTest {
             times++;
         }
         br.close();
-        //读出来的内容不太对*/
+        //读出来的内容是jar包的归档信息和归档内容*/
 
         //jar包内容读取方法: JarFile类
         //1.得到jar包的绝对路径
