@@ -1,6 +1,7 @@
 package com.juice.spring.core.io;
 
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Enumeration;
 
 public class PathsLoaderTest {
@@ -10,6 +11,8 @@ public class PathsLoaderTest {
         loader();
         test();
 
+        test_cls();
+
     }
 
     public static void loader() {
@@ -18,23 +21,23 @@ public class PathsLoaderTest {
          */
         //bootstrap-classloader从sun.boot.class.path指定的jar包中加载资源, note: bootstrap-classloader不支持加载目录资源
         //1. JDK安装目录\jre\lib\resources.jar、rt.jar、sunrsasign.jar、jsse.jar、jce.jar、charsets.jar、jfr.jar
-        //2. JDK安装目录\jre\classes
+        //2. JDK安装目录\jre\classes  note: 此目录中如果放置了a.jar,不能加载a.jar中内容
         System.out.println("sun.boot.class.path: " + System.getProperty("sun.boot.class.path"));
-        //Ext-classloader从java.ext.dirs指定的目录中加载资源，note: ext-classloader指定的是目录，支持加载目录中的jar包中的资源
-        //1. JDK安装目录\jre\lib\ext
+        //Ext-classloader从java.ext.dirs指定的目录中加载资源
+        //1. JDK安装目录\jre\lib\ext  note: ext-classloader指定的是目录，将目录下面所有jar包和指定的目录拼接成加载路径
         //2. ~\Sun\Java\lib\ext，eg:windows上C:\WINDOWS\Sun\Java\lib\ext
         System.out.println("java.ext.dirs: " + System.getProperty("java.ext.dirs"));
         //1. App-Classloader从java.class.path指定的jar包或者目录中加载资源
         //  java.class.path的值:
         //     如果通过C:\Users\DELL\Desktop>java -jar project-spring.jar
-        //              则java.class.path = project-spring.jar
-        //     如果是idea中运行,idea会把当前应用打包输出的路径写入java.class.path,如D:\ideaProject3\juice-project-collects\project-spring\target\classes
+        //              则java.class.path 中写入 project-spring.jar  (project-spring.jar的完整路径使用user.dir拼接)
+        //     如果是idea中运行,idea会把当前应用打包输出的目录写入java.class.path,如D:\ideaProject3\juice-project-collects\project-spring\target\classes
         //              其行为和java -jar保持一致
         //2. MANIFEST.MF的Class-Path指定的jar包
         //idea中运行额外增加: JDK安装目录\jre\lib\charsets.jar、deploy.jar、javaws.jar、jce.jar、jfr.jar、jfxswt.jar、jsse.jar、management-agent.jar、plugin.jar、resources.jar、rt.jar
         //idea中运行额外增加: JDK安装目录\jre\lib\ext\access-bridge-64.jar、cldrdata.jar、dnsns.jar、jaccess.jar、jfxrt.jar、localedata.jar、nashorn.jar、sunec.jar、sunjce_provider.jar、sunmscapi.jar、sunpkcs11.jar、zipfs.jar
         //idea中运行，会将当前应用的pom.xml中依赖的jar包在本地仓库中的路径写入java.class.path
-        //java -jar运行，应用的pom.xml中依赖的jar包在本地仓库的路径不会写入了java.class.path (@link 项目打包方式)
+        //java -jar运行，对当前应用的pom.xml中依赖的jar包的资源加载靠MANIFEST.MF机制 (@link 项目打包方式)
         System.out.println("java.class.path: " + System.getProperty("java.class.path"));
         System.out.println("---------------------");
 
@@ -82,11 +85,6 @@ public class PathsLoaderTest {
         System.out.println(rtRe);  // null
         System.out.println("-----------3----------");
 
-        //指定目录中的jar包中的资源, 只有ext-classloader支持
-        URL rtInRe = classLoader.getResource("a");
-        System.out.println(rtInRe);  // jar:file:/C:/Program%20Files/Java/jdk1.8.0_202/jre/lib/ext/a.jar!/a
-        System.out.println("-----------4----------");
-
 
         //不支持通配符
         Enumeration<URL> ress = classLoader.getResources("com/juice/spring/core/io/**");
@@ -98,6 +96,45 @@ public class PathsLoaderTest {
         Enumeration<URL> jarInsRes = classLoader.getResources("com/fresh");
         while(jarInsRes.hasMoreElements()) {
             System.out.println(jarInsRes.nextElement());
+        }
+
+        System.out.println("---------------------");
+    }
+
+
+    /**
+     *bootstrap-classloader是所有类加载器的默认父加载器，而且不一定需要子加载器使用parent指向自己
+     *  public URL getResource(String name) {
+     *      URL url;
+     *      if (parent != null) {
+     *          url = parent.getResource(name);
+     *      } else {
+     *          url = getBootstrapResource(name);
+     *      }
+     *      if (url == null) {
+     *         url = findResource(name);
+     *      }
+     *      return url;
+     *  }
+     *
+     *Ext-Classloader继承URLClassLoader，其parent=null
+     *App-Classloader继承URLClassLoader，其parent=Ext，ClassLoader.getSystemClassLoader()返回App-Classloader
+     *
+     *URLClassLoader: 封装了URL[],表示类加载器能够加载的路径
+     *  App-Classloader没有将MANIFEST.MF的Class-Path指定的jar包路径放到URL[]
+     *
+     */
+    public static void test_cls() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        while(classLoader != null) {
+            if (classLoader instanceof URLClassLoader) {
+                for (URL url : ((URLClassLoader) classLoader).getURLs()) {
+                    System.out.println(url);
+                }
+            }
+            System.out.println(classLoader + "############");
+            classLoader = classLoader.getParent();
         }
 
     }
