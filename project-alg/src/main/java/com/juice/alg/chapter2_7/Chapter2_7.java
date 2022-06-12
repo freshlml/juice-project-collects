@@ -118,9 +118,9 @@ public class Chapter2_7 {
     }
     //只遍历一遍，求出q
     //全相等/有序 -->   i+1=end-1
-    //i+1=end-1 --/-> 全相等/有序; i+1=end-1 --> end-1处是最大值
-    //逆序       -->  i+1=begin
-    //i+1=begin --/-> 逆序; i+1=begin --> end-1处是最小值
+    //i+1=end-1 --/-> 全相等/有序; "i+1=end-1 <--> end-1处是最大值"
+    //逆序       -->   i+1=begin
+    //i+1=begin --/-> 逆序;       "i+1=begin <--> end-1处是最小值"
     public int partition_book(int a[], int begin, int end) {
         int i = begin-1;
         int j = begin;
