@@ -5,8 +5,8 @@ public class Chapter1_4_2 {
     /**
      *递归树
      *T(n) = m*T(n/k) + f(n), f(n)为本次分解+合并的消耗
-     * m决定树的茂盛，m越小，merge次数越少
-     * k决定树的高度，k越大，树越矮，每次merge的规模越小
+     * m决定树的茂盛，m越小，partition/merge次数越少
+     * k决定树的高度，k越大，树越矮，每次partition/merge的规模越小
      *
      *如T(n) = 3*T(n/4) + n^2
      *                                      [n]                                   第一层
