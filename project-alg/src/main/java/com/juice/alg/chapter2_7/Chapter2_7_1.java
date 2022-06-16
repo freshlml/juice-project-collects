@@ -39,14 +39,42 @@ public class Chapter2_7_1 {
       P(X=i) = 1/n, 0<=i<=n-1
       EX = 0*1/n + 1*1/n + ... + (n-1)*1/n = (n-1)/2
 
-
       随机变量Y:  第二次partition返回的下标q
           取值:  0     1      2       ...   i    ...   n-1   ,i为第一次partition返回的下标q
          P(Y):
-      P(Y=0) = todo,如何求呢
+      P(Y=0) = ？？？
+    难点:
+      第一次partition根据输入序列的假设很好求，但第二次partition因为受第一次partition的影响而不能将输入序列当成均匀随机的，导致概率不好求
+      并且当前partition总是受之前一个partition的影响，这样的概率怎么求呢，todo
 
+    另辟它径  ->整体思维法，从算法角度抽象
+        每次partition返回的下标，不参与后续的递归，即partition最多执行n次。每次partition总是循环当前序列，每次循环总是比较a[j] <= k
+        因此，令X = 所有partition中比较操作的总次数，T = C*X
+
+        输入序列假设: n个数互异且均匀随机排列
+
+        因为partition返回的下标不参与后续的递归，所以序列中i与j(i<j)最多比较一次
+        因此 X = Σ(i=0~n-2)Σ(j=i+1~n-1)Xij, Xij表示i与j的比较次数 = 0
+                                                               = 1  P(Xij=1)
+        EX = E[ Σ(i=0~n-2)Σ(j=i+1~n-1)Xij ] = Σ(i=0~n-2)Σ(j=i+1~n-1)EXij
+                                             = Σ(i=0~n-2)Σ(j=i+1~n-1)P(Xij=1)
+
+        P(Xij=1) = 2/(j-i+1)
+
+        EX = Σ(i=0~n-2)Σ(j=i+1~n-1)*2/(j-i+1) ,令k=j-i
+           = Σ(i=0~n-2)Σ(k=1~n-i-1)*2/(k+1)
+           < Σ(i=0~n)Σ(k=1~n)*2/k
+           < n*lgn
      */
 
+    //快速排序，使用随机数创造均匀随机的输入序列
+    /*
+    int random_partition(int a[], int begin, int end) {
+        int r = RANDOM(begin, end) //begin,end下标之间等概率的产生一个下标值
+        exchange a[r],a[end-1]
+        return partition(a, begin, end)
+    }
+     */
 
 
 }
