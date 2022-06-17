@@ -1,4 +1,4 @@
-package com.juice.spring.core;
+package com.juice.spring.core.basic;
 
 import org.springframework.core.ResolvableType;
 
