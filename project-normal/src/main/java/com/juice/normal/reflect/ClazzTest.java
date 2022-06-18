@@ -1,5 +1,7 @@
 package com.juice.normal.reflect;
 
+import com.juice.normal.reflect.anno.PoAnnotation;
+import com.juice.normal.reflect.anno.PosAnnotation;
 import com.juice.normal.reflect.enums.ScanTypeEnum;
 import com.juice.normal.reflector.FlReflectorFactory;
 import com.juice.normal.xml.GenericSAXParser;
@@ -12,6 +14,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ClazzTest {
+
+    public static void main(String argv[]) throws Exception {
+
+        classTest();
+        forConsTest();
+        forNameTest();
+        isInstanceTest();
+        isMemberClassTest();
+        getNameTest();
+        getEnumConstantsTest();
+        getClassesTest();
+        getSupperClassTest();
+        getInterfacesTest();
+        getSignersTest();
+        annotationTest();
+        getTypeParametersTest();
+
+    }
 
     //根据类型获取Class
     private static void classTest() {
@@ -28,7 +48,6 @@ public class ClazzTest {
         //error List<String>.class;
         Class<List> listClass = List.class;  //带泛型的类型共用一个Class
     }
-
 
     //getConstructor方法测试
     private static void forConsTest() throws Exception {
@@ -132,23 +151,6 @@ public class ClazzTest {
         TypeVariable<? extends Class<? extends Book>>[] typeVariables2 = bookStringClazz.getTypeParameters();
     }
 
-    public static void main(String argv[]) throws Exception {
-
-        classTest();
-        forConsTest();
-        forNameTest();
-        isInstanceTest();
-        isMemberClassTest();
-        getNameTest();
-        getEnumConstantsTest();
-        getClassesTest();
-        getSupperClassTest();
-        getInterfacesTest();
-        getSignersTest();
-        annotationTest();
-        getTypeParametersTest();
-
-    }
 
     private static class Yui {
         public <T> Yui(T t) {}

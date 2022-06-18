@@ -1,4 +1,4 @@
-package com.juice.normal.reflect;
+package com.juice.normal.reflect.anno;
 
 import java.lang.annotation.*;
 
