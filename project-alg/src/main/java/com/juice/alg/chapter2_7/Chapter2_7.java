@@ -85,7 +85,8 @@ public class Chapter2_7 {
         System.out.println(q + ",运行" + (times-1) + "次");
     }
     //只遍历一遍，求出q
-    public int partition(int a[], int begin, int end) {
+    //hoare_partition的翻版
+    public int my_hoare_partition(int a[], int begin, int end) {
         int i = begin;
         int j = end - 1;
         int q = j;
@@ -121,7 +122,7 @@ public class Chapter2_7 {
     //i+1=end-1 --/-> 全相等/有序; "i+1=end-1 <--> end-1处是最大值"
     //逆序       -->   i+1=begin
     //i+1=begin --/-> 逆序;       "i+1=begin <--> end-1处是最小值"
-    public int partition_book(int a[], int begin, int end) {
+    public int partition(int a[], int begin, int end) {
         int i = begin-1;
         int j = begin;
         int k = a[end-1];
@@ -166,7 +167,7 @@ public class Chapter2_7 {
 
         int q;
         try {
-            q = partition_book(a, begin, end);
+            q = partition(a, begin, end);
         } catch (RangeOrderedException ro) {
             //System.out.println(ro.getMessage());
             return;
@@ -190,25 +191,25 @@ public class Chapter2_7 {
         System.out.println("-------------");*/
 
         int[] a = new int[]{100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
+        System.out.println("q = " + chapter2_7.my_hoare_partition(a, 0, a.length));
+        System.out.println(Arrays.toString(a));
+        System.out.println("------my_hoare_partition-------");
+
+        a = new int[]{100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
         System.out.println("q = " + chapter2_7.partition(a, 0, a.length));
         System.out.println(Arrays.toString(a));
         System.out.println("------partition-------");
 
-        a = new int[]{100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
-        System.out.println("q = " + chapter2_7.partition_book(a, 0, a.length));
-        System.out.println(Arrays.toString(a));
-        System.out.println("------partition_book1-------");
-
         a = new int[]{1, 2, 3, 3, 5};
         try {
-            int q = chapter2_7.partition_book(a, 0, a.length);
+            int q = chapter2_7.partition(a, 0, a.length);
             System.out.println("q = " + q);
         } catch (RangeOrderedException ro) {
             System.out.println(ro.getMessage());
             System.out.println("q = " + ro.getQ());
         }
         System.out.println(Arrays.toString(a));
-        System.out.println("------partition_book2-------");
+        System.out.println("------partition-------");
 
         a = new int[]{1, 1, 3, 4, 5, 6, 888, 123, 123, 999};
         chapter2_7.quick_sort(a);
