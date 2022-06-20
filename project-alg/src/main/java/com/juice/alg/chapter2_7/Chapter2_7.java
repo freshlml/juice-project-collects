@@ -130,7 +130,7 @@ public class Chapter2_7 {
         int prev = begin-1;
         boolean ordered = true;
 
-        while(j < end-1) {
+        while(j < end) {
             if(a[j] <= k) {  //逆序: >=
                 i++;
                 int ex = a[i];
@@ -150,9 +150,7 @@ public class Chapter2_7 {
         if(ordered) throw new RangeOrderedException(begin, end, i+1);
         //if(i+1 == end-1) { System.out.println("end-1处是最大值"); }
         //if(i+1 == begin) { System.out.println("end-1处是最小值"); }
-        a[end-1] = a[i+1];
-        a[i+1] = k;
-        return i+1;
+        return i;
     }
     //快速排序
     public void quick_sort(int a[]) {
@@ -198,7 +196,7 @@ public class Chapter2_7 {
         a = new int[]{100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
         System.out.println("q = " + chapter2_7.partition(a, 0, a.length));
         System.out.println(Arrays.toString(a));
-        System.out.println("------partition-------");
+        System.out.println("------partition1-------");
 
         a = new int[]{1, 2, 3, 3, 5};
         try {
@@ -209,7 +207,7 @@ public class Chapter2_7 {
             System.out.println("q = " + ro.getQ());
         }
         System.out.println(Arrays.toString(a));
-        System.out.println("------partition-------");
+        System.out.println("------partition2-------");
 
         a = new int[]{1, 1, 3, 4, 5, 6, 888, 123, 123, 999};
         chapter2_7.quick_sort(a);
