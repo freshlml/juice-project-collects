@@ -1,97 +1,82 @@
 package com.juice.spring.core.basic;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class ResolvableTypeTest {
 
     public static void main(String argv[]) throws Exception {
-
-        //forClassTest();
-        //forClassTest2();
-        forFieldTest();
-
-    }
-
-    public static void forClassTest() {
-        ResolvableType oneType = ResolvableType.forClass(One.class);
-        One one = new One();
-        ResolvableType oneType2 = ResolvableType.forClass(one.getClass());
-
-        System.out.println(oneType.resolve());
-        System.out.println(oneType2.resolve());
-
-        ResolvableType baseType = oneType2.as(Base.class);
-        ResolvableType interType = oneType2.as(Inter.class);
-
-        System.out.println(baseType.resolve());
-        System.out.println(interType.resolve());
-        System.out.println(oneType2.getSuperType());
-        System.out.println("isTrue: " + baseType.equals(oneType2.getSuperType()));
-        Arrays.stream(oneType2.getInterfaces()).forEach(System.out::print);
+        forUsingTest1();
+        forUsingTest2();
+        forUsingTest3();
+        forUsingTest4();
 
     }
 
-    public static void forClassTest2() {
-        //Two类声明TypeVariable(泛型参数)
-        ResolvableType twoType = ResolvableType.forClass(Two.class);
-        //twoType的generics域: [ResolvableType{type=TypeVariable}, ResolvableType{type=TypeVariable, resolved=Class<List>}]
-        ResolvableType[] gene = twoType.getGenerics();
 
-        //Two实例具象化了泛型参数
-        Two<String, ArrayList<String>> two = new Two<>();
-        ResolvableType twoType2 = ResolvableType.forClassWithGenerics(two.getClass(), String.class, ArrayList.class);
-        //twoType2的generics域: [ResolvableType{type=Class<String>, resolved=Class<String>}, ResolvableType{type=Class<ArrayList>, resolved=Class<ArrayList>}]
-        ResolvableType[] gene2 = twoType2.getGenerics();
+    private static void forUsingTest1() throws Exception {
+        ResolvableType r = ResolvableType.forClass(Bean1.class);
 
-        System.out.println(1);
+        System.out.println(r.getGenerics()[0].resolve()); //泛型参数解析
+
+    }
+    private static class Bean1<T extends Number> {}
+
+
+    private static void forUsingTest2() throws Exception {
+        Field listField = ResolvableTypeTest.class.getDeclaredField("list");
+        ResolvableType listResolvableType = ResolvableType.forType(listField.getGenericType());
+        Type q1 = listResolvableType.getType();   //ParameterizedType
+        Class<?> w1 = listResolvableType.resolve(); //Class<List>
+
+        ResolvableType clazzResolve = ResolvableType.forClassWithGenerics(Bean2.class, listResolvableType);
+        Type q2 = clazzResolve.getType();  //ParameterizedType
+        Class<?> w2 = clazzResolve.resolve();  //Class<Bean2>
+
+        //Bean2的泛型参数 被解析成 listResolvableType
+        ResolvableType generic = clazzResolve.getGeneric(0);
+
+        Type q3 = generic.getType();
+        Class<?> w4 = generic.resolve();
+        
+    }
+    private List<String> list;
+    private static class Bean2<T> {} //unresolvable TypeVariable
+
+
+    private static void forUsingTest3() throws Exception {
+        Field beanField = ResolvableTypeTest.class.getDeclaredField("bean3");
+        ResolvableType beanResolvableType = ResolvableType.forType(beanField.getGenericType());
+        Type q1 = beanResolvableType.getType();   //ParameterizedType
+        Class<?> w1 = beanResolvableType.resolve(); //Class<Bean3>
+
+        //Field t的泛型变量T 被解析成Integer
+        ResolvableType fr = ResolvableType.forField(Bean3.class.getDeclaredField("t"), beanResolvableType);
+        Type q2 = fr.getType();
+        Class<?> w2 = fr.resolve();
+
+    }
+    private Bean3<Integer> bean3;
+    private static class Bean3<T extends Number> {
+        T t;
     }
 
 
-    public static void forFieldTest() throws Exception {
+    private static void forUsingTest4() throws Exception {
 
-        Field oneField = Three.class.getDeclaredField("one");
-        ResolvableType oneType = ResolvableType.forField(oneField);
-        System.out.println(oneType.resolve());
+        //使用ParameterizedTypeReference，可以随意构造ResolvableType
+        ResolvableType r = ResolvableType.forType(new ParameterizedTypeReference<Bean3<Integer>>() {});
+        Type q1 = r.getType();
 
-        Field twoField = Three.class.getDeclaredField("two");
-        ResolvableType twoType = ResolvableType.forField(twoField, Three.class);
-        //[ResolvableType{type=TypeVariable}, ResolvableType{type=TypeVariable, resolved=Class<List>}]
-        ResolvableType[] gene = twoType.getGenerics();
+        Field beanField = ResolvableTypeTest.class.getDeclaredField("bean3");
+        ResolvableType beanResolvableType = ResolvableType.forType(beanField.getGenericType());
+        Type q2 = beanResolvableType.getType();
 
-        //Field的declareClass具象化
-        Three<Integer, LinkedList<String>> three = new Three<>();
-        Field twoField2 = three.getClass().getDeclaredField("two");
-        ResolvableType twoType2 = ResolvableType.forField(twoField2, three.getClass());
-        //[ResolvableType{type=TypeVariable}, ResolvableType{type=TypeVariable, resolved=Class<List>}]
-        ResolvableType[] gene2 = twoType2.getGenerics();
-
-        //Three的子类型将Three的泛型参数具象化
-        ResolvableType twoType3 = ResolvableType.forField(twoField, ThreeImpl.class);
-        //[ResolvableType{type=Class<Integer>}, ResolvableType{type=ParameterizedType, resolved=ParameterizedType}]
-        ResolvableType[] gene3 = twoType3.getGenerics();
-
-        System.out.println(2);
     }
-
-
-    private static class Base {}
-    private interface Inter{}
-    private static class One extends Base implements Inter {}
-
-    private static class Two<T, E extends List<String>> {}
-
-    private static class Three<T, E extends List<String>> extends Two<T, E> {
-        private One one;
-        private Two<T, E> two;
-    }
-
-    private static class ThreeImpl extends Three<Integer, ArrayList<String>> {}
 
 
 }
