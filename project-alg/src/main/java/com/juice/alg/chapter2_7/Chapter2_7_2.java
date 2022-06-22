@@ -66,12 +66,12 @@ public class Chapter2_7_2 {
 
     //思考题7-2
     //a: n^2
-    //b: 序列中和基元相等的值无需参与后续递归
+    //b: 序列中和主元相等的值无需参与后续递归
     int[] range_partition(int a[], int begin, int end) {
         int i = begin-1;
         int l = i;
         int j = begin;
-        int k = a[end-1];  //基元
+        int k = a[end-1];  //主元
 
         int prev = begin-1;
         boolean ordered = true;
@@ -124,9 +124,9 @@ public class Chapter2_7_2 {
         range_quick_sort(a, begin, q[0]);
         range_quick_sort(a, q[1], end);
     }
-    //d: range_partition返回的下标范围不参与后续的递归，序列中i与j(i<j)比较一次的概率
-    //   P(Xij=1) ~ [2/(j-i+1), 1]; 取P(Xij=1) = k*[2/(j-i+1)]， todo
-    //
+    //d: range_partition返回的下标范围不参与后续的递归
+    // 序列中i与j(i<j)比较一次的概率 P(Xij=1) = 2/(j-i+1), ?todo
+
 
 
 

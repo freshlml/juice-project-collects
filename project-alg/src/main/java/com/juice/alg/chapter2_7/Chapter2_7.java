@@ -118,10 +118,10 @@ public class Chapter2_7 {
         return q;
     }
     //只遍历一遍，求出q
-    //全相等/有序 -->   i+1=end-1
-    //i+1=end-1 --/-> 全相等/有序; "i+1=end-1 <--> end-1处是最大值"
-    //逆序       -->   i+1=begin
-    //i+1=begin --/-> 逆序;       "i+1=begin <--> end-1处是最小值"
+    //全相等/有序 -->   i=end-1
+    //i=end-1 --/-> 全相等/有序; "i=end-1 <--> end-1处是最大值"
+    //逆序       -->   i=begin
+    //i=begin --/-> 逆序;       "i=begin <--> end-1处是最小值"
     public int partition(int a[], int begin, int end) {
         int i = begin-1;
         int j = begin;
@@ -148,8 +148,8 @@ public class Chapter2_7 {
             j++;
         }
         if(ordered) throw new RangeOrderedException(begin, end, i+1);
-        //if(i+1 == end-1) { System.out.println("end-1处是最大值"); }
-        //if(i+1 == begin) { System.out.println("end-1处是最小值"); }
+        //if(i == end-1) { System.out.println("end-1处是最大值"); }
+        //if(i == begin) { System.out.println("end-1处是最小值"); }
         return i;
     }
     //快速排序
