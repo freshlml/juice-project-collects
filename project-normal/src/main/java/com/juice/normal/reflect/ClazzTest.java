@@ -3,7 +3,6 @@ package com.juice.normal.reflect;
 import com.juice.normal.reflect.anno.PoAnnotation;
 import com.juice.normal.reflect.anno.PosAnnotation;
 import com.juice.normal.reflect.enums.ScanTypeEnum;
-import com.juice.normal.reflector.FlReflectorFactory;
 import com.juice.normal.xml.GenericSAXParser;
 import com.juice.normal.xml.GenericXpathXmlParser;
 
@@ -38,7 +37,7 @@ public class ClazzTest {
         //declared class, enum, interface, annotation, array, primitive
         Class<GenericSAXParser> declaredClassClazz = GenericSAXParser.class;
         Class<ScanTypeEnum> enumClazz = ScanTypeEnum.class;
-        Class<FlReflectorFactory> interfaceClazz = FlReflectorFactory.class;
+        Class<ClazzTest> interfaceClazz = ClazzTest.class;
         Class<PostConstruct> annotationClazz = PostConstruct.class;
         Class<int[]> intArrayClazz = int[].class;
         Class<GenericSAXParser[]> classArrayClazz = GenericSAXParser[].class;
@@ -91,7 +90,7 @@ public class ClazzTest {
     //getName getSimpleName getTypeName getCanonicalName
     private static void getNameTest() {
         Class<GenericSAXParser[]> classArrayClazz = GenericSAXParser[].class;
-        Class<FlReflectorFactory> interfaceClazz = FlReflectorFactory.class;
+        Class<ClazzTest> interfaceClazz = ClazzTest.class;
 
         System.out.println(classArrayClazz.getName());
         System.out.println(interfaceClazz.getSimpleName());
