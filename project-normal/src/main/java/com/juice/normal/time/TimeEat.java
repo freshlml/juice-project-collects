@@ -13,14 +13,18 @@ public class TimeEat {
      * LocalDateTime
      * ZoneId: 时区ID; ZoneOffset继承ZoneId: 使用时区偏移表示时区
      * Instance: 时间戳
+     *
+     * 时区时间的图形化
+     *  |---------|      UTC(+0)
+     *     |----------|  +8
      */
     public static void localDateTime() {
         //系统默认时区的当前时间, LocalDateTime本身并不存储时区信息，一旦构造，使用final int year等字段保存时间值
         LocalDateTime.now();
         //+8区的当前时间
-        LocalDateTime.now(ZoneOffset.of("+8"));
+        LocalDateTime.now(ZoneOffset.of("+08:50"));
         //UTC时间(0区的当前时间)
-        LocalDateTime.now(ZoneOffset.of("Z"));
+        LocalDateTime.now(ZoneOffset.of("+0"));
 
 
         //时间戳: 绝对时空的产物。如:
@@ -30,23 +34,30 @@ public class TimeEat {
         System.out.println(System.currentTimeMillis()); //获取时间戳
         System.out.println(LocalDateTime.now().atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli());
         System.out.println(LocalDateTime.now(ZoneOffset.of("+8")).toInstant(ZoneOffset.of("+8")).toEpochMilli());
-        System.out.println(LocalDateTime.now(ZoneOffset.of("Z")).toInstant(ZoneOffset.of("Z")).toEpochMilli());
+        System.out.println(LocalDateTime.now(ZoneOffset.of("+0")).toInstant(ZoneOffset.of("+0")).toEpochMilli());
 
         //根据时间戳，时区 创建
         long milliSeconds = LocalDateTime.now(ZoneOffset.of("+8")).toInstant(ZoneOffset.of("+8")).toEpochMilli();
         LocalDateTime.ofInstant(Instant.ofEpochMilli(milliSeconds), ZoneOffset.of("+8"));
 
-        //创建LocalDateTime using 2010-10-09 10:09:09
-        LocalDateTime.of(2010, 10, 9, 10, 9, 9);
-        //通过秒, 纳秒(相对值), 时区offset 创建
+        //通过秒, 纳秒(相对值), 时区 创建
         LocalDateTime.ofEpochSecond(1286590149, 0, ZoneOffset.of("+8"));
 
-        //parse, format
-        LocalDateTime.parse("2010-10-09 10:09:09");
-        LocalDateTime.parse("2010-10-09 10:09:09", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime.parse("2010-10-09 10:09:09", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime.parse("2010-10-09 10:09:09").format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
+        //创建LocalDateTime using 2010-10-09 10:09:09
+        LocalDateTime.of(2010, 10, 9, 10, 9, 9);
+
+        //parse, format
+        LocalDateTime.parse("2010-10-09T10:09:09");
+        LocalDateTime.parse("2010-10-09 10:09:09", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime.parse("2010-10-09T10:09:09").format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        //相等性
+        long ms = LocalDateTime.now(ZoneOffset.of("+8")).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        LocalDateTime l8 = LocalDateTime.ofEpochSecond(ms, 0, ZoneOffset.of("+8"));
+        LocalDateTime l0 = LocalDateTime.ofEpochSecond(ms, 0, ZoneOffset.of("+0"));
+        //LocalDateTime本身并不存储时区信息,所以比较时没有时区转换的概念
+        System.out.println(l8.equals(l0));  //false
 
         /*
         //字段读取get
@@ -109,7 +120,7 @@ public class TimeEat {
 
     public static void main(String argv[]) {
 
-
+        localDateTime();
 
     }
 
