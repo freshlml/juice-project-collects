@@ -14,9 +14,21 @@ public class TimeEat {
      * ZoneId: 时区ID; ZoneOffset继承ZoneId: 使用时区偏移表示时区
      * Instance: 时间戳
      *
-     * 时区时间的图形化
+     * 时区时间的图形化 time.uxf
      *  |---------|      UTC(+0)
      *     |----------|  +8
+     *
+     * 系统存在多时区时间时，eg: 服务器在shanghai, 去UTC，在1970-01-01 00:00:00下单，飞机5分钟飞到shanghai
+     *      下单: 传递时间和时区
+     *             time: 1970-01-01 00:00:00
+     *             zoneOffset: +0
+     *
+     *      存储: 1.存 time=1970-01-01 00:00:00, zoneOffset=+0 两个字段
+     *           2.将 time=1970-01-01 00:00:00, zoneOffset=+0 转换成服务器默认时区的时间 timeCurrent=1970-01-01 08:00:00 存一个字段
+     *
+     *      查询: 1.返回 time=1970-01-01 00:00:00, zoneOffset=+0 页面将time，zoneOffset转换成当前时区时间
+     *           2.返回 time=1970-01-01 08:00:00, zoneOffset=+8 页面将time，zoneOffset转换成当前时区时间
+     *
      */
     public static void localDateTime() {
         //系统默认时区的当前时间, LocalDateTime本身并不存储时区信息，一旦构造，使用final int year等字段保存时间值
