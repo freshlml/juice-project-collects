@@ -59,7 +59,7 @@ public class Chapter2_7_1 {
         EX = E[ Σ(i=0~n-2)Σ(j=i+1~n-1)Xij ] = Σ(i=0~n-2)Σ(j=i+1~n-1)EXij
                                              = Σ(i=0~n-2)Σ(j=i+1~n-1)P(Xij=1)
 
-        P(Xij=1) = 2/(j-i+1)
+        P(Xij=1) = 2/(j-i+1)  , todo,在random_partition，与输入序列无关，因此可以使用特殊的序列分析问题？
 
         EX = Σ(i=0~n-2)Σ(j=i+1~n-1)*2/(j-i+1) ,令k=j-i
            = Σ(i=0~n-2)Σ(k=1~n-i-1)*2/(k+1)
