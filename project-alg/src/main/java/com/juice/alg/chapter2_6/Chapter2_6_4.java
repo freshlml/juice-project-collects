@@ -101,9 +101,9 @@ public class Chapter2_6_4 {
 
         public void insert(int v) {
             a[m-1][n-1] = v;
-            max_heapify(m - 1, n - 1);
+            insert_heapify(m - 1, n - 1);
         }
-        private void max_heapify(int i, int j) {
+        private void insert_heapify(int i, int j) {
 
             int l = j;
             int r = i;
@@ -119,14 +119,14 @@ public class Chapter2_6_4 {
                 int ex = a[r][j];
                 a[r][j] = a[i][j];
                 a[i][j] = ex;
-                max_heapify(r, j);
-                //cu_ret = max_heapify(r, j);
+                insert_heapify(r, j);
+                //cu_ret = insert_heapify(r, j);
             } else if (l != j) {
                 int ex = a[i][l];
                 a[i][l] = a[i][j];
                 a[i][j] = ex;
-                max_heapify(i, l);
-                //cu_ret = max_heapify(i, l);
+                insert_heapify(i, l);
+                //cu_ret = insert_heapify(i, l);
             }
 
             /*InsertTag insertTag = new InsertTag();
