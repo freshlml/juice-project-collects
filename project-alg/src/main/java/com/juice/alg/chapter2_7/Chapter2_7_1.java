@@ -67,7 +67,7 @@ public class Chapter2_7_1 {
            < n*lgn
      */
 
-    //快速排序，使用随机数创造均匀随机的输入序列
+    //快速排序，使用随机数创造均匀随机的输入序列, 不一定稳定
     /*
     int random_partition(int a[], int begin, int end) {
         int r = RANDOM(begin, end) //begin,end下标之间等概率的产生一个下标值
