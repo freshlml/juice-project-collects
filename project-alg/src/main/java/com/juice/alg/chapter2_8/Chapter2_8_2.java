@@ -62,10 +62,10 @@ public class Chapter2_8_2 {
 
         return b;
     }
-    public int indexPos(int begin, int i) {
-        if(begin == 0) return i;
-        else if(begin > 0) return i - begin;
-        else return i + begin;
+    public int indexPos(int begin, int ai) {
+        if(begin == 0) return ai;
+        else if(begin > 0) return ai - begin;
+        else return ai + begin;
     }
 
     //练习8.2-4： Count[a, b] = Count[0, b] - Count[0, a] + Count(a)
