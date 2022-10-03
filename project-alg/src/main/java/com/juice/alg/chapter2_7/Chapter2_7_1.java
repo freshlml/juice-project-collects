@@ -33,21 +33,19 @@ public class Chapter2_7_1 {
       P(有序) = 1/n!
       P(任一位置取任一值) = 1/n
 
-      随机变量X:  第一次partition返回的下标q
-          取值:  0     1       2       ...     n-1
-         P(X):
-      P(X=i) = 1/n, 0<=i<=n-1
-      EX = 0*1/n + 1*1/n + ... + (n-1)*1/n = (n-1)/2
+      随机变量Xi: 第i次partition返回的下标q
 
-      随机变量Y:  第二次partition返回的下标q
-          取值:  0     1      2       ...   i    ...   n-1   ,i为第一次partition返回的下标q
-         P(Y):
-      P(Y=0) = ？？？
-    难点:
-      第一次partition根据输入序列的假设很好求，但第二次partition因为受第一次partition的影响而不能将输入序列当成均匀随机的，导致概率不好求
-      并且当前partition总是受之前一个partition的影响，这样的概率怎么求呢，todo
+      X1: 0     1    2    3   4  ...  n-1
+      P:
+      P(X1 = j) = 1/n, 0<=j<=n-1
+      EX1 = 0*1/n + 1*1/n + ... + (n-1)*1/n = (n-1)/2  下标的平均情况？？？
 
-    另辟它径  ->整体思维法，从算法角度抽象
+      X2: 0     1      2       ...   X1    ...   n-1   ,X1为第一次partition返回的下标q
+      P:
+      P(X2=0) = ？？？ X1是个随机变量，X2如何求？
+
+
+    另辟它径  ->整体思维法，从算法角度抽象；考虑整体的比较次数
         每次partition返回的下标，不参与后续的递归，即partition最多执行n次。每次partition总是循环当前序列，每次循环总是比较a[j] <= k
         因此，令X = 所有partition中比较操作的总次数，T = C*X
 
