@@ -66,6 +66,8 @@ public class Chapter2_9_2 {
      *   3.或者认为，相等的元素是一个顺序统计量
      *  partition版本 符合上述1
      *  random_partition版本 符合上述2，可以考虑搭配range_partition返回一组下标
+     *  Chapter2_9_3的select 符合上述1，因为第57行代码从end开始
+     *  让算法符合3，可以考虑使用range_partition的思想来做适当修改
      *
      *  最坏情况运行时间: n^2
      *
