@@ -61,10 +61,7 @@ public class Chapter2_9_3 {
             }
         }
 
-        int ex = a[median_q];
-        a[median_q] = a[end-1];
-        a[end-1] = ex;
-        int q = partition(a, begin, end);
+        int q = partition(a, begin, end, median_q);
 
         int k = q - begin + 1;
 
@@ -76,6 +73,12 @@ public class Chapter2_9_3 {
             return select(a, q+1, end, i-k);
         }
 
+    }
+    public int partition(int a[], int begin, int end, int ex_q) {
+        int ex = a[ex_q];
+        a[ex_q] = a[end-1];
+        a[end-1] = ex;
+        return partition(a, begin, end);
     }
     public int partition(int a[], int begin, int end) {
         int i = begin-1;
@@ -148,6 +151,64 @@ public class Chapter2_9_3 {
 
 
     //练习9.3-3，partition之前，调用select返回主元，绝配
+
+
+    //练习9.3-4
+    //假设A[i]是第i个顺序统计量
+    //对所有j != i,     A[j] < A[i]   ,只需记录此类j中值最大(相等最大值取下标最大的)的即为第 i-1 个顺序统计量
+    //             或者 A[j] > A[i]   ,只需记录此类j中值最小(相等最大值取下标最小的)的即为第 n-i 个顺序统计量
+    //             或者 A[j] == A[i]  ,1. 如果j<i，归到A[j] < A[i]；如果j > i，归到A[j] > A[i]
+    //                                2. 或者，忽略；1还是2取决于问题的设定，1表示相等的元素按出现先后次序排位，依次取顺序统计量，2表示相等元素使用一个顺序统计量
+
+
+    //练习9.3-5
+    /*
+     median_value = CAL_MEDIAN_VALUE(...)  //黑箱
+     median_q = median_value对应的下标
+     按median_q划分，即二分
+
+     if 当前划分 == 顺序统计量i: 返回
+     else if 顺序统计量i在低区: 低区递归
+     else: 高区递归
+     */
+
+
+    //练习9.3-6，lgk，考虑对k分治
+    /*
+     multi_select(int[] A, int k) {
+        if A==null || A.length==0 || A.length==1: return empty list
+        assert 0 < k <= A.length
+
+        result = new list
+        multi_select(A, 0, A.length, k ,result)
+
+        return result
+     }
+     void multi_select(int[] A, int begin, int end, int k, List result) {
+         if k == 1: return;
+
+         int n = end - begin;
+
+         int md = k/2;
+         int x = select(A, begin, end, md * n/k);
+         result.add(md-1, x);
+
+         int x_q = 0;
+         for(int l=end-1; l>=begin; l++) {
+            if(A[l] == x) {
+                x_q = l;
+                break;
+            }
+         }
+         int q = partition(A, begin, end, x_q)
+
+         multi_select(A, begin, md * n/k, md, result);
+         multi_select(A, (md * n/k) + 1, end, k%2==0 ? md : md+1, result);
+
+     }
+     */
+    
+
 
 
 
