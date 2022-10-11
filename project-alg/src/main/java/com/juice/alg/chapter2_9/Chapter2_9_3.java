@@ -202,8 +202,8 @@ public class Chapter2_9_3 {
          }
          int q = partition(A, begin, end, x_q)
 
-         multi_select(A, begin, md * n/k, md, result);
-         multi_select(A, (md * n/k) + 1, end, k%2==0 ? md : md+1, result);
+         multi_select(A, begin, q, md, result);
+         multi_select(A, q + 1, end, k%2==0 ? md : md+1, result);
      }
      */
     
