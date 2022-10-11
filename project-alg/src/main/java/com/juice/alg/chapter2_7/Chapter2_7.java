@@ -1,5 +1,7 @@
 package com.juice.alg.chapter2_7;
 
+import lombok.AllArgsConstructor;
+
 import java.util.Arrays;
 
 public class Chapter2_7 {
@@ -118,10 +120,9 @@ public class Chapter2_7 {
         return q;
     }
     //只遍历一遍，求出q
-    //全相等/有序 -->   i=end-1
-    //i=end-1 --/-> 全相等/有序; "i=end-1 <--> end-1处是最大值"
-    //逆序       -->   i=begin
-    //i=begin --/-> 逆序;       "i=begin <--> end-1处是最小值"
+    //有序 -->   i=end-1
+    //逆序 -->   i=begin
+    //partition不是稳定的，@link 练习1
     public int partition(int a[], int begin, int end) {
         int i = begin-1;
         int j = begin;
@@ -214,6 +215,79 @@ public class Chapter2_7 {
         System.out.println(Arrays.toString(a));
         System.out.println("------quick_sort-------");
 
+        Node[] nodes = new Node[]{
+                new Node(94, 1),
+                new Node(5, 1),
+                new Node(0, 1),
+                new Node(3, 1),
+                new Node(1, 1),
+                new Node(5, 2),
+                new Node(84, 1),
+                new Node(3, 2)
+        };
+        chapter2_7.partition_node(nodes, 0, nodes.length);
+        System.out.println(Arrays.toString(nodes));  //Node{5,2} 到 Node{5,1}前面了，这样将导致quick_sort不稳定
+        System.out.println("-------partition不是稳定的-------");
+        //注意: 被选作主元的Node{3,2}，相对于Node{3,1}是稳定的
+
+        nodes = new Node[]{
+                new Node(94, 1),
+                new Node(5, 1),
+                new Node(0, 1),
+                new Node(3, 1),
+                new Node(1, 1),
+                new Node(5, 2),
+                new Node(84, 1),
+                new Node(3, 2)
+        };
+        chapter2_7.quick_sort_node(nodes);
+        //[Node{0,1}, Node{1,1}, Node{3,1}, Node{3,2}, Node{5,2}, Node{5,1}, Node{84,1}, Node{94,1}]
+        System.out.println(Arrays.toString(nodes));  //Node{5,2} 到 Node{5,1}前面了，quick_sort不稳定
+
     }
+
+    //练习1: 证明partition不是稳定的
+    @AllArgsConstructor
+    private static class Node {
+        public int value;
+        public int tag;
+
+        @Override
+        public String toString() {
+            return "Node{" + value + "," + tag + '}';
+        }
+    }
+    public int partition_node(Node a[], int begin, int end) {
+        int i = begin-1;
+        int j = begin;
+        int k = a[end-1].value;
+
+        while(j < end) {
+            if(a[j].value <= k) {
+                i++;
+                Node ex = a[i];
+                a[i] = a[j];
+                a[j] = ex;
+            }
+            j++;
+        }
+        return i;
+    }
+    public void quick_sort_node(Node a[]) {
+        if(a == null) return;
+        if(a.length == 0 || a.length == 1) return;
+
+        quick_sort_node(a, 0, a.length);
+    }
+    public void quick_sort_node(Node a[], int begin, int end) {
+        if((end - begin) <= 1) return;
+
+        int q = partition_node(a, begin, end);
+
+        quick_sort_node(a, begin, q);
+        quick_sort_node(a, q + 1, end);
+    }
+
+
 
 }

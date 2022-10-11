@@ -65,14 +65,14 @@ public class Chapter2_7_1 {
            < n*lgn
      */
 
-    //快速排序，使用随机数创造均匀随机的输入序列, 不一定稳定
+    //快速排序，使用随机数创造均匀随机的输入序列，random_partition不稳定
+    //有两个方面造成random_partition不稳定：1.与partition类似，2.随机选择主元
     /*
     int random_partition(int a[], int begin, int end) {
         int r = RANDOM(begin, end) //begin,end下标之间等概率的产生一个下标值
         exchange a[r],a[end-1]
         return partition(a, begin, end)
     }
-     */
-
+    */
 
 }
