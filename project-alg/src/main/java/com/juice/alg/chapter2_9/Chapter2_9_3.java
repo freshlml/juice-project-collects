@@ -204,12 +204,42 @@ public class Chapter2_9_3 {
 
          multi_select(A, begin, md * n/k, md, result);
          multi_select(A, (md * n/k) + 1, end, k%2==0 ? md : md+1, result);
-
      }
      */
     
 
+    //练习9.3-7
+    /*
+    class Node {
+        int distance;
+        int value;
+    }
+    multi_select_k(int[] A, int begin, int end, int k):
+        int n = end-begin;
+        assert k <= n;
 
+        int x = select(A, begin, end, (n-1)/2 + 1); //求中位数
+
+        Node[] distances = new Node[n]; //distance数组
+        for i from 0 to n-1:
+            distance = | A[i]-x |;
+            distances[i] = new Node {distance, A[i]};
+
+        int q_v = select(distances, 0, distances.length, k+1);
+
+        int x_q = 0;
+        for(int l=end-1; l>=begin; l++) {
+           if(A[l] == q_v) {
+               x_q = l;
+               break;
+           }
+        }
+        int q = partition(A, begin, end, x_q)
+
+        for j from 0 to k:
+            print(distances[j].value)
+
+     */
 
 
 
