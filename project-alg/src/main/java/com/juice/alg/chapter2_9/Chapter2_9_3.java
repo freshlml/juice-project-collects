@@ -241,6 +241,64 @@ public class Chapter2_9_3 {
 
      */
 
+    //练习9.3-8
+    /*
+    int two_seq_median(int[] x, int[] y) {
+
+        //x, y size必须相等？
+        return two_seq_median(x, 0, x.length, y, 0, y.length);
+    }
+    int two_seq_median(int[] x, int x_begin, int x_end, int[] y, int y_begin, int y_end) {
+        int x_n = x_end - x_begin;
+        int y_n = y_end - y_begin;
+
+        if(x_n <= 0 || y_n <= 0) return -1; //tag
+
+        int y_q = y_begin + (y_n-1)/2;
+        int y_median = y[y_q];
+
+        int x_q = x_begin + (x_n-1)/2;
+        int x_median = x[x_q];
+
+        if(y_median == x_median) {
+            return y_median;
+        } else if(x_median < y_median) {
+
+            if(odd(x_n) && odd(y_n)) {
+                if( out_of_range(y_q-1, y_begin, y_end) || x_median >= y[y_q-1] ) {
+                    return x_median;
+                }
+            } else {
+                if( out_of_range(x_q+1, x_begin, x_end) || y_median <= x[x_q+1] ) {
+                    return y_median;
+                }
+            }
+
+            return two_seq_median(x, x_q+1, x_end, y, y_begin, y_q);
+
+        } else {
+            if(odd(x_n) && odd(y_n)) {
+                if( out_of_range(x_q - 1, x_begin, x_end) || y_median >= x[x_q-1] ) {
+                    return y_median;
+                }
+            } else {
+                if( out_of_range(y_q+1, y_begin, y_end) || x_median <= y[y_q+1] ) {
+                    return x_median;
+                }
+            }
+
+            return two_seq_median(x, x_begin, x_q, y, y_q+1, y_end);
+
+        }
+
+    }
+    boolean odd(int n) {
+        return n%2 != 0;
+    }
+    boolean out_of_range(int i, int begin, int end) {
+        return i<begin || i>=end;
+    }
+    */
 
 
 }
