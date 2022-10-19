@@ -80,6 +80,7 @@ public class Chapter2_9_2 {
      *     X: 所有partition中总比较次数，partition执行多少次是随机的，不好求
      *
      *     todo
+     *     todo,思考题9-4
      *
      *  int random_partition(int a[], int begin, int end) {
      *     int r = RANDOM(begin, end) //begin,end下标之间等概率的产生一个下标值
