@@ -82,6 +82,18 @@ public class Chapter2_9_4 {
     //1. P位于n个点围成的矩形区域
     //2. 草稿纸画图解法
 
+    //思考题9-3
+    /*
+    int small_select(int[] A, int begin, int end, int i) {
+        int n = end - begin;
+        if(i >= n/2) return select(A, begin, end, i);
+
+        int[] N_A = 两个元素为一组分组，取每组中较小的元素
+        return small_select(N_A, 0, N_A.length, i);
+    }
+     */
+
+    //思考题9-4，@link Chapter2_9_2
     
 
 
