@@ -1,5 +1,7 @@
 package com.juice.alg.chapter3_10;
 
+import java.util.NoSuchElementException;
+
 public class Chapter3_10_1 {
 
 
@@ -27,7 +29,7 @@ public class Chapter3_10_1 {
 
         @Override
         public void push(int e) {
-            if(isFill()) return; //overflow
+            if(isFill()) throw new IndexOutOfBoundsException(); //overflow
 
             this.top++;
             this.s[this.top] = e;
@@ -35,14 +37,14 @@ public class Chapter3_10_1 {
 
         @Override
         public int pop() {
-            if(isEmpty()) return -1; //tag, 空
+            if(isEmpty()) throw new NoSuchElementException(); //空
 
             return this.s[this.top--];
         }
 
         @Override
         public int peek() {
-            if(isEmpty()) return -1; //tag, 空
+            if(isEmpty()) throw new NoSuchElementException(); //tag, 空
 
             return this.s[this.top];
         }
@@ -90,7 +92,7 @@ public class Chapter3_10_1 {
 
         @Override
         public void offer(int e) {
-            if(isFill()) return; //overflow
+            if(isFill()) throw new IndexOutOfBoundsException(); //overflow
 
             this.s[this.tail] = e;
             this.tail = (this.tail + 1) % this.s.length;
@@ -98,7 +100,7 @@ public class Chapter3_10_1 {
 
         @Override
         public int poll() {
-            if(isEmpty()) return -1; //tag, 空
+            if(isEmpty()) throw new NoSuchElementException(); //空
 
             int v = this.s[this.head];
             this.head = (this.head + 1) % this.s.length;
@@ -107,7 +109,7 @@ public class Chapter3_10_1 {
 
         @Override
         public int peek() {
-            if(isEmpty()) return -1; //tag, 空
+            if(isEmpty()) throw new NoSuchElementException(); //空
 
             return this.s[this.head];
         }
@@ -148,7 +150,7 @@ public class Chapter3_10_1 {
 
         @Override
         public void offerFirst(int e) {
-            if(isFill()) return; //overflow
+            if(isFill()) throw new IndexOutOfBoundsException(); //overflow
 
             this.head = Math.floorMod(this.head-1, this.s.length);
             this.s[this.head] = e;
@@ -166,7 +168,7 @@ public class Chapter3_10_1 {
 
         @Override
         public int pollLast() {
-            if(isEmpty()) return -1; //tag，空
+            if(isEmpty()) throw new NoSuchElementException(); //空
 
             this.tail = Math.floorMod(this.tail-1, this.s.length);
             return this.s[this.tail];
@@ -179,7 +181,7 @@ public class Chapter3_10_1 {
 
         @Override
         public int peekLast() {
-            if(isEmpty()) return -1; //tag，空
+            if(isEmpty()) throw new NoSuchElementException(); //空
 
             int idx = Math.floorMod(this.tail-1, this.s.length);
             return this.s[idx];
