@@ -90,13 +90,14 @@ public class Chapter3_10_3 {
             int v = this.element[first];
             int next = this.next[first];
 
-            freed(first);
             if(next != -1) {
                 this.prev[next] = -1;
             } else {
                 this.tail = -1;
             }
             this.head = next;
+
+            freed(first);
 
             this.size--;
             return v;
@@ -110,13 +111,14 @@ public class Chapter3_10_3 {
             int v = this.element[last];
             int prev = this.prev[last];
 
-            freed(last);
             if(prev != -1) {
                 this.next[prev] = -1;
             } else {
                 this.head = -1;
             }
             this.tail = prev;
+
+            freed(last);
 
             this.size--;
             return v;
@@ -180,7 +182,7 @@ public class Chapter3_10_3 {
 
             int prev = this.prev[n];
             int next = this.next[n];
-            freed(n);
+
             if(prev != -1) {
                 this.next[prev] = next;
             } else {
@@ -191,6 +193,8 @@ public class Chapter3_10_3 {
             } else {
                 this.tail = prev;
             }
+
+            freed(n);
 
             this.size--;
             return v;
@@ -288,6 +292,61 @@ public class Chapter3_10_3 {
         private boolean isFree(int n) {
             return this.prev[n] == -2;
         }
+
+
+        //练习10.3-4
+        /*
+        private void compact_freed(int n) {
+            int size = this.size();
+            int al = n;
+
+            if(n != size-1) {
+                int prev = this.prev[size-1];
+                int next = this.next[size-1];
+
+                this.element[n] = this.element[size-1];
+                this.prev[n] = this.prev[size-1];
+                this.next[n] = this.next[size-1];
+
+                if(prev != -1) {
+                    this.next[prev] = n;
+                } else {
+                    this.head = n;
+                }
+                if(next != -1) {
+                    this.prev[next] = n;
+                } else {
+                    this.tail = n;
+                }
+
+                al = size-1;
+            }
+
+            next[al] = free;
+            prev[al] = -2;
+            free = al;
+        }
+         */
+        //思考题10-3
+        /*
+        public boolean compact_contains(int e) {
+            int size = this.size();
+            int i = this.head;
+            while(i != -1 && this.element[i] < e) {
+                int j = RANDOM(0, size-1);
+
+                if this.element[i] < this.element[j] && this.element[j] <= e:
+                    i = j;
+                    if this.element[i] == e:
+                        return true;
+
+                i = this.next[i];
+            }
+            if(this.element[i] > e): return false;
+            else return true;
+
+        }
+         */
 
     }
 
