@@ -17,9 +17,15 @@ public class Chapter3_11_2 {
      * 2. hash函数
      *  确定性: hash(key)始终返回相同的结果
      *  相等性: hash(key1) == hash(key2) where key1 == key2 (optional)
-     *  hash冲突: hash(key1) == hash(key2)，通常链指针法
+     *  设计指标: 4.分析 / 平均情况运行时间 / 假设: hash函数需要满足对n个元素中每一个元素等可能(或近似等可能)的选择m个槽中的任意一个槽
+     *          例子1, 如果n个元素独立均匀的分布于[0, 1)中，那么hash函数可以是: key * m
+     *          例子2, {@link HashTable#hash(int, int)}
+     *          例子3, 如果知道关键字key满足全域U上的某分布，则通过hash函数调控使得key等可能的选择槽位
      *
-     * 3. 分析
+     * 3. hash冲突
+     *  hash(key1) == hash(key2)，通常链指针法
+     *
+     * 4. 分析
      *  最坏情况运行时间:
      *      O(n) 当n个元素都散列到同一个槽
      *
@@ -42,6 +48,7 @@ public class Chapter3_11_2 {
      *      O(1 + n/m)
      *
      *
+     *
      */
     interface Table {
         void put(int key, int value);
@@ -54,13 +61,20 @@ public class Chapter3_11_2 {
 
     static class HashTable implements Table {
         private int size;
-        private static final int DEFAULT_CAPACITY = 8;
+        private static final int DEFAULT_CAPACITY = 12;
         private static final int MAX_CAPACITY = Integer.MAX_VALUE;
         private float loadFactor = 0.75f;
         private Node[] table;
 
         public HashTable() {
-            table = new Node[DEFAULT_CAPACITY];
+            this(DEFAULT_CAPACITY);
+        }
+
+        public HashTable(int initialCapacity) {
+            if(initialCapacity < 0 || initialCapacity > MAX_CAPACITY)
+                throw new IllegalArgumentException();
+
+            table = new Node[initialCapacity];
         }
 
         @Override
@@ -155,6 +169,16 @@ public class Chapter3_11_2 {
             return this.size == 0;
         }
 
+        /*
+        * Table: 0   1   2   3   4   5   6   7   8   9
+        *        | | | | | | | | | | | | | | | | | | | |
+        * 全域U:  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+        *         10,11,...,
+        *         ...}
+        * 如果 key: int (或者key: Object 的 hashCode(): int) 满足等可能取自全域U中任意一个值(或者, {0,10,...}, {1,11,...}... 这些集合的可能性之和相等)
+        * 则，hash(key)将等可能的落在Table的任意一个槽位上
+        *
+         */
         private int hash(int key, int size) {
             return key % size;
         }
@@ -171,5 +195,7 @@ public class Chapter3_11_2 {
         }
     }
 
+
+    //全域散列法，数论? todo
 
 }
