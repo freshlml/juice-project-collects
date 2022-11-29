@@ -1,4 +1,4 @@
-package com.juice.jv.regexp;
+package com.juice.jv.util.regexp;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

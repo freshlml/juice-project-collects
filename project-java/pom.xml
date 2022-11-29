@@ -30,6 +30,11 @@
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.fresh</groupId>
+            <artifactId>fresh-common</artifactId>
+        </dependency>
     </dependencies>
 
 
