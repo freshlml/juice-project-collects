@@ -1,6 +1,6 @@
-package com.juice.normal;
+package com.juice.jv;
 
-public class NormalApplication {
+public class JvApplication {
 
     public static void main(String argv[]) {
         System.out.println("hello 中");
