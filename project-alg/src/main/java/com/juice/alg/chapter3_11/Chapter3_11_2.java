@@ -220,6 +220,6 @@ public class Chapter3_11_2 {
 
 
     //全域散列法，数论? todo
-    //11.5，todo
+    //11.5，思考题11-4, todo
 
 }
