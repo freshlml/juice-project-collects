@@ -1,5 +1,6 @@
 package com.juice.alg.chapter3_10;
 
+import java.util.ArrayDeque;
 
 public class Chapter3_10_4 {
 
@@ -28,6 +29,7 @@ public class Chapter3_10_4 {
 
     interface Tree {
         void add(int e);
+        void addAll(int[] es);
 
         void T_L_R();
         void L_T_R();
@@ -41,6 +43,18 @@ public class Chapter3_10_4 {
         private int size;
 
         public BinaryTree() {}
+
+        /*
+        一个序列A{a1, a2, a3, ..., an}依次插入，形成一棵树
+        1. 如果序列有序或者逆序，将得到完全单链形式的二叉树，树高 h = n-1
+         */
+        @Override
+        public void addAll(int[] es) {
+            if (es == null) return;
+            for(int i=0; i<es.length; i++) {
+                add(es[i]);
+            }
+        }
 
         @Override
         public void add(int e) {
@@ -56,7 +70,7 @@ public class Chapter3_10_4 {
                     } else if(e > r.key) {
                         p = r;
                         r = r.right;
-                    } else {
+                    } else { //duplicate key
                         r.key = e;
                         return;
                     }
@@ -103,8 +117,32 @@ public class Chapter3_10_4 {
                     if(pt != null) {
                         t = pt.right;
                     }
+
                 }
+
             }
+
+        }
+        private static void T_L_R2(Node root) {
+            if(root == null) return;
+
+            ArrayDeque<Node> stack = new ArrayDeque<>(4);
+            stack.push(root);
+
+            while(!stack.isEmpty()) {
+                Node top = stack.pop();
+                System.out.print(top.key);
+                System.out.print(" ");
+
+                if(top.right != null) {
+                    stack.push(top.right);
+                }
+                if(top.left != null) {
+                    stack.push(top.left);
+                }
+
+            }
+
         }
         @Override
         public void T_L_R() {
@@ -112,6 +150,8 @@ public class Chapter3_10_4 {
             System.out.println("T_L_R0");
             T_L_R1(this.root);
             System.out.println("T_L_R1");
+            T_L_R2(this.root);
+            System.out.println("T_L_R2");
         }
 
         private static void L_T_R0(Node root) {
@@ -149,8 +189,37 @@ public class Chapter3_10_4 {
                         pt = ch.parent;
                     }
                     t = pt;
+
                 }
+
             }
+
+        }
+        private static void push_L_T_R(ArrayDeque<Node> stack, Node root) {
+            Node first = root;
+            stack.push(first);
+            while(first.left != null) {
+                first = first.left;
+                stack.push(first);
+            }
+        }
+        private static void L_T_R2(Node root) {
+            if(root == null) return;
+
+            ArrayDeque<Node> stack = new ArrayDeque<>();
+            push_L_T_R(stack, root);
+
+            while(!stack.isEmpty()) {
+                Node top = stack.pop();
+                System.out.print(top.key);
+                System.out.print(" ");
+
+                if(top.right != null) {
+                    push_L_T_R(stack, top.right);
+                }
+
+            }
+
         }
         @Override
         public void L_T_R() {
@@ -158,6 +227,8 @@ public class Chapter3_10_4 {
             System.out.println("L_T_R0");
             L_T_R1(this.root);
             System.out.println("L_T_R1");
+            L_T_R2(this.root);
+            System.out.println("L_T_R2");
         }
 
         private static void L_R_T0(Node root) {
@@ -183,31 +254,6 @@ public class Chapter3_10_4 {
             }
 
         }
-        private static void L_R_T1_2(Node root) {
-            Node t = firstKey_L_R_T(root);
-
-            while(t != null) {
-
-                if(t.right != null) {
-                    t = firstKey_L_R_T(t.right);
-                } else {
-                    System.out.print(t.key);
-                    System.out.print(" ");
-
-                    Node pt = t.parent; //回溯
-                    Node ch = t;
-
-                    while(pt != null && pt.right == ch) {
-                        System.out.print(pt.key);
-                        System.out.print(" ");
-
-                        ch = pt;
-                        pt = ch.parent;
-                    }
-                    t = pt;
-                }
-            }
-        }
         private static void L_R_T1(Node root) {
             Node t = firstKey_L_R_T(root);
 
@@ -230,6 +276,66 @@ public class Chapter3_10_4 {
                 }
 
             }
+
+        }
+        private static void L_R_T1_2(Node root) {
+            Node t = firstKey_L_R_T(root);
+
+            while(t != null) {
+
+                if(t.right != null) {
+                    t = firstKey_L_R_T(t.right);
+                } else {
+                    System.out.print(t.key);
+                    System.out.print(" ");
+
+                    Node pt = t.parent; //回溯
+                    Node ch = t;
+
+                    while(pt != null && pt.right == ch) {
+                        System.out.print(pt.key);
+                        System.out.print(" ");
+
+                        ch = pt;
+                        pt = ch.parent;
+                    }
+                    t = pt;
+
+                }
+
+            }
+
+        }
+        private static void push_L_R_T(ArrayDeque<Node> stack, Node root) {
+            Node first = root;
+            stack.push(first);
+            while(first.left != null) {
+                first = first.left;
+                stack.push(first);
+            }
+
+            if(first.right != null) {
+                push_L_R_T(stack, first.right);
+            }
+        }
+        private static void L_R_T2(Node root) {
+            if(root == null) return;
+
+            ArrayDeque<Node> stack = new ArrayDeque<>();
+            push_L_R_T(stack, root);
+
+            while(!stack.isEmpty()) {
+                Node top = stack.pop();
+                System.out.print(top.key);
+                System.out.print(" ");
+
+                Node pt = top.parent;
+                if(pt != null && pt.left == top && pt.right != null) {
+                    push_L_R_T(stack, pt.right);
+                }
+
+            }
+
         }
         @Override
         public void L_R_T() {
@@ -237,6 +343,8 @@ public class Chapter3_10_4 {
             System.out.println("L_R_T0");
             L_R_T1(this.root);
             System.out.println("L_R_T1");
+            L_R_T2(this.root);
+            System.out.println("L_R_T2");
         }
 
         @Override
