@@ -1,6 +1,7 @@
 package com.juice.alg.chapter3_10;
 
 import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
 
 public class Chapter3_10_4 {
 
@@ -24,6 +25,9 @@ public class Chapter3_10_4 {
         tree.L_R_T();
 
 
+        System.out.println("prev: " + tree.prev(19));
+        System.out.println("next: " + tree.next(19));
+
     }
 
 
@@ -37,7 +41,19 @@ public class Chapter3_10_4 {
 
         int size();
         boolean isEmpty();
+
+        int min(); //二叉搜索树的最小节点
+        int max(); //二叉搜索树的最大节点
+        int search(int e);
+
+        int next(int e); //后继: 大于给定节点值的最小节点
+        int prev(int e); //前驱: 小于给定节点值的最大节点
+
     }
+    /*
+    树: 树，子树，完美契合分治与递归
+    二叉搜索树: 有根二叉树，对任意一个节点p，其左子树.key <= p.key；其右子树.key >= p.key
+     */
     static class BinaryTree implements Tree {
         private Node root;
         private int size;
@@ -162,14 +178,25 @@ public class Chapter3_10_4 {
             System.out.print(" ");
             L_T_R0(root.right);
         }
+
+        private static Node firstKey_R_T_L(Node root) {
+            if(root == null) return null;
+
+            Node p = root;
+            while(p.right != null) {
+                p = p.right;
+            }
+            return p;
+        }
+
         private static Node firstKey_L_T_R(Node root) {
             if(root == null) return null;
 
-            Node left = root;
-            while(left.left != null) {
-                left = left.left;
+            Node p = root;
+            while(p.left != null) {
+                p = p.left;
             }
-            return left;
+            return p;
         }
         private static void L_T_R1(Node root) {
             Node t = firstKey_L_T_R(root);
@@ -196,11 +223,13 @@ public class Chapter3_10_4 {
 
         }
         private static void push_L_T_R(ArrayDeque<Node> stack, Node root) {
-            Node first = root;
-            stack.push(first);
-            while(first.left != null) {
-                first = first.left;
-                stack.push(first);
+            if(root == null) return;
+
+            Node p = root;
+            stack.push(p);
+            while(p.left != null) {
+                p = p.left;
+                stack.push(p);
             }
         }
         private static void L_T_R2(Node root) {
@@ -307,15 +336,17 @@ public class Chapter3_10_4 {
 
         }
         private static void push_L_R_T(ArrayDeque<Node> stack, Node root) {
-            Node first = root;
-            stack.push(first);
-            while(first.left != null) {
-                first = first.left;
-                stack.push(first);
+            if(root == null) return;
+
+            Node p = root;
+            stack.push(p);
+            while(p.left != null) {
+                p = p.left;
+                stack.push(p);
             }
 
-            if(first.right != null) {
-                push_L_R_T(stack, first.right);
+            if(p.right != null) {
+                push_L_R_T(stack, p.right);
             }
         }
         private static void L_R_T2(Node root) {
@@ -355,6 +386,109 @@ public class Chapter3_10_4 {
         @Override
         public boolean isEmpty() {
             return this.size == 0;
+        }
+
+        @Override
+        public int min() {
+            Node min = firstKey_L_T_R(this.root);
+            if(min == null) throw new NoSuchElementException();
+
+            return min.key;
+        }
+
+        @Override
+        public int max() {
+            Node max = firstKey_R_T_L(this.root);
+            if(max == null) throw new NoSuchElementException();
+
+            return max.key;
+        }
+
+        private static Node node(Node root, int e) {
+            Node t = root;
+            while(t != null) {
+                if(t.key == e) {
+                    break;
+                } else if(t.key < e) {
+                    t = t.right;
+                } else {
+                    t = t.left;
+                }
+            }
+            if(t == null) throw new NoSuchElementException("e not exists");
+
+            return t;
+        }
+
+        @Override
+        public int search(int e) {
+            Node t = node(this.root, e);
+            return t.key;
+        }
+
+        /*
+        后继: 大于给定节点值的最小节点
+            通过二叉搜索树的性质(节点p，其左子树.key <= p.key；其右子树.key >= p.key)，画图可证明next代码的逻辑正确 (练习12.2-5，练习12.2-6，练习12.2-9)
+
+        此处"后继"与"L_T_R序列中的后继节点"有相同的逻辑
+        推论: 二叉搜索树中，L_T_R序列是有序序列
+         */
+        @Override
+        public int next(int e) {
+            //find e
+            Node t = node(this.root, e);
+
+            //right
+            if(t.right != null) {
+                Node min = firstKey_L_T_R(t.right);
+                return min.key;
+            }
+
+            //parent
+            Node pt = t.parent;
+            while(pt != null && pt.right == t) {
+                t = pt;
+                pt = t.parent;
+            }
+            if(pt == null) {
+                throw new NoSuchElementException("e'next not exists");
+            }
+
+            return pt.key;
+        }
+
+        /*
+        前驱: 小于给定节点值的最大节点
+            通过二叉搜索树的性质(节点p，其左子树.key <= p.key；其右子树.key >= p.key)，画图可证明prev代码的逻辑正确 (练习12.2-5，练习12.2-6，练习12.2-9)
+
+        此处"前驱"与"L_T_R序列中的前驱节点"有相同的逻辑
+        同时因为，L_T_R序列中的前驱节点  <==>  R_T_L序列中的后继节点
+        因此此处"前驱"与"R_T_L序列中的后继节点"有相同的逻辑
+
+        推论: 二叉搜索树中，R_T_L序列是逆序序列
+         */
+        @Override
+        public int prev(int e) {
+            //find e
+            Node t = node(this.root, e);
+
+            //left
+            if(t.left != null) {
+                Node max = firstKey_R_T_L(t.left);
+                return max.key;
+            }
+
+            //parent
+            Node pt = t.parent;
+            while(pt != null && pt.left == t) {
+                t = pt;
+                pt = t.parent;
+            }
+            if(pt == null) {
+                throw new NoSuchElementException("e'prev not exists");
+            }
+
+            return pt.key;
         }
 
 
