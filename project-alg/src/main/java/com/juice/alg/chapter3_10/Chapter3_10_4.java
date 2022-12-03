@@ -16,6 +16,9 @@ public class Chapter3_10_4 {
         tree.add(15);
         tree.add(21);
         tree.add(19);
+        tree.add(24);
+        tree.add(22);
+        tree.add(25);
         tree.add(23);
 
         tree.T_L_R();
@@ -28,16 +31,25 @@ public class Chapter3_10_4 {
         System.out.println("prev: " + tree.prev(19));
         System.out.println("next: " + tree.next(19));
 
+        tree.BFS();
+        System.out.println();
+        tree.remove(10);
+        tree.BFS();
+
+
+
     }
 
 
     interface Tree {
-        void add(int e);
         void addAll(int[] es);
+        void add(int e);
+        void remove(int e);
 
         void T_L_R();
         void L_T_R();
         void L_R_T();
+        void BFS();
 
         int size();
         boolean isEmpty();
@@ -77,29 +89,143 @@ public class Chapter3_10_4 {
             if(root == null) {
                 root = new Node(e, null);
             } else {
-                Node r = root;
-                Node p = null;
-                while(r != null) {
-                    if(e < r.key) {
-                        p = r;
-                        r = r.left;
-                    } else if(e > r.key) {
-                        p = r;
-                        r = r.right;
+                Node t = root;
+                Node pt = null;
+                while(t != null) {
+                    if(e < t.key) {
+                        pt = t;
+                        t = t.left;
+                    } else if(e > t.key) {
+                        pt = t;
+                        t = t.right;
                     } else { //duplicate key
-                        r.key = e;
+                        t.key = e;
                         return;
                     }
                 }
-                Node newNode = new Node(e, p);
-                if(e < p.key) {
-                    p.left = newNode;
+                Node newNode = new Node(e, pt);
+                if(e < pt.key) {
+                    pt.left = newNode;
                 } else {
-                    p.right = newNode;
+                    pt.right = newNode;
                 }
             }
 
             this.size++;
+        }
+
+        private void transplant(Node t, Node pt, Node next) {
+            if(next != null) {
+                next.parent = pt;
+            }
+            if(pt != null) {
+                if(t == pt.left) {
+                    pt.left = next;
+                } else {
+                    pt.right = next;
+                }
+            } else {
+                this.root = next;
+            }
+        }
+
+        @Override
+        public void remove(int e) {
+            Node t = node(this.root, e);
+
+            Node pt = t.parent;
+            Node left = t.left;
+            Node right = t.right;
+
+            t.parent = null;
+            t.left = null;
+            t.right = null;
+
+            if(left != null && right != null) {
+                //使用next替换
+                Node next = firstKey_L_T_R(right);
+
+                next.left = left;
+                left.parent = next;
+
+                if(next != right) {
+                    Node next_pt = next.parent;
+                    Node next_r = next.right;
+
+                    next_pt.left = next_r;
+                    if(next_r != null) {
+                        next_r.parent = next_pt;
+                    }
+
+                    next.right = right;
+                    right.parent = next;
+                }
+
+                transplant(t, pt, next);
+                /*next.parent = pt;
+                if(pt != null) {
+                    if(t == pt.left) {
+                        pt.left = next;
+                    } else {
+                        pt.right = next;
+                    }
+                } else {
+                    this.root = next;
+                }*/
+
+                //使用right替换
+                /*Node right_l = right.left;
+
+                right.left = left;
+                left.parent = right;
+
+                if(right_l != null) {
+                    Node left_max = firstKey_R_T_L(left);
+                    left_max.right = right_l;
+                    right_l.parent = left_max;
+                }
+
+                transplant(t, pt, right);
+//                right.parent = pt;
+//                if(pt != null) {
+//                    if(t == pt.left) {
+//                        pt.left = right;
+//                    } else {
+//                        pt.right = right;
+//                    }
+//                } else {
+//                    this.root = right;
+//                }
+                */
+            } else { //left == null || right == null
+                if(left == null && right == null) {
+                    transplant(t, pt, null);
+                    /*if(pt != null) {
+                        if(t == pt.left) {
+                            pt.left = null;
+                        } else {
+                            pt.right = null;
+                        }
+                    } else {
+                        this.root = null;
+                    }*/
+                } else { //(left != null && right == null) || (left == null && right != null)
+                    Node single_side = left != null ? left : right;
+                    transplant(t, pt, single_side);
+                    /*single_side.parent = pt;
+                    if(pt != null) {
+                        if(t == pt.left) {
+                            pt.left = single_side;
+                        } else {
+                            pt.right = single_side;
+                        }
+                    } else {
+                        this.root = single_side;
+                    }*/
+                }
+
+            }
+
         }
 
         private static void T_L_R0(Node root) {
@@ -376,6 +502,29 @@ public class Chapter3_10_4 {
             System.out.println("L_R_T1");
             L_R_T2(this.root);
             System.out.println("L_R_T2");
+        }
+
+        @Override
+        public void BFS() {
+            if(this.root == null) return;
+
+            ArrayDeque<Node> queue = new ArrayDeque<>();
+            queue.offer(this.root);
+
+            while(!queue.isEmpty()) {
+                Node current = queue.poll();
+                System.out.print(current.key);
+                System.out.print(" ");
+
+                if(current.left != null) {
+                    queue.offer(current.left);
+                }
+                if(current.right != null) {
+                    queue.offer(current.right);
+                }
+
+            }
+
         }
 
         @Override
