@@ -142,7 +142,7 @@ public class Chapter3_10_4 {
             t.right = null;
 
             if(left != null && right != null) {
-                //使用next替换
+                //使用 后继 替换
                 Node next = firstKey_L_T_R(right);
 
                 next.left = left;
@@ -653,6 +653,73 @@ public class Chapter3_10_4 {
             }
         }
     }
+
+    //练习12.3-5
+    /*
+    static class Node {
+        int key;
+        Node parent;
+        Node left;
+        Node right;
+        Node succ; //额外succ指针，指向后继
+
+        public Node(int key, Node parent) {
+            this.key = key;
+            this.parent = parent;
+        }
+    }
+    L_T_R:
+        if(this.root == null) return;
+        Node t = firstKey_L_T_R(this.root);
+        while(t != null) {
+            print t.key;
+            t = t.succ;
+        }
+    add(int e): 额外维护succ指针，画图(两种情况)
+        if(this.root == null) {
+            this.root = new Node(e, null);
+        } else {
+            Node t = root;
+            Node pt = null;
+            while(t != null) {
+                if(e < t.key) {
+                    pt = t;
+                    t = t.left;
+                } else if(e > t.key) {
+                    pt = t;
+                    t = t.right;
+                } else { //duplicate key
+                    t.key = e;
+                    return;
+                }
+            }
+            Node ppt = pt.parent;
+            Node t = new Node(e, pt);
+            if(e < pt.key) {
+                pt.left = t;
+
+                if(ppt != null && ppt.right == pt) {
+                    ppt.succ = t;
+                    t.succ = pt
+                } else {
+                    t.succ = pt;
+                }
+            } else {
+                pt.right = t;
+
+                if(ppt != null && ppt.left == pt) {
+                    pt.succ = t;
+                    t.succ = ppt;
+                } else {
+                    pt.succ = t;
+                }
+            }
+        }
+
+        this.size++;
+     remove(int e):
+        只需额外维护succ指针，将t的前驱.succ = next即可
+     */
 
 
     //左孩子右兄弟
