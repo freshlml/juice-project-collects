@@ -8,18 +8,18 @@ public class Chapter3_10_4 {
     public static void main(String argv[]) {
 
         BinaryTree tree = new BinaryTree();
-        tree.add(18);
-        tree.add(12);
-        tree.add(10);
-        tree.add(7);
-        tree.add(13);
-        tree.add(15);
-        tree.add(21);
-        tree.add(19);
-        tree.add(24);
-        tree.add(22);
-        tree.add(25);
-        tree.add(23);
+        tree.put(18, 18);
+        tree.put(12, 12);
+        tree.put(10, 10);
+        tree.put(7, 7);
+        tree.put(13, 13);
+        tree.put(15, 15);
+        tree.put(21, 21);
+        tree.put(19, 19);
+        tree.put(24, 24);
+        tree.put(22, 22);
+        tree.put(25, 25);
+        tree.put(23, 23);
 
         tree.T_L_R();
 
@@ -42,9 +42,10 @@ public class Chapter3_10_4 {
 
 
     interface Tree {
-        void addAll(int[] es);
-        void add(int e);
-        void remove(int e);
+        void putAll(int[][] es);
+        void put(int key, int value);
+        void remove(int key);
+        void update_key(int key, int key_added); //optional
 
         void T_L_R();
         void L_T_R();
@@ -56,15 +57,15 @@ public class Chapter3_10_4 {
 
         int min(); //二叉搜索树的最小节点
         int max(); //二叉搜索树的最大节点
-        int search(int e);
+        int search(int key);
 
-        int next(int e); //后继: 大于给定节点值的最小节点
-        int prev(int e); //前驱: 小于给定节点值的最大节点
+        int next(int key); //successor(后继): 大于给定节点值的最小节点
+        int prev(int key); //predecessor(前驱): 小于给定节点值的最大节点
 
     }
     /*
-    树: 树，子树，完美契合分治与递归
-    二叉搜索树: 有根二叉树，对任意一个节点p，其左子树.key <= p.key；其右子树.key >= p.key
+    树(tree): 树，子树，完美契合分治与递归
+    二叉搜索树(BST, binary-search-tree): 有根二叉树，对任意一个节点p，其左子树.key <= p.key；其右子树.key >= p.key
      */
     static class BinaryTree implements Tree {
         private Node root;
@@ -77,34 +78,35 @@ public class Chapter3_10_4 {
         1. 如果序列有序或者逆序，将得到完全单链形式的二叉树，树高 h = n-1
          */
         @Override
-        public void addAll(int[] es) {
+        public void putAll(int[][] es) {
             if (es == null) return;
+            //assert es.length==0 || es[0].length >= 2
             for(int i=0; i<es.length; i++) {
-                add(es[i]);
+                put(es[i][0], es[i][1]);
             }
         }
 
         @Override
-        public void add(int e) {
+        public void put(int key, int value) {
             if(root == null) {
-                root = new Node(e, null);
+                root = new Node(key, value, null);
             } else {
                 Node t = root;
                 Node pt = null;
                 while(t != null) {
-                    if(e < t.key) {
+                    if(key < t.key) {
                         pt = t;
                         t = t.left;
-                    } else if(e > t.key) {
+                    } else if(key > t.key) {
                         pt = t;
                         t = t.right;
                     } else { //duplicate key
-                        t.key = e;
+                        t.value = value;
                         return;
                     }
                 }
-                Node newNode = new Node(e, pt);
-                if(e < pt.key) {
+                Node newNode = new Node(key, value, pt);
+                if(key < pt.key) {
                     pt.left = newNode;
                 } else {
                     pt.right = newNode;
@@ -130,8 +132,8 @@ public class Chapter3_10_4 {
         }
 
         @Override
-        public void remove(int e) {
-            Node t = node(this.root, e);
+        public void remove(int key) {
+            Node t = node(this.root, key);
 
             Node pt = t.parent;
             Node left = t.left;
@@ -226,6 +228,19 @@ public class Chapter3_10_4 {
 
             }
 
+        }
+
+        @Override
+        public void update_key(int key, int key_added) {
+            /*
+            Node t = node(this.root, key);
+
+            newKey = t.key + key_added;
+            if key no change or not need move: return;
+            else:
+                remove;
+                put;
+             */
         }
 
         private static void T_L_R0(Node root) {
@@ -553,26 +568,26 @@ public class Chapter3_10_4 {
             return max.key;
         }
 
-        private static Node node(Node root, int e) {
+        private static Node node(Node root, int key) {
             Node t = root;
             while(t != null) {
-                if(t.key == e) {
+                if(t.key == key) {
                     break;
-                } else if(t.key < e) {
+                } else if(t.key < key) {
                     t = t.right;
                 } else {
                     t = t.left;
                 }
             }
-            if(t == null) throw new NoSuchElementException("e not exists");
+            if(t == null) throw new NoSuchElementException("key not exists");
 
             return t;
         }
 
         @Override
-        public int search(int e) {
-            Node t = node(this.root, e);
-            return t.key;
+        public int search(int key) {
+            Node t = node(this.root, key);
+            return t.value;
         }
 
         /*
@@ -583,9 +598,9 @@ public class Chapter3_10_4 {
         推论: 二叉搜索树中，L_T_R序列是有序序列
          */
         @Override
-        public int next(int e) {
+        public int next(int key) {
             //find e
-            Node t = node(this.root, e);
+            Node t = node(this.root, key);
 
             //right
             if(t.right != null) {
@@ -600,7 +615,7 @@ public class Chapter3_10_4 {
                 pt = t.parent;
             }
             if(pt == null) {
-                throw new NoSuchElementException("e'next not exists");
+                throw new NoSuchElementException("key'next not exists");
             }
 
             return pt.key;
@@ -617,9 +632,9 @@ public class Chapter3_10_4 {
         推论: 二叉搜索树中，R_T_L序列是逆序序列
          */
         @Override
-        public int prev(int e) {
+        public int prev(int key) {
             //find e
-            Node t = node(this.root, e);
+            Node t = node(this.root, key);
 
             //left
             if(t.left != null) {
@@ -634,7 +649,7 @@ public class Chapter3_10_4 {
                 pt = t.parent;
             }
             if(pt == null) {
-                throw new NoSuchElementException("e'prev not exists");
+                throw new NoSuchElementException("key'prev not exists");
             }
 
             return pt.key;
@@ -643,12 +658,14 @@ public class Chapter3_10_4 {
 
         static class Node {
             int key;
+            int value;
             Node parent;
             Node left;
             Node right;
 
-            public Node(int key, Node parent) {
+            public Node(int key, int value, Node parent) {
                 this.key = key;
+                this.value = value;
                 this.parent = parent;
             }
         }
@@ -675,7 +692,7 @@ public class Chapter3_10_4 {
             print t.key;
             t = t.succ;
         }
-    add(int e): 额外维护succ指针，画图(两种情况)
+    put(int e): 额外维护succ指针，画图(两种情况)
         if(this.root == null) {
             this.root = new Node(e, null);
         } else {
