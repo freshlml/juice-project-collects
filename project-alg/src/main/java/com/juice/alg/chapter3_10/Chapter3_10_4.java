@@ -7,7 +7,7 @@ public class Chapter3_10_4 {
 
     public static void main(String argv[]) {
 
-        BinaryTree tree = new BinaryTree();
+        BinarySearchTree tree = new BinarySearchTree();
         tree.put(18, 18);
         tree.put(12, 12);
         tree.put(10, 10);
@@ -35,7 +35,6 @@ public class Chapter3_10_4 {
         System.out.println();
         tree.remove(10);
         tree.BFS();
-
 
 
     }
@@ -67,11 +66,11 @@ public class Chapter3_10_4 {
     树(tree): 树，子树，完美契合分治与递归
     二叉搜索树(BST, binary-search-tree): 有根二叉树，对任意一个节点p，其左子树.key <= p.key；其右子树.key >= p.key
      */
-    static class BinaryTree implements Tree {
+    static class BinarySearchTree implements Tree {
         private Node root;
         private int size;
 
-        public BinaryTree() {}
+        public BinarySearchTree() {}
 
         /*
         一个序列A{a1, a2, a3, ..., an}依次插入，形成一棵树
