@@ -1,5 +1,8 @@
 package com.juice.alg.chapter3_10;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
 
@@ -36,7 +39,6 @@ public class Chapter3_10_4 {
         tree.remove(10);
         tree.BFS();
 
-
     }
 
 
@@ -66,9 +68,9 @@ public class Chapter3_10_4 {
     树(tree): 树，子树，完美契合分治与递归
     二叉搜索树(BST, binary-search-tree): 有根二叉树，对任意一个节点p，其左子树.key <= p.key；其右子树.key >= p.key
      */
-    static class BinarySearchTree implements Tree {
-        private Node root;
-        private int size;
+    public static class BinarySearchTree implements Tree {
+        protected Node root;
+        protected int size;
 
         public BinarySearchTree() {}
 
@@ -115,7 +117,7 @@ public class Chapter3_10_4 {
             this.size++;
         }
 
-        private void transplant(Node t, Node pt, Node next) {
+        protected void transplant(Node t, Node pt, Node next) {
             if(next != null) {
                 next.parent = pt;
             }
@@ -133,6 +135,7 @@ public class Chapter3_10_4 {
         @Override
         public void remove(int key) {
             Node t = node(this.root, key);
+            if(t == null) return;
 
             Node pt = t.parent;
             Node left = t.left;
@@ -227,6 +230,7 @@ public class Chapter3_10_4 {
 
             }
 
+            this.size--;
         }
 
         @Override
@@ -240,6 +244,7 @@ public class Chapter3_10_4 {
                 remove;
                 put;
              */
+            throw new UnsupportedOperationException();
         }
 
         private static void T_L_R0(Node root) {
@@ -319,7 +324,7 @@ public class Chapter3_10_4 {
             L_T_R0(root.right);
         }
 
-        private static Node firstKey_R_T_L(Node root) {
+        protected static Node firstKey_R_T_L(Node root) {
             if(root == null) return null;
 
             Node p = root;
@@ -329,7 +334,7 @@ public class Chapter3_10_4 {
             return p;
         }
 
-        private static Node firstKey_L_T_R(Node root) {
+        protected static Node firstKey_L_T_R(Node root) {
             if(root == null) return null;
 
             Node p = root;
@@ -408,7 +413,7 @@ public class Chapter3_10_4 {
             System.out.print(root.key);
             System.out.print(" ");
         }
-        private static Node firstKey_L_R_T(Node root) {
+        protected static Node firstKey_L_R_T(Node root) {
             if(root == null) return null;
 
             Node left = root;
@@ -567,7 +572,7 @@ public class Chapter3_10_4 {
             return max.key;
         }
 
-        private static Node node(Node root, int key) {
+        protected static Node node(Node root, int key) {
             Node t = root;
             while(t != null) {
                 if(t.key == key) {
@@ -578,7 +583,7 @@ public class Chapter3_10_4 {
                     t = t.left;
                 }
             }
-            if(t == null) throw new NoSuchElementException("key not exists");
+            //if(t == null) throw new NoSuchElementException("key not exists");
 
             return t;
         }
@@ -586,6 +591,8 @@ public class Chapter3_10_4 {
         @Override
         public int search(int key) {
             Node t = node(this.root, key);
+            if(t == null) throw new NoSuchElementException("key not exists");
+
             return t.value;
         }
 
@@ -600,6 +607,7 @@ public class Chapter3_10_4 {
         public int next(int key) {
             //find e
             Node t = node(this.root, key);
+            if(t == null) throw new NoSuchElementException("key not exists");
 
             //right
             if(t.right != null) {
@@ -634,6 +642,7 @@ public class Chapter3_10_4 {
         public int prev(int key) {
             //find e
             Node t = node(this.root, key);
+            if(t == null) throw new NoSuchElementException("key not exists");
 
             //left
             if(t.left != null) {
@@ -654,8 +663,9 @@ public class Chapter3_10_4 {
             return pt.key;
         }
 
-
-        static class Node {
+        @Getter
+        @Setter
+        protected static class Node {
             int key;
             int value;
             Node parent;
