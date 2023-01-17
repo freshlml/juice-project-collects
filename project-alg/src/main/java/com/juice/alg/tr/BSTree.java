@@ -10,11 +10,11 @@ import java.util.NoSuchElementException;
 
 一个有序(逆序)序列A{a1, a2, a3, ..., an}依次插入，形成一棵树，树高 h = n-1
 */
-public class BinarySearchTree implements Tree {
+public class BSTree implements Tree {
     protected Node root;
     protected int size;
 
-    public BinarySearchTree() {}
+    public BSTree() {}
 
     @Override
     public void putAll(int[][] es) {
@@ -113,66 +113,27 @@ public class BinarySearchTree implements Tree {
             }
 
             transplant(t, pt, next);
-                /*next.parent = pt;
-                if(pt != null) {
-                    if(t == pt.left) {
-                        pt.left = next;
-                    } else {
-                        pt.right = next;
-                    }
-                } else {
-                    this.root = next;
-                }*/
 
-            //使用right替换
-                /*Node right_l = right.left;
+            /*//使用right替换
+            Node right_l = right.left;
 
-                right.left = left;
-                left.parent = right;
+            right.left = left;
+            left.parent = right;
 
-                if(right_l != null) {
-                    Node left_max = firstKey_R_T_L(left);
-                    left_max.right = right_l;
-                    right_l.parent = left_max;
-                }
+            if(right_l != null) {
+                Node left_max = firstKey_R_T_L(left);
+                left_max.right = right_l;
+                right_l.parent = left_max;
+            }
 
-                transplant(t, pt, right);
-//                right.parent = pt;
-//                if(pt != null) {
-//                    if(t == pt.left) {
-//                        pt.left = right;
-//                    } else {
-//                        pt.right = right;
-//                    }
-//                } else {
-//                    this.root = right;
-//                }
-                */
+            transplant(t, pt, right);*/
+
         } else { //left == null || right == null
             if(left == null && right == null) {
                 transplant(t, pt, null);
-                    /*if(pt != null) {
-                        if(t == pt.left) {
-                            pt.left = null;
-                        } else {
-                            pt.right = null;
-                        }
-                    } else {
-                        this.root = null;
-                    }*/
             } else { //(left != null && right == null) || (left == null && right != null)
                 Node single_side = left != null ? left : right;
                 transplant(t, pt, single_side);
-                    /*single_side.parent = pt;
-                    if(pt != null) {
-                        if(t == pt.left) {
-                            pt.left = single_side;
-                        } else {
-                            pt.right = single_side;
-                        }
-                    } else {
-                        this.root = single_side;
-                    }*/
             }
 
             node = pt;
@@ -186,15 +147,15 @@ public class BinarySearchTree implements Tree {
 
     @Override
     public void update_key(int key, int key_added) {
-            /*
-            Node t = node(this.root, key);
+        /*
+        Node t = node(this.root, key);
 
-            newKey = t.key + key_added;
-            if key no change or not need move: return;
-            else:
-                remove;
-                put;
-             */
+        newKey = t.key + key_added;
+        if key no change or not need move: return;
+        else:
+            remove;
+            put;
+         */
         throw new UnsupportedOperationException();
     }
 
@@ -274,17 +235,6 @@ public class BinarySearchTree implements Tree {
         System.out.print(" ");
         L_T_R0(root.right);
     }
-
-    protected static Node firstKey_R_T_L(Node root) {
-        if(root == null) return null;
-
-        Node p = root;
-        while(p.right != null) {
-            p = p.right;
-        }
-        return p;
-    }
-
     protected static Node firstKey_L_T_R(Node root) {
         if(root == null) return null;
 
@@ -403,7 +353,7 @@ public class BinarySearchTree implements Tree {
         }
 
     }
-    private static void L_R_T1_2(Node root) {
+    /*private static void L_R_T1_2(Node root) {
         Node t = firstKey_L_R_T(root);
 
         while(t != null) {
@@ -430,7 +380,7 @@ public class BinarySearchTree implements Tree {
 
         }
 
-    }
+    }*/
     private static void push_L_R_T(ArrayDeque<Node> stack, Node root) {
         if(root == null) return;
 
@@ -563,6 +513,16 @@ public class BinarySearchTree implements Tree {
         if(min == null) throw new NoSuchElementException();
 
         return min.key;
+    }
+
+    protected static Node firstKey_R_T_L(Node root) {
+        if(root == null) return null;
+
+        Node p = root;
+        while(p.right != null) {
+            p = p.right;
+        }
+        return p;
     }
 
     @Override

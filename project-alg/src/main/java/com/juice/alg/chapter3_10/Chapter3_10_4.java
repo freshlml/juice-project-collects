@@ -1,12 +1,12 @@
 package com.juice.alg.chapter3_10;
 
-import com.juice.alg.tr.BinarySearchTree;
+import com.juice.alg.tr.BSTree;
 
 public class Chapter3_10_4 {
 
     public static void main(String argv[]) {
 
-        BinarySearchTree tree = new BinarySearchTree();
+        BSTree tree = new BSTree();
         tree.put(18, 18);
         tree.put(12, 12);
         tree.put(10, 10);
@@ -38,7 +38,7 @@ public class Chapter3_10_4 {
     }
 
     /**
-     *二叉搜索树, {@link com.juice.alg.tr.BinarySearchTree}
+     *二叉搜索树, {@link BSTree}
      */
 
 
