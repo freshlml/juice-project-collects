@@ -1,8 +1,5 @@
 package com.juice.alg.chapter3_10;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
 
@@ -41,7 +38,6 @@ public class Chapter3_10_4 {
 
     }
 
-
     interface Tree {
         void putAll(int[][] es);
         void put(int key, int value);
@@ -63,10 +59,24 @@ public class Chapter3_10_4 {
         int next(int key); //successor(后继): 大于给定节点值的最小节点
         int prev(int key); //predecessor(前驱): 小于给定节点值的最大节点
 
+        interface Entry {
+            int getKey();
+            int getValue();
+            Entry getParent();
+            Entry getLeft();
+            Entry getRight();
+
+            int setValue(int v);
+        }
+
     }
+
+
     /*
     树(tree): 树，子树，完美契合分治与递归
     二叉搜索树(BST, binary-search-tree): 有根二叉树，对任意一个节点p，其左子树.key <= p.key；其右子树.key >= p.key
+
+    一个有序(逆序)序列A{a1, a2, a3, ..., an}依次插入，形成一棵树，树高 h = n-1
      */
     public static class BinarySearchTree implements Tree {
         protected Node root;
@@ -74,10 +84,6 @@ public class Chapter3_10_4 {
 
         public BinarySearchTree() {}
 
-        /*
-        一个序列A{a1, a2, a3, ..., an}依次插入，形成一棵树
-        1. 如果序列有序或者逆序，将得到完全单链形式的二叉树，树高 h = n-1
-         */
         @Override
         public void putAll(int[][] es) {
             if (es == null) return;
@@ -551,49 +557,48 @@ public class Chapter3_10_4 {
          1. left_rotate(Node pt):  对节点pt左旋
          2. right_rotate(Node pt): 对节点pt右旋
          */
-        protected void left_rotate(Node pt) {
-            //assert pt != null && pt.getRight() != null
-            Node t = pt.getRight();
-            Node ppt = pt.getParent();
-            Node t_left = t.getLeft();
+        public void left_rotate(Node pt) {
+            //assert pt != null && pt.right != null
+            Node t = pt.right;
+            Node ppt = pt.parent;
+            Node t_left = t.left;
 
-            t.setParent(ppt);
+            t.parent = ppt;
             if(ppt == null) {
                 this.root = t;
-            } else if(ppt.getLeft() == pt) {
-                ppt.setLeft(t);
-            } else if(ppt.getRight() == pt) {
-                ppt.setRight(t);
+            } else if(ppt.left == pt) {
+                ppt.left = t;
+            } else if(ppt.right == pt) {
+                ppt.right = t;
             }
 
-            t.setLeft(pt);
-            pt.setParent(t);
-            pt.setRight(t_left);
+            t.left = pt;
+            pt.parent = t;
+            pt.right = t_left;
             if(t_left != null) {
-                t_left.setParent(pt);
+                t_left.parent = pt;
             }
-
         }
-        protected void right_rotate(Node pt) {
-            //assert pt != null && pt.getLeft() != null
-            Node t = pt.getLeft();
-            Node ppt = pt.getParent();
-            Node t_right = t.getRight();
+        public void right_rotate(Node pt) {
+            //assert pt != null && pt.left != null
+            Node t = pt.left;
+            Node ppt = pt.parent;
+            Node t_right = t.right;
 
-            t.setParent(ppt);
+            t.parent = ppt;
             if(ppt == null) {
                 this.root = t;
-            } else if(ppt.getLeft() == pt) {
-                ppt.setLeft(t);
-            } else if(ppt.getRight() == pt) {
-                ppt.setRight(t);
+            } else if(ppt.left == pt) {
+                ppt.left = t;
+            } else if(ppt.right == pt) {
+                ppt.right = t;
             }
 
-            t.setRight(pt);
-            pt.setParent(t);
-            pt.setLeft(t_right);
+            t.right = pt;
+            pt.parent = t;
+            pt.left = t_right;
             if(t_right != null) {
-                t_right.setParent(pt);
+                t_right.parent = pt;
             }
         }
 
@@ -714,9 +719,7 @@ public class Chapter3_10_4 {
             return pt.key;
         }
 
-        @Getter
-        @Setter
-        protected static class Node {
+        public static class Node implements Entry {
             int key;
             int value;
             Node parent;
@@ -728,6 +731,39 @@ public class Chapter3_10_4 {
                 this.value = value;
                 this.parent = parent;
             }
+
+            @Override
+            public int getKey() {
+                return this.key;
+            }
+
+            @Override
+            public int getValue() {
+                return this.value;
+            }
+
+            @Override
+            public Node getParent() {
+                return this.parent;
+            }
+
+            @Override
+            public Node getLeft() {
+                return this.left;
+            }
+
+            @Override
+            public Node getRight() {
+                return this.right;
+            }
+
+            @Override
+            public int setValue(int v) {
+                int oldValue = this.value;
+                this.value = v;
+                return oldValue;
+            }
+
         }
     }
 
