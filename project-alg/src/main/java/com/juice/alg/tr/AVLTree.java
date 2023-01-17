@@ -1,7 +1,7 @@
 package com.juice.alg.tr;
 
 
-public class AVLTree extends BinarySearchTree {
+public class AVLTree extends BSTree {
 
     protected void afterPut(Node pt, Node t) {
         balanced_put(pt);
