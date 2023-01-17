@@ -2,7 +2,7 @@ package com.juice.alg.chapter3_13;
 
 import com.juice.alg.chapter3_10.Chapter3_10_4;
 
-public class Chapter3_13_1 {
+public class Chapter3_13 {
 
     /**
      *起因: 二叉搜索树，其高度h决定了其效率
@@ -14,11 +14,11 @@ public class Chapter3_13_1 {
      *      一个平衡二叉树的任何子树也是平衡的
      *      任何节点两棵子树的高度差不超过1
      *  平衡因子: 节点的左子树高度 - 右子树高度 为 节点的平衡因子
-     *  最小失衡子树: 平衡因子超过1的最小子树
+     *  最小失衡子树: 平衡因子绝对值超过1的最小子树
      *  分析: @see 纸张
      *
      *第二: 红黑树(RB-tree)
-     *
+     *  {@link Chapter3_13_1}
      */
 
 
@@ -50,7 +50,7 @@ public class Chapter3_13_1 {
                     pt.setRight(newNode);
                 }
 
-                balanced(pt);
+                balanced_put(pt);
 
             }
 
@@ -111,7 +111,7 @@ public class Chapter3_13_1 {
             balanced_remove(node);
         }
 
-        private void balanced(Node node) {
+        private void balanced_put(Node node) {
 
             while(node != null) {
                 int pt_b = getBalance(node);
@@ -122,6 +122,7 @@ public class Chapter3_13_1 {
 
                     if(t_b == 1) {
                         LL(left, node);
+                        break;
                     } else if(t_b == -1) {
                         LR(left, node);
                         break;
@@ -183,12 +184,10 @@ public class Chapter3_13_1 {
             t_left.setParent(ppt);
             if(ppt == null) {
                 this.root = t_left;
-            } else {
-                if(t_left.getKey() < ppt.getKey()) {
-                    ppt.setLeft(t_left);
-                } else {
-                    ppt.setRight(t_left);
-                }
+            } else if(ppt.getLeft() == pt) {
+                ppt.setLeft(t_left);
+            } else if(ppt.getRight() == pt) {
+                ppt.setRight(t_left);
             }
 
             t_left.setLeft(pt);
@@ -210,22 +209,17 @@ public class Chapter3_13_1 {
 
         private void RR(Node t, Node pt) {
             Node ppt = pt.getParent();
-            int flag = 0;
-            if(ppt != null && pt.getKey() < ppt.getKey()) flag = 1;
-            else if(ppt != null) flag = -1;
-
             Node t_left = t.getLeft();
 
             t.setParent(ppt);
             if(ppt == null) {
                 this.root = t;
-            } else {
-                if(flag == 1) {
-                    ppt.setLeft(t);
-                } else if(flag == -1) {
-                    ppt.setRight(t);
-                }
+            } else if(ppt.getLeft() == pt) {
+                ppt.setLeft(t);
+            } else if(ppt.getRight() == pt) {
+                ppt.setRight(t);
             }
+
 
             t.setLeft(pt);
             pt.setParent(t);
@@ -245,12 +239,10 @@ public class Chapter3_13_1 {
             t_right.setParent(ppt);
             if(ppt == null) {
                 this.root = t_right;
-            } else {
-                if(t_right.getKey() < ppt.getKey()) {
-                    ppt.setLeft(t_right);
-                } else {
-                    ppt.setRight(t_right);
-                }
+            } else if(ppt.getLeft() == pt) {
+                ppt.setLeft(t_right);
+            } else if(ppt.getRight() == pt) {
+                ppt.setRight(t_right);
             }
 
             t_right.setLeft(t);
@@ -272,21 +264,15 @@ public class Chapter3_13_1 {
 
         private void LL(Node t, Node pt) {
             Node ppt = pt.getParent();
-            int flag = 0;
-            if(ppt != null && pt.getKey() < ppt.getKey()) flag = 1;
-            else if(ppt != null) flag = -1;
-
             Node t_right = t.getRight();
 
             t.setParent(ppt);
             if(ppt == null) {
                 this.root = t;
-            } else {
-                if(flag == 1) {
-                    ppt.setLeft(t);
-                } else if(flag == -1) {
-                    ppt.setRight(t);
-                }
+            } else if(ppt.getLeft() == pt) {
+                ppt.setLeft(t);
+            } else if(ppt.getRight() == pt) {
+                ppt.setRight(t);
             }
 
             t.setRight(pt);
