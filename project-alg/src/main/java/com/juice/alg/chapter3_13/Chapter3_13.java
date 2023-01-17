@@ -208,26 +208,7 @@ public class Chapter3_13 {
         }
 
         private void RR(Node t, Node pt) {
-            Node ppt = pt.getParent();
-            Node t_left = t.getLeft();
-
-            t.setParent(ppt);
-            if(ppt == null) {
-                this.root = t;
-            } else if(ppt.getLeft() == pt) {
-                ppt.setLeft(t);
-            } else if(ppt.getRight() == pt) {
-                ppt.setRight(t);
-            }
-
-
-            t.setLeft(pt);
-            pt.setParent(t);
-            pt.setRight(t_left);
-            if(t_left != null) {
-                t_left.setParent(pt);
-            }
-
+            left_rotate(pt);
         }
 
         private void LR(Node t, Node pt) {
@@ -263,25 +244,7 @@ public class Chapter3_13 {
         }
 
         private void LL(Node t, Node pt) {
-            Node ppt = pt.getParent();
-            Node t_right = t.getRight();
-
-            t.setParent(ppt);
-            if(ppt == null) {
-                this.root = t;
-            } else if(ppt.getLeft() == pt) {
-                ppt.setLeft(t);
-            } else if(ppt.getRight() == pt) {
-                ppt.setRight(t);
-            }
-
-            t.setRight(pt);
-            pt.setParent(t);
-            pt.setLeft(t_right);
-            if(t_right != null) {
-                t_right.setParent(pt);
-            }
-
+            right_rotate(pt);
         }
 
         private int getBalance(Node node) {

@@ -546,6 +546,57 @@ public class Chapter3_10_4 {
 
         }
 
+        /*
+        二叉搜索树的旋转不改变二叉搜索树的性质
+         1. left_rotate(Node pt):  对节点pt左旋
+         2. right_rotate(Node pt): 对节点pt右旋
+         */
+        protected void left_rotate(Node pt) {
+            //assert pt != null && pt.getRight() != null
+            Node t = pt.getRight();
+            Node ppt = pt.getParent();
+            Node t_left = t.getLeft();
+
+            t.setParent(ppt);
+            if(ppt == null) {
+                this.root = t;
+            } else if(ppt.getLeft() == pt) {
+                ppt.setLeft(t);
+            } else if(ppt.getRight() == pt) {
+                ppt.setRight(t);
+            }
+
+            t.setLeft(pt);
+            pt.setParent(t);
+            pt.setRight(t_left);
+            if(t_left != null) {
+                t_left.setParent(pt);
+            }
+
+        }
+        protected void right_rotate(Node pt) {
+            //assert pt != null && pt.getLeft() != null
+            Node t = pt.getLeft();
+            Node ppt = pt.getParent();
+            Node t_right = t.getRight();
+
+            t.setParent(ppt);
+            if(ppt == null) {
+                this.root = t;
+            } else if(ppt.getLeft() == pt) {
+                ppt.setLeft(t);
+            } else if(ppt.getRight() == pt) {
+                ppt.setRight(t);
+            }
+
+            t.setRight(pt);
+            pt.setParent(t);
+            pt.setLeft(t_right);
+            if(t_right != null) {
+                t_right.setParent(pt);
+            }
+        }
+
         @Override
         public int size() {
             return this.size;
