@@ -9,34 +9,35 @@ public class AVLTree extends BSTree {
 
     private void balanced_put(Node node) {
 
-        while(node != null) {
-            int pt_b = getBalance(node);
+        Node pt = node;
+        while(pt != null) {
+            int pt_b = getBalance(pt);
 
             if(pt_b == 2) {
-                Node left = node.getLeft();
+                Node left = pt.getLeft();
                 int t_b = getBalance(left);
 
                 if(t_b == 1) {
-                    LL(left, node);
+                    LL(pt, left);
                     break;
                 } else if(t_b == -1) {
-                    LR(left, node);
+                    LR(pt, left);
                     break;
                 } //no possible 0
             } else if(pt_b == -2) {
-                Node right = node.getRight();
+                Node right = pt.getRight();
                 int t_b = getBalance(right);
 
                 if(t_b == -1) {
-                    RR(right, node);
+                    RR(pt, right);
                     break;
                 } else if(t_b == 1) {
-                    RL(right, node);
+                    RL(pt, right);
                     break;
                 } //no possible 0
             }
 
-            node = node.getParent();
+            pt = pt.getParent();
         }
 
     }
@@ -75,7 +76,7 @@ public class AVLTree extends BSTree {
 
     }
 
-    private void RL(Node t, Node pt) {
+    private void RL(Node pt, Node t) {
         Node ppt = pt.parent;
         Node t_left = t.left;
         Node t_left_left = t_left.left;
@@ -107,11 +108,11 @@ public class AVLTree extends BSTree {
 
     }
 
-    private void RR(Node t, Node pt) {
+    private void RR(Node pt, Node t) {
         left_rotate(pt);
     }
 
-    private void LR(Node t, Node pt) {
+    private void LR(Node pt, Node t) {
         Node ppt = pt.parent;
         Node t_right = t.right;
         Node t_right_left = t_right.left;
@@ -143,7 +144,7 @@ public class AVLTree extends BSTree {
 
     }
 
-    private void LL(Node t, Node pt) {
+    private void LL(Node pt, Node t) {
         right_rotate(pt);
     }
 
