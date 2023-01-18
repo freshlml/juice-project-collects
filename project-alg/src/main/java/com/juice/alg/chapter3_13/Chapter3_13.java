@@ -2,6 +2,7 @@ package com.juice.alg.chapter3_13;
 
 
 import com.juice.alg.tr.AVLTree;
+import com.juice.alg.tr.BSTree;
 
 public class Chapter3_13 {
 
@@ -76,6 +77,25 @@ public class Chapter3_13 {
         System.out.println();
 
     }
+
+
+    //练习13.2-1:
+    /**@see com.juice.alg.tr.BSTree#right_rotate(BSTree.Node) */
+
+    //练习13.2-2: 二叉搜索树中，所有可能的旋转数等于边的数量，而对于树，边的数量 = 节点数量-1
+
+    //练习13.2-3: 二叉搜索树中，对某个节点右旋后，α子树深度-1，β子树深度不变，γ子树深度+1
+
+    //二叉搜索树旋转之后，边的变化:
+    //  右旋:
+    //    1. 左边减一，右边加一，右边减一，左边加一。边总数不变，左边总数不变，右边总数不变
+    //    2. 左边减一，右边加一。边总数不变，左边总数减一，右边总数加一
+    //  左旋: ...
+    //练习13.2-4: 根据如上结论即可证明
+
+    //练习13.2-5:
+    //1. 只需让T2的左边总数大于T1的左边总数，则T1不可能通过右旋得到T2。
+    
 
 
 }
