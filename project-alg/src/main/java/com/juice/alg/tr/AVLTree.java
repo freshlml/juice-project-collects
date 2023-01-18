@@ -48,30 +48,31 @@ public class AVLTree extends BSTree {
 
     private void balanced_remove(Node node) {
 
-        while(node != null) {
-            int pt_b = getBalance(node);
+        Node pt = node;
+        while(pt != null) {
+            int pt_b = getBalance(pt);
 
             if(pt_b == 2) {
-                Node left = node.getLeft();
+                Node left = pt.getLeft();
                 int t_b = getBalance(left);
 
                 if(t_b == -1) {
-                    LR(left, node);
+                    LR(pt, left);
                 } else { //1 or 0
-                    LL(left, node);
+                    LL(pt, left);
                 }
             } else if(pt_b == -2) {
-                Node right = node.getRight();
+                Node right = pt.getRight();
                 int t_b = getBalance(right);
 
                 if(t_b == 1) {
-                    RL(right, node);
+                    RL(pt, right);
                 } else { //-1 or 0
-                    RR(right, node);
+                    RR(pt, right);
                 }
             }
 
-            node = node.getParent();
+            pt = pt.getParent();
         }
 
     }
