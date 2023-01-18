@@ -449,8 +449,8 @@ public class BSTree implements Tree {
 
     /*
     二叉搜索树的旋转不改变二叉搜索树的性质
-     1. left_rotate(Node pt):  对节点pt左旋
-     2. right_rotate(Node pt): 对节点pt右旋
+     1. left_rotate(Node pt):  对指定节点左旋
+     2. right_rotate(Node pt): 对指定节点右旋
      */
     public void left_rotate(Node pt) {
         //assert pt != null && pt.right != null
