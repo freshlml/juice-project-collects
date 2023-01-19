@@ -162,8 +162,7 @@ public class BSTree implements Tree {
     private static void T_L_R0(Node root) {
         if(root == null) return;
 
-        System.out.print(root.key);
-        System.out.print(" ");
+        System.out.print(root);
         T_L_R0(root.left);
         T_L_R0(root.right);
     }
@@ -171,8 +170,7 @@ public class BSTree implements Tree {
         Node t = root;
 
         while(t != null) {
-            System.out.print(t.key);
-            System.out.print(" ");
+            System.out.print(t);
 
             if(t.left != null) {
                 t = t.left;
@@ -204,8 +202,7 @@ public class BSTree implements Tree {
 
         while(!stack.isEmpty()) {
             Node top = stack.pop();
-            System.out.print(top.key);
-            System.out.print(" ");
+            System.out.print(top);
 
             if(top.right != null) {
                 stack.push(top.right);
@@ -231,8 +228,7 @@ public class BSTree implements Tree {
         if(root == null) return;
 
         L_T_R0(root.left);
-        System.out.print(root.key);
-        System.out.print(" ");
+        System.out.print(root);
         L_T_R0(root.right);
     }
     protected static Node firstKey_L_T_R(Node root) {
@@ -248,8 +244,7 @@ public class BSTree implements Tree {
         Node t = firstKey_L_T_R(root);
 
         while(t != null) {
-            System.out.print(t.key);
-            System.out.print(" ");
+            System.out.print(t);
 
             if(t.right != null) {
                 t = firstKey_L_T_R(t.right);
@@ -286,8 +281,7 @@ public class BSTree implements Tree {
 
         while(!stack.isEmpty()) {
             Node top = stack.pop();
-            System.out.print(top.key);
-            System.out.print(" ");
+            System.out.print(top);
 
             if(top.right != null) {
                 push_L_T_R(stack, top.right);
@@ -311,8 +305,7 @@ public class BSTree implements Tree {
 
         L_R_T0(root.left);
         L_R_T0(root.right);
-        System.out.print(root.key);
-        System.out.print(" ");
+        System.out.print(root);
     }
     protected static Node firstKey_L_R_T(Node root) {
         if(root == null) return null;
@@ -333,8 +326,7 @@ public class BSTree implements Tree {
         Node t = firstKey_L_R_T(root);
 
         while(t != null) {
-            System.out.print(t.key);
-            System.out.print(" ");
+            System.out.print(t);
 
             Node pt = t.parent;
             Node ch = t;
@@ -361,15 +353,13 @@ public class BSTree implements Tree {
             if(t.right != null) {
                 t = firstKey_L_R_T(t.right);
             } else {
-                System.out.print(t.key);
-                System.out.print(" ");
+                System.out.print(t);
 
                 Node pt = t.parent; //回溯
                 Node ch = t;
 
                 while(pt != null && pt.right == ch) {
-                    System.out.print(pt.key);
-                    System.out.print(" ");
+                    System.out.print(pt);
 
                     ch = pt;
                     pt = ch.parent;
@@ -403,8 +393,7 @@ public class BSTree implements Tree {
 
         while(!stack.isEmpty()) {
             Node top = stack.pop();
-            System.out.print(top.key);
-            System.out.print(" ");
+            System.out.print(top);
 
             Node pt = top.parent;
             if(pt != null && pt.left == top && pt.right != null) {
@@ -433,8 +422,7 @@ public class BSTree implements Tree {
 
         while(!queue.isEmpty()) {
             Node current = queue.poll();
-            System.out.print(current.key);
-            System.out.print(" ");
+            System.out.print(current);
 
             if(current.left != null) {
                 queue.offer(current.left);
@@ -669,6 +657,10 @@ public class BSTree implements Tree {
             return oldValue;
         }
 
+        @Override
+        public String toString() {
+            return this.key /*+ "=" + this.value*/ + " ";
+        }
     }
     
 }
