@@ -3,6 +3,7 @@ package com.juice.alg.tr;
 
 public class AVLTree extends BSTree {
 
+    @Override
     protected void afterPut(Node pt, Node t) {
         balanced_put(pt);
     }
@@ -42,6 +43,7 @@ public class AVLTree extends BSTree {
 
     }
 
+    @Override
     protected void afterRemove(Node node) {
         balanced_remove(node);
     }

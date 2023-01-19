@@ -612,7 +612,7 @@ public class BSTree implements Tree {
         return pt.key;
     }
 
-    public static class Node implements Tree.Entry {
+    static class Node implements Tree.Entry {
         int key;
         int value;
         Node parent;
