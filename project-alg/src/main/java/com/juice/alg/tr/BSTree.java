@@ -79,8 +79,6 @@ public class BSTree implements Tree {
         Node t = node(this.root, key);
         if(t == null) return;
 
-        Node node = null;
-
         Node pt = t.parent;
         Node left = t.left;
         Node right = t.right;
@@ -88,6 +86,8 @@ public class BSTree implements Tree {
         t.parent = null;
         t.left = null;
         t.right = null;
+
+        Node node = pt;
 
         if(left != null && right != null) {
             //使用 后继 替换
@@ -120,6 +120,7 @@ public class BSTree implements Tree {
             right.left = left;
             left.parent = right;
 
+            //node = what??;
             if(right_l != null) {
                 Node left_max = firstKey_R_T_L(left);
                 left_max.right = right_l;
@@ -127,16 +128,10 @@ public class BSTree implements Tree {
             }
 
             transplant(t, pt, right);*/
-
-        } else { //left == null || right == null
-            if(left == null && right == null) {
-                transplant(t, pt, null);
-            } else { //(left != null && right == null) || (left == null && right != null)
-                Node single_side = left != null ? left : right;
-                transplant(t, pt, single_side);
-            }
-
-            node = pt;
+        } else if(left == null) { //left == null, right may null
+            transplant(t, pt, right);
+        } else { //left != null && right == null
+            transplant(t, pt, left);
         }
 
         afterRemove(node);
