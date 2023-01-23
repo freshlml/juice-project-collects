@@ -3,6 +3,7 @@ package com.juice.alg.chapter3_13;
 
 import com.juice.alg.tr.AVLTree;
 import com.juice.alg.tr.BSTree;
+import com.juice.alg.tr.RBTree;
 
 public class Chapter3_13 {
 
@@ -76,6 +77,72 @@ public class Chapter3_13 {
         tree.BFS();
         System.out.println();
 
+        System.out.println("##############################");
+        RBTree rb = new RBTree();
+
+        rb.put(50, 50);
+        rb.put(20, 20);
+        rb.put(70, 70);
+        rb.put(40, 40);
+        rb.put(30, 30);
+        rb.put(45, 45);
+        rb.put(10, 10);
+        rb.put(29, 29);
+        rb.put(31, 31);
+        rb.put(51, 51);
+        rb.put(100, 100);
+        rb.put(1, 1);
+        rb.put(39, 39);
+        rb.put(55, 55);
+        rb.put(57, 57);
+        rb.put(58, 58);
+
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();
+
+        /*rb.remove(30);
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();*/
+
+        /*rb.remove(58);
+        rb.remove(51);
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();*/
+
+        /*rb.remove(1);
+        rb.remove(10);
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();*/
+
+        /*rb.remove(100);
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();*/
+
+        /*rb.remove(55);
+        rb.remove(51);
+        rb.remove(58);
+        rb.remove(57);
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();*/
+
+        rb.remove(55);
+        rb.remove(51);
+        rb.remove(58);
+        rb.remove(39);
+        rb.remove(31);
+        rb.remove(100);
+        rb.remove(70);
+        rb.remove(45);
+        rb.remove(57);
+        rb.BFS();
+        System.out.println();
+        rb.L_T_R();
     }
 
 
