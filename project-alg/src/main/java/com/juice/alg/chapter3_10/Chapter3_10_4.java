@@ -32,9 +32,19 @@ public class Chapter3_10_4 {
 
         tree.BFS();
         System.out.println();
-        tree.remove(10);
-        tree.BFS();
 
+        /*tree.remove(7);
+        tree.BFS();*/
+
+        /*tree.remove(13);
+        tree.BFS();*/
+
+        /*tree.remove(21);
+        tree.BFS();*/
+
+        tree.remove(19);
+        tree.remove(18);
+        tree.BFS();
     }
 
     /**

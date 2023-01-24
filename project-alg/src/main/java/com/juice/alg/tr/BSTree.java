@@ -74,6 +74,7 @@ public class BSTree implements Tree {
         }
     }
 
+/*
     @Override
     public void remove(int key) {
         Node t = node(this.root, key);
@@ -114,20 +115,20 @@ public class BSTree implements Tree {
 
             transplant(t, pt, next);
 
-            /*//使用right替换
-            Node right_l = right.left;
-
-            right.left = left;
-            left.parent = right;
-
-            //node = what??;
-            if(right_l != null) {
-                Node left_max = firstKey_R_T_L(left);
-                left_max.right = right_l;
-                right_l.parent = left_max;
-            }
-
-            transplant(t, pt, right);*/
+            //使用right替换
+//            Node right_l = right.left;
+//
+//            right.left = left;
+//            left.parent = right;
+//
+//            //node = what??;
+//            if(right_l != null) {
+//                Node left_max = firstKey_R_T_L(left);
+//                left_max.right = right_l;
+//                right_l.parent = left_max;
+//            }
+//
+//            transplant(t, pt, right);
         } else if(left == null) { //left == null, right may null
             transplant(t, pt, right);
         } else { //left != null && right == null
@@ -139,6 +140,40 @@ public class BSTree implements Tree {
     }
 
     protected void afterRemove(Node node) {}
+*/
+    
+    @Override
+    public void remove(int key) {
+        Node t = node(this.root, key);
+        if(t == null) return;
+
+        Node pt = t.parent;
+        Node r = t.right;
+        if(t.left != null) r = t.left;
+
+        if(t.left != null && t.right != null) {
+            Node l = t;
+
+            t = firstKey_L_T_R(t.right);
+            pt = t.parent;
+            r = t.right;
+
+            replace(l, t);
+        }
+
+        afterRemove(pt, t, r);
+        this.size--;
+    }
+    protected void afterRemove(Node pt, Node t, Node r) {
+        transplant(t, pt, r);
+        t.parent = null;
+        t.left = null;
+        t.right = null;
+    }
+    protected void replace(Node node, Node other) {
+        node.key = other.key;
+        node.value = other.value;
+    }
 
     @Override
     public void update_key(int key, int key_added) {
