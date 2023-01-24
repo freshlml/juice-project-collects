@@ -44,8 +44,9 @@ public class AVLTree extends BSTree {
     }
 
     @Override
-    protected void afterRemove(Node node) {
-        balanced_remove(node);
+    protected void afterRemove(Node pt, Node t, Node r) {
+        super.afterRemove(pt, t, r);
+        balanced_remove(pt);
     }
 
     private void balanced_remove(Node node) {
