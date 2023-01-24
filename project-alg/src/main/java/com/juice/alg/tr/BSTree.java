@@ -158,7 +158,7 @@ public class BSTree implements Tree {
             pt = t.parent;
             r = t.right;
 
-            replace(l, t);
+            exchange(l, t);
         }
 
         afterRemove(pt, t, r);
@@ -170,7 +170,7 @@ public class BSTree implements Tree {
         t.left = null;
         t.right = null;
     }
-    protected void replace(Node node, Node other) {
+    protected void exchange(Node node, Node other) {
         node.key = other.key;
         node.value = other.value;
     }
