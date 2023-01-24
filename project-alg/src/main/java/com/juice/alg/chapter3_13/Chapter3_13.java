@@ -165,4 +165,125 @@ public class Chapter3_13 {
     
 
 
+    //思考题13-1
+    /*
+        Node {
+            int key;
+            int value;
+            Node left;
+            Node right;
+            Node(int key, int value, Node left, Node right):
+                this.key = key;
+                this.value = value;
+                this.left = left;
+                this.right = right;
+        }
+     */
+    //a: 新插入节点的祖先链；替代节点的祖先链
+    /*b:
+    *   Node persistent-tree-insert(Node root, int key, int value):
+    *       Node newRoot = null
+    *
+    *       if(root == null):
+    *           newRoot = Node(key, value, null, null)
+    *       else:
+    *           newRoot = Node(root.key, root.value, root.left, root.right)
+    *
+    *           Node x = newRoot
+    *           Node t = root
+    *           while t != null:
+    *               if(key < t.key):
+    *                   t = t.left
+    *                   if(t != null):
+    *                       n = Node(t.key, t.value, t.left, t.right)
+    *                       x.left = n
+    *                       x = n
+    *               else if(key > t.key):
+    *                   t = t.right
+    *                   if(t != null):
+    *                       n = Node(t.key, t.value, t.left, t.right)
+    *                       x.right = n
+    *                       x = n
+    *               else:
+    *                   x.value = value
+    *                   return newRoot
+    *
+    *           n = Node(key, value, null, null)
+    *           if(key < x.key):
+    *               x.left = n
+    *           else: x.right = n
+    *
+    *       return newRoot
+    */
+    //c: O(h)
+    /*
+    *Node persistent-tree-remove(Node root, int key):
+    *   if(root == null) return null
+    *   Node newRoot = Node(root.key, root.value, root.left, root.right)
+    *
+    *   px = null
+    *   x = newRoot
+    *   t = root
+    *   while t != null:
+    *       if(key < t.key):
+    *           t = t.left
+    *           if(t != null):
+    *               n = Node(t.key, t.value, t.left, t.right)
+    *               x.left = n
+    *               px = x
+    *               x = n
+    *       else if(key > t.key):
+    *           t = t.right
+    *           if(t != null):
+    *               n = Node(t.key, t.value, t.left, t.right)
+    *               x.right = n
+    *               px = x
+    *               x = n
+    *       else:
+    *           break
+    *
+    *   if(t == null) return root
+    *
+    *   Node r = null
+    *   if(t.left != null && t.right != null):
+    *       t = t.right
+    *       n = Node(t.key, t.value, t.left, t.right)
+    *       Node l = x //context
+    *       x.right = n
+    *       px = x
+    *       x = n
+    *
+    *       t = t.left
+    *       while(t != null):
+    *           n = Node(t.key, t.value, t.left, t.right)
+    *           x.left = n
+    *           px = x
+    *           x = n
+    *           t = t.left
+    *
+    *       l.key = x.key
+    *       l.value = x.value
+    *       r = x.right
+    *   else:
+    *       if(t.left == null && t.right == null)
+    *           //px, x, null
+    *           r = null
+    *       else: //(left != null && right == null) || (left == null && right != null)
+    *           Node single_side = left != null ? left : right;
+    *           //px, x, single_side
+    *           r = single_side
+    *
+    *   if px.left == x:
+    *       px.left = r
+    *   else if px.right == x:
+    *       px.right = r
+    *   x.left = null
+    *   x.right = null
+    *
+    *   return newRoot
+    */
+    //d: 需要将所有节点复制一份
+    //e: 红黑树，left,right,color属性变化的节点需要复制一份
+    
+
 }
