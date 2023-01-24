@@ -96,7 +96,7 @@ public class RBTree extends BSTree {
         ((Node) this.root).color = BLACK;
     }
 
-
+/*
     @Override
     public void remove(int key) {
         Node t = (Node) node(this.root, key);
@@ -159,6 +159,26 @@ public class RBTree extends BSTree {
 
         fixup_remove(color, position, node);
         this.size--;
+    }
+*/
+
+    @Override
+    protected void afterRemove(BSTree.Node pt, BSTree.Node t, BSTree.Node r) {
+        boolean color = ((Node) t).color;
+//        if(r != null && ((Node) r).color == RED && pt == null && ((Node) t).color == BLACK) {
+//            color = RED;
+//            ((Node) r).color = BLACK;
+//        }
+        if(r != null) {
+            color = RED;
+            ((Node) r).color = BLACK;
+        }
+        Position position = null;
+        if(pt != null) position = pt.left == t ? Position.LEFT : Position.RIGHT;
+
+        super.afterRemove(pt, t, r);
+
+        fixup_remove(color, position, (Node) pt);
     }
 
     /*
