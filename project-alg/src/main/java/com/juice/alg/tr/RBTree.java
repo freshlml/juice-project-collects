@@ -169,7 +169,7 @@ public class RBTree extends BSTree {
 //            color = RED;
 //            ((Node) r).color = BLACK;
 //        }
-        if(r != null) {
+        if(r != null && ((Node) t).color == BLACK) {
             color = RED;
             ((Node) r).color = BLACK;
         }
