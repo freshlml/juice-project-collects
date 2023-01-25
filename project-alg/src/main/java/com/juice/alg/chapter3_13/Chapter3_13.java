@@ -1,6 +1,7 @@
 package com.juice.alg.chapter3_13;
 
 
+import com.juice.alg.tr.AVLHTree;
 import com.juice.alg.tr.AVLTree;
 import com.juice.alg.tr.BSTree;
 import com.juice.alg.tr.RBTree;
@@ -20,6 +21,7 @@ public class Chapter3_13 {
      *  最小失衡子树: 平衡因子绝对值超过1的最小子树
      *  分析: @see 纸张
      * @see com.juice.alg.tr.AVLTree
+     * @see com.juice.alg.tr.AVLHTree
      *第二: 红黑树(RB-tree)
      *  性质:
      *      每个节点带颜色属性，或红色，或黑色
@@ -32,9 +34,9 @@ public class Chapter3_13 {
      */
 
 
-
     public static void main(String argv[]) {
 
+        System.out.println("###############AVLTree###############");
         AVLTree tree = new AVLTree();
 
         tree.put(7, 7);
@@ -77,7 +79,50 @@ public class Chapter3_13 {
         tree.BFS();
         System.out.println();
 
-        System.out.println("##############################");
+        System.out.println("###############AVLHTree###############");
+        AVLHTree ht = new AVLHTree();
+
+        ht.put(7, 7);
+        ht.put(9, 9);
+        ht.put(10, 10);
+        ht.put(12, 12);
+        ht.put(14, 14);
+        ht.put(20, 20);
+        ht.put(15, 15);
+        ht.put(30, 30);
+        ht.put(25, 25);
+        ht.put(40, 40);
+        ht.put(24, 24);
+        ht.put(1, 1);
+        ht.put(3, 3);
+        ht.put(6, 6);
+        ht.put(5, 5);
+        ht.put(2, 2);
+        ht.put(4, 4);
+
+        ht.BFS();
+        System.out.println();
+        ht.L_T_R();
+
+        ht.remove(6);
+        ht.BFS();
+        System.out.println();
+
+        ht.remove(14);
+        ht.BFS();
+        System.out.println();
+
+        ht.remove(12);
+        ht.remove(9);
+        ht.BFS();
+        System.out.println();
+
+        ht.remove(24);
+        ht.remove(20);
+        ht.BFS();
+        System.out.println();
+
+        System.out.println("###############RBTree###############");
         RBTree rb = new RBTree();
 
         rb.put(50, 50);
@@ -284,6 +329,9 @@ public class Chapter3_13 {
     */
     //d: 需要将所有节点复制一份
     //e: 红黑树，left,right,color属性变化的节点需要复制一份
-    
+
+
+    //思考题13-3
+    /**@see AVLHTree*/
 
 }
