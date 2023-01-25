@@ -8,7 +8,7 @@ public class AVLTree extends BSTree {
         balanced_put(pt);
     }
 
-    private void balanced_put(Node node) {
+    protected void balanced_put(Node node) {
 
         Node pt = node;
         while(pt != null) {
@@ -49,7 +49,7 @@ public class AVLTree extends BSTree {
         balanced_remove(pt);
     }
 
-    private void balanced_remove(Node node) {
+    protected void balanced_remove(Node node) {
 
         Node pt = node;
         while(pt != null) {
@@ -80,7 +80,7 @@ public class AVLTree extends BSTree {
 
     }
 
-    private void RL(Node pt, Node t) {
+    protected void RL(Node pt, Node t) {
         Node ppt = pt.parent;
         Node t_left = t.left;
         Node t_left_left = t_left.left;
@@ -112,11 +112,11 @@ public class AVLTree extends BSTree {
 
     }
 
-    private void RR(Node pt, Node t) {
+    protected void RR(Node pt, Node t) {
         left_rotate(pt);
     }
 
-    private void LR(Node pt, Node t) {
+    protected void LR(Node pt, Node t) {
         Node ppt = pt.parent;
         Node t_right = t.right;
         Node t_right_left = t_right.left;
@@ -148,15 +148,15 @@ public class AVLTree extends BSTree {
 
     }
 
-    private void LL(Node pt, Node t) {
+    protected void LL(Node pt, Node t) {
         right_rotate(pt);
     }
 
-    private int getBalance(Node node) {
+    protected int getBalance(Node node) {
         //assert node != null
         return treeHeight(node.getLeft()) - treeHeight(node.getRight());
     }
-    private int treeHeight(Node node) {
+    protected int treeHeight(Node node) {
         if(node == null) return -1;
 
         int left = treeHeight(node.getLeft());
