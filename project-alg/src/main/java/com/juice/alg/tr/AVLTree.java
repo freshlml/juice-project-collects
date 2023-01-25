@@ -60,24 +60,33 @@ public class AVLTree extends BSTree {
                 int t_b = getBalance(left);
 
                 if(t_b == -1) {
+                    Node right = left.getRight();
                     LR(pt, left);
+
+                    pt = right.getParent();
                 } else { //1 or 0
                     LL(pt, left);
+
+                    pt = left.getParent();
                 }
             } else if(pt_b == -2) {
                 Node right = pt.getRight();
                 int t_b = getBalance(right);
 
                 if(t_b == 1) {
+                    Node left = right.getLeft();
                     RL(pt, right);
+
+                    pt = left.getParent();
                 } else { //-1 or 0
                     RR(pt, right);
+
+                    pt = right.getParent();
                 }
+            } else {
+                pt = pt.getParent();
             }
-
-            pt = pt.getParent();
         }
-
     }
 
     protected void RL(Node pt, Node t) {
