@@ -331,7 +331,109 @@ public class Chapter3_13 {
     //e: 红黑树，left,right,color属性变化的节点需要复制一份
 
 
+    //思考题13-2
+    //a: fixup_put修改       ((Node) this.root).color = BLACK; 改成
+    //            if ((Node) this.root).color == RED: bh++; ((Node) this.root).color = BLACK;
+    //   fixup_remove修改  if node == null: bh--;
+    //                    if(root == null): bh = 0;
+    //   沿T下降时，可以对每个访问节点在O(1)时间内确定bh:
+    //         r = root
+    //         bh_count = bh
+    //         while r != null:
+    //             r = r.left/r.right
+    //             if(r != null && r.color == BLACK) bh_count--
+    /*
+    RBTree rb-join(RBTree t1, int key, RBTree t2):
+
+        RBTree one = cut_branch(t1, key, less than and equals)
+        RBTree two cut_branch(t2, key, great than and equals)
+
+        RBTree ret = merge_branch(one, key, two)
+
+        return ret
+
+     RBTree cut_branch(RBTree t, int key, boolean lessOrGreat):
+        Node x = t.root
+        int x_bh = x.bh
+        Node y = null
+        RBTree ret = new RBTree
+
+      lessOrGreat == less and equals:
+        while x != null:
+            if(x.key <= key):
+                Node left = x.left
+                int left_bh = left == null || left.color == BLACK ? x_bh-1 : x_bh
+                x.left = null
+                if left != null: left.parent = null
+
+                if(x.key == key):
+                    Node right = null
+                else:
+                    Node right = x.right
+                    int right_bh = right == null || right.color == BLACK ? x_bh-1 : x_bh
+
+                if(y == null):
+                    ret.root = left
+                    ret.bh = left_bh
+                else:
+                    ret = merge_branch(ret, y.key, new RBTree(left, left_bh))
+
+                y = x
+                x = right
+                x_bh = right_bh
+            else: //x.key > key
+                x = x.left
+                x_bh = right == null || right.color == BLACK ? x_bh-1 : x_bh
+        if y != null
+            ret.put(y.key, y.value)
+      lessOrGreat == great and equals:
+        same...
+
+        return ret
+
+    RBTree merge_branch(RBTree one, int key, RBTree two):
+        if(one.bh >= two.bh):
+            left = one
+            right = two
+        else:
+            left = two
+            right = one
+
+        if(left.root != null && right.root != null):
+            Node x = left.root
+            int x_bh = left.bh
+
+            while(x_bh > right.bh):
+                x = x.right
+                int x_bh = x == null || x.color == BLACK ? x_bh-1 : x_bh
+
+            Node p = x.parent
+
+            Node n = new Node(key, key, RED)
+
+            n.left = x
+            x.parent = n
+            n.right = right
+            right.parent = n
+
+            p.right = n
+            n.parent = p
+
+            if(p == null) left.root = n
+            fixup_put(left.root)
+            return left
+        else if(left.root == null && right == null):
+            ...
+        else:
+            ...
+     */
+    //b: 见402行
+    //c: 以x为根
+    //d: 白色, fixup_put
+    //e: 选择T1.bh，T2.bh中更大的即可
+    //f: n = n1 + n2; h1 = lgn1, h2 = lgn2; h1 + h2 = lgn1 + lgn2 = lg(n1*n2) <= lg[ [(n1+n2)/2]^2 ] = 2*lg(n/2) = 2*(lgn - 1)
+
     //思考题13-3
     /**@see AVLHTree*/
-
+    
 }
