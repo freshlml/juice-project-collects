@@ -20,8 +20,8 @@ public interface Tree {
     int max(); //二叉搜索树的最大节点
     int search(int key);
 
-    int next(int key); //successor(后继): 大于给定节点值的最小节点
-    int prev(int key); //predecessor(前驱): 小于给定节点值的最大节点
+    int next(int key); //successor(后继): 有序序列中给定节点的后面一个节点(互异序列中，大于给定节点值的最小节点)
+    int prev(int key); //predecessor(前驱): 有序序列中给定节点的前面一个节点(互异序列中，小于给定节点值的最大节点)
 
     interface Entry {
         int getKey();
