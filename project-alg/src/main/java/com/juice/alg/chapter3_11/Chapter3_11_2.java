@@ -118,13 +118,30 @@ public class Chapter3_11_2 {
             Node[] newTable = new Node[newSize];
             for(int i = 0; i < this.table.length; i++) {
                 Node node = this.table[i];
-                if(node != null) {
+                while(node != null) {
+                    Node next = node.next;
+                    node.next = null;
+
                     int i2 = hash(node.key, newSize);
-                    newTable[i2] = node;
+                    if(newTable[i2] == null) {
+                        newTable[i2] = node;
+                    } else {
+                        Node ne = newTable[i2];
+                        while(ne != null && ne.key != node.key) {
+                            ne = ne.next;
+                        }
+                        if(ne != null) {
+                            ne.value = node.value;
+                            return;
+                        } else {
+                            node.next = newTable[i2].next;
+                            newTable[i2].next = node;
+                        }
+                    }
+                    node = next;
                 }
             }
             this.table = newTable;
-
         }
 
         @Override
