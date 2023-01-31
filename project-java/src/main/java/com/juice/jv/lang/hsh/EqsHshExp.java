@@ -35,24 +35,23 @@ public class EqsHshExp {
      */
 
     /*
-     * equals重写的模板样例
-     *  1. x.equals(x)
-     *  2. o is null; return false
-     *  3. x.equals(y) ==> y.equals(x)
-     *  4. x.equals(y); y.equals(x) ==> x.equals(z)
-     *
-     * @param o
-     * @return
+     *equals性质:
+     * 1. reflexive(自反性): x.equals(x) return true
+     * 2. symmetric(对称性): x.equals(y) return true <==> y.equals(x) return true
+     * 3. transitive(传递性): x.equals(y) return true; y.equals(x) return true ==> x.equals(z) return true
+     * 4. consistent(一致性): 多次调用 x.equals(y) 返回相同的值，只要不修改对象的equals比较中使用的信息
+     * 5. null: x.equals(null) return false
+     * 6. immutable保证
      */
     @Override
     public boolean equals(Object o) {
-        //1.直接比较引用值; for 1
+        //1.直接比较引用值; for 性质1
         if(this == o) return true;
-        //2.判空; for 2
+        //2.判空; for 性质5
         if(o == null) return false;
         //3.比较Class 或者 instanceof
-        if(this.getClass() != o.getClass()) return false; //1.比较Class: for 3
-        //if(!(o instanceof EqsHshExp)) return false; //2.instanceof: 违背3,允许o是子类型
+        if(this.getClass() != o.getClass()) return false; //1.比较Class; for 性质2
+        //if(!(o instanceof EqsHshExp)) return false; //2.instanceof: 允许o是子类型; 违背性质2
         EqsHshExp that = (EqsHshExp) o;
         //4.比较字段值
         // 1).对于primitive类型(byte,short,int,long,char,boolean,"float","double")，通过 == 比较,比较存储的二进制是否相等，注意浮点数的相等性计较@see FloatTest
@@ -60,11 +59,11 @@ public class EqsHshExp {
         //   调用ObjectUtils.objEquals方法
         boolean flag = this.code==that.code;        //int, 通过==比较
         flag &= this.isPrimary==that.isPrimary;     //boolean, 通过==比较
-        flag &= ObjectUtils.objEquals(this.wing, that.wing);    //Integer, Integer.equals()
-        flag &= ObjectUtils.objEquals(this.name, that.name);    //String, String.equals()
-        flag &= ObjectUtils.objEquals(this.cool, that.cool);    //自定义class, equals方法
-        flag &= ObjectUtils.objEquals(this.codes, that.codes);  //int[],primitive数组
-        flag &= ObjectUtils.objEquals(this.cools, that.cools);  //Bean2Cool[],declared class数组
+        flag &= ObjectUtils.objEquals(this.wing, that.wing);    //Integer, declared class
+        flag &= ObjectUtils.objEquals(this.name, that.name);    //String, declared class
+        flag &= ObjectUtils.objEquals(this.cool, that.cool);    //Bean2Cool, declared class
+        flag &= ObjectUtils.objEquals(this.codes, that.codes);  //int[], primitive数组
+        flag &= ObjectUtils.objEquals(this.cools, that.cools);  //Bean2Cool[], declared class数组
         //5.super的equals;如果基类是Object不需要调用super.equals
         //如果当前类时子类,需要调用基类的equals,则需要调用
         //flag &= super.equals(o);
@@ -72,14 +71,17 @@ public class EqsHshExp {
     }
 
     /*
-     * note1: 如果equals，则hashCode一定相等
+     * non-duplicate性质: If two objects are equal according to the equals(Object) method,
+     * then calling the hashCode() method on each of the two objects must produce the same integer result
+     * hash碰撞: high-hash，more performance
+     *
      * 计算方法: 取equals中用到的若干字段计算hashcode值并将这些值按照一定规则组合起来
-     *         Object中hashCode默认实现满足: Object.equals返回相等，则Object.hashCode也返回相同的int值
-     * note2: HashMap的Key的选择
+     *         Object中hashCode默认实现满足: non-duplicate性质
+     *
+     * immutable保证: HashMap的Key的选择
      *        hashCode方法如果使用对象中某些字段并且这些字段的值可以被修改，就会导致hashCode的值改变
      *        所以Key一般选不可变类型如String、Integer
      *        自定义的类，如果不可变的，就会有上述潜在的隐患
-     * @return
      */
     @Override
     public int hashCode() {
