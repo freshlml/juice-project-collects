@@ -3,7 +3,9 @@ package com.juice.jv.lang;
 public class NumTest {
     /**
      *有范围限定的整数存储及运算讨论
-     *  Java中，整数以二进制补码的格式存储在byte, short, int, long类型中，char类型中存储的是[0, 65535]范围的整数(格式当然也是二进制补码)，只不过其代表的意义是UTF-16的代码单元。
+     *  Java中的整数类型有byte, short, int, long, 和char。
+     *  其中byte, short, int, long分别以8-bit, 16-bit, 32-bit and 64-bit signed two's-complement(二进制补码) 存储整数值本身。
+     *  char类型中存储的是16-bits unsigned integers(格式当然也是二进制补码)，其代表的意义是UTF-16的代码单元。
      *
      *第一: 以long类型为例，long类型的范围限定为[-2^63, 2^63-1]
      * 十进制 -2^63            -2^63 + 1           -2^63 + 2        ...    -1                 0                   1               ...   2^63-2            2^63-1
@@ -50,13 +52,25 @@ public class NumTest {
      *             余的符号和除数一致
      *    3. eg: -127/2 = -63 ... -1 , -127 每 2 个一组，分成-63组余-1 (另外，floorMod {@link Math#floorMod(int, int)})
      *
-     *第七: byte, short, int, long之间的类型转换
-     *                                       -128                          -1                   0                         127
-     *                                    1000 0000    ...             1111 1111            0000 0000  ...            0111 1111
-     *          -65536                       -128                          -1                   0                         127           128                    65535
-     *  1000 0000 0000 0000 ... 1111 1111 1000 0000    ...   1111 1111 1111 1111  0000 0000 0000 0000  ...  0000 0000 0111 1111 0000 0000 1000 0000 ... 0111 1111 1111 1111
-     * 小类型转大类型，只需正数补0，负数补1，不改变数的值，√
-     * 大类型转小类型，只需不超过小类型范围，截断即可 √
+     *第七: 整数类型转换原理
+     *                                    -128    -127      ...        -1            0           1       ...        127
+     * byte                               0x80    0x81      ...       0xff          0x00        0x01     ...        0x7f
+     *
+     *                                                                               0           1       ...        127        ...    32767   ...   65535
+     * char                                                                        0x00_00    0x00_01    ...       0x00_7f     ...   0x7f_ff  ...  0xff_ff
+     *
+     *               -32768      ...     -128     -127      ...      -1              0          1        ...        127         ...   32767
+     * short        0x80_00      ...   0xff_80   0xff_81    ...    0xff_ff         0x00_00    0x00_01    ...       0x00_7f      ...  0x7f_ff
+     *
+     *截断和补位算法:
+     * 1. 小空间转大空间，补位，正数补0，负数补1
+     * 2. 大空间转小空间，截断
+     *
+     *根据算法的规则，整数类型转换，只需看其范围，就能很快确定转换是否是可预料的正确的。
+     *  Integal_Type common_convert(Integal_Type source_value, Class<Integal_Type> target_type):
+     *      if source_value in range of target_type's valid range:
+     *          return (target's Integal_Type) source_value
+     *      else: throw unexpected
      *
      */
 
