@@ -1,10 +1,10 @@
 package com.juice.jv.lang;
 
-public class NumTest {
+public class RangeLimitedIntegralTest {
     /**
      *有范围限定的整数存储及运算讨论
      *  Java中的整数类型有byte, short, int, long, 和char。
-     *  其中byte, short, int, long分别以8-bit, 16-bit, 32-bit and 64-bit signed two's-complement(二进制补码) 存储整数值本身。
+     *  其中byte, short, int, long分别以8-bit, 16-bit, 32-bit and 64-bit signed two's-complement(二进制补码)存储整数值本身。
      *  char类型中存储的是16-bits unsigned integers(格式当然也是二进制补码)，其代表的意义是UTF-16的代码单元。
      *
      *第一: 以long类型为例，long类型的范围限定为[-2^63, 2^63-1]
@@ -67,9 +67,9 @@ public class NumTest {
      * 2. 大空间转小空间，截断
      *
      *根据算法的规则，整数类型转换，只需看其范围，就能很快确定转换是否是可预料的正确的。
-     *  Integal_Type common_convert(Integal_Type source_value, Class<Integal_Type> target_type):
+     *  Integral_Type common_convert(Integral_Type source_value, Class<Integral_Type> target_type):
      *      if source_value in range of target_type's valid range:
-     *          return (target's Integal_Type) source_value
+     *          return (target's Integral_Type) source_value
      *      else: throw unexpected
      *
      */

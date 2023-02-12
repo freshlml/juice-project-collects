@@ -3,7 +3,7 @@ package com.juice.jv.lang;
 import java.nio.charset.Charset;
 
 /**
- *第一: unicode码/unicode字符集
+ *第一: unicode
  *  unicode码的概念: 对世界上所有可能出现的字符，分配一个唯一的数字值表示;
  *                 unicode字符集只是规定字符的数字值，而没有规定数字值的存储格式
  *
@@ -121,7 +121,7 @@ import java.nio.charset.Charset;
  *
  *  String中final char[] value;
  */
-public class CharTest {
+public class UnicodeAndCharTest {
     //java中，因为由jvm的存在，其字符的编译，运行过程，@link java/lang/encoding.uxf
     public static void main(String argv[]) {
         //11101010101000110
