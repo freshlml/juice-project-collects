@@ -71,6 +71,8 @@ package com.juice.jv.lang;
  *          return (target's Integral_Type) source_value
  *      else: throw unexpected
  *
+ *第八: 越界(overflow)判断
+ * @link 纸张
  */
 public class RangeLimitedIntegralTest {
 
