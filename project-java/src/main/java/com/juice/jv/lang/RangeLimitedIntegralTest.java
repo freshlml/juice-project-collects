@@ -73,6 +73,8 @@ package com.juice.jv.lang;
  *
  *第八: 越界(overflow)判断
  * @link 纸张
+ * 整数运算关注两个点: 1. overflow,underflow; 2. 使用位运算特别是移位运算优化运算效率
+ *
  */
 public class RangeLimitedIntegralTest {
 

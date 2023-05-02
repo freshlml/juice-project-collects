@@ -138,17 +138,14 @@ public class UnicodeAndCharTest {
         String hello = "𝕆"; //使用String代替char来测试
 
         int codePointCount = hello.codePointCount(0, hello.length()); //码点数量: 1
-        int index = hello.offsetByCodePoints(0, 0);
-        int codePoint = hello.codePointAt(index);
-        System.out.println(codePoint);              //𝕆的码点: 120134, U+1D546, 按照UTF-16计算他的高位代理: U+D835,低位代理: U+DD46
-        char[] chars = Character.toChars(codePoint);
-        System.out.println(new String(chars));      //输出𝕆
+        int length = hello.length();  //char数组长度: 2, char[0]存高位代理，char[1]存低位代理
 
-        System.out.println(hello.length());         //输出2，𝕆需要两个代码单元存储(一个char只能表示一个代码单元)，所以这里String中char[]数组的大小为2,char[0]存高位代理，char[1]存低位代理
-        System.out.println(hello.charAt(0));        //输出?，落在代理区域
-        System.out.println((int) hello.charAt(0));  //55349, U+D835,  是𝕆的高位代理值
-        System.out.println(hello.charAt(1));        //输出?，落在代理区域
-        System.out.println((int) hello.charAt(1));  //56646, U+DD46,  是𝕆的低位代理值
+        int codePoint = hello.codePointAt(0);
+        System.out.println(codePoint);              //𝕆的码点: 120134, U+1D546, 按照UTF-16计算该码点的代理值, 高位代理: U+D835,低位代理: U+DD46
+
+        System.out.println(Integer.toHexString(hello.charAt(0)));  //高位代理值，d835
+        System.out.println(Integer.toHexString(hello.charAt(1)));  //低位代理值，dd46
+
         System.out.println("--------2-------");
 
 
