@@ -40,7 +40,7 @@ package com.juice.jv.lang;
  *
  *   note: Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
  *
- *第六: 除法
+ *第六: 除法, 取余
  * 1.div(/), mod(%) 运算法则:
  *     a ÷ b，b != 0，a ∈ 整数 ==> 将 a 展开成 n*b+c, n ∈ 整数，|c| < |b| && |n*b| <= |a| ==> (n*b + c) ÷ b ==> a div b=n, a mod b=c
  *     eg: -57  ÷  12 ==> [ (-4)*12 + (-9) ] ÷  12  ==>  div = -4, mod = -9            ；-57不能写成 (-5)*12 + 3
