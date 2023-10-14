@@ -18,8 +18,8 @@ package com.juice.jv.lang;
  *  十进制: (-2^63) - 1 = -2^63 - 1 (越界滚动, 滚动到2^63-1)
  *  补码:   1,000 ,,, 0000 - 0001 = 0,111 ,,, 1111 (越界是补码计算的必然结果)
  *
- *  1. Java中整数的"加减法"运算法则与数学中完全一致
- *  2. Java中整数有固定的存储空间大小，其加减运算可能产生 overflow. 从数轴上看，"加减法"表现为在数轴上移动，当到达边界时，发生越界滚动
+ *  1. Java中整数有固定的存储空间大小，其加减运算可能产生 overflow. 从数轴上看，"加减法"表现为在数轴上移动，当到达边界时，发生越界滚动
+ *  2. 如果不发生 overflow，Java中整数的加减运算与数学中整数的加减运算得到相等的结果
  *
  *第三: 减法转化为加法
  *  减去一个数 <==> 加上这个数的相反数。存在一个例外情况: Number - Long.MIN_VALUE <=/=> Number + (-Long.MIN_VALUE), 因为 -Long.MIN_VALUE == Long.MIN_VALUE
@@ -39,8 +39,8 @@ package com.juice.jv.lang;
  *                         3. a=3, b=-2 ==> a=-3, b=2
  *                         4. a=-3, b=-2 ==> a=3, b=2
  *
- *   2. Java中整数的"乘法"运算法则与数学中完全一致
- *   3. Java中整数有固定的存储空间大小，其乘法运算可能产生 overflow.
+ *   2. Java中整数有固定的存储空间大小，其乘法运算可能产生 overflow
+ *   3. 如果不发生 overflow，Java中整数的乘法运算与数学中整数的乘法运算得到相等的结果
  *   4. Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
  *
  *第六: 除法, 取余
@@ -52,9 +52,7 @@ package com.juice.jv.lang;
  *      eg: -57  ÷ -12 ==> [ 4*(-12) + (-9) ] ÷ -12  ==>  div =  4, mod = -9            ；-57不能写成 5*(-12) + 3
  *
  * 2. floordiv, floormod: 除数、被除数异号，mod 结果不等于0，并且与被除数异号时，产生一个借位。fresh/.../11_Month
- *
  * 3. 数学中 a ÷ b <==> a/b + (a%b) ÷ b
- *
  * 4. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
  *
  *第七: 整数类型转换原理
@@ -103,10 +101,10 @@ package com.juice.jv.lang;
  *关注: 整数运算关注两个点: 1. overflow, underflow; 2. 使用位运算特别是移位运算优化运算效率
  *
  *第九: 等价转换
- * 1. 整数的 +, -, * 运算，等价转换成立，无论是否 overflow, underflow. 如
+ * 1. Java中整数的 +, -, * 运算，等价转换成立，无论是否 overflow, underflow. 如
  *  (a + b) * c == a*c + b*c, 如果等号左侧 overflow, 那么等号右侧也必将 overflow 并仍然得到相等的结果
  *
- * 2. div(/), mod(%) 运算，可以根据他们的运算法则，对式子等价代换. fresh/.../11_Month
+ * 2. Java中整数的 div(/), mod(%) 运算，可以根据他们的运算法则，对式子等价代换. fresh/.../11_Month
  *
  */
 public class RangeLimitedIntegralTest {
