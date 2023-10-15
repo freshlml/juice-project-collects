@@ -18,8 +18,7 @@ package com.juice.jv.lang;
  *  十进制: (-2^63) - 1 = -2^63 - 1 (越界滚动, 滚动到2^63-1)
  *  补码:   1,000 ,,, 0000 - 0001 = 0,111 ,,, 1111 (越界是补码计算的必然结果)
  *
- *  1. Java中整数有固定的存储空间大小，其加减运算可能产生 overflow. 从数轴上看，"加减法"表现为在数轴上移动，当到达边界时，发生越界滚动
- *  2. 如果不发生 overflow，Java中整数的加减运算与数学中整数的加减运算得到相等的结果
+ *  从数轴上看，"加减法"表现为在数轴上移动，当到达边界时，发生越界滚动
  *
  *第三: 减法转化为加法
  *  减去一个数 <==> 加上这个数的相反数。存在一个例外情况: Number - Long.MIN_VALUE <=/=> Number + (-Long.MIN_VALUE), 因为 -Long.MIN_VALUE == Long.MIN_VALUE
@@ -33,15 +32,13 @@ package com.juice.jv.lang;
  *  补码:  1,000 ,,, 0000    ->  1,000 ,,, 0000
  *
  *第五: 乘法
- *   1. 在数轴上理解乘法: 镜像法 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6
- *                         1. a=3, b=2
- *                         2. a=-3, b=2
- *                         3. a=3, b=-2 ==> a=-3, b=2
- *                         4. a=-3, b=-2 ==> a=3, b=2
+ *   在数轴上理解乘法: 镜像法 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6
+ *                        1. a=3,  b=2
+ *                        2. a=-3, b=2
+ *                        3. a=3,  b=-2 ==> a=-3, b=2
+ *                        4. a=-3, b=-2 ==> a=3,  b=2
  *
- *   2. Java中整数有固定的存储空间大小，其乘法运算可能产生 overflow
- *   3. 如果不发生 overflow，Java中整数的乘法运算与数学中整数的乘法运算得到相等的结果
- *   4. Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
+ *   note: Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
  *
  *第六: 除法, 取余
  * 1. div(/), mod(%) 运算法则:
@@ -52,8 +49,7 @@ package com.juice.jv.lang;
  *      eg: -57  ÷ -12 ==> [ 4*(-12) + (-9) ] ÷ -12  ==>  div =  4, mod = -9            ；-57不能写成 5*(-12) + 3
  *
  * 2. floordiv, floormod: 除数、被除数异号，mod 结果不等于0，并且与被除数异号时，产生一个借位。fresh/.../11_Month
- * 3. 数学中 a ÷ b <==> a/b + (a%b) ÷ b
- * 4. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
+ * 3. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
  *
  *第七: 整数类型转换原理
  *                                    -128    -127      ...        -1            0           1       ...        127
@@ -75,7 +71,7 @@ package com.juice.jv.lang;
  *          return (target's Integral_Type) source_value
  *      else: throw unexpected
  *
- *第八: 越界(overflow)判断
+ *第八: overflow 判断
  * 1. 将 "938" 转化为数字
  *   1). 最低有效位
  *       0  + 8*10^0 = 8
@@ -98,14 +94,23 @@ package com.juice.jv.lang;
  *   3). (-a) - (-b), may underflow
  *   4). (-a) + b, no overflow
  *
- *关注: 整数运算关注两个点: 1. overflow, underflow; 2. 使用位运算特别是移位运算优化运算效率
+ *一: 整数运算必须处理 overflow (如下所述只是一些常见的思考方法，具体 overflow 的处理应该结合代码逻辑灵活处理)
+ *  1. 如果中间运算发生 overflow，并且最终结果也发生 overflow (或者 out of valid range)，则中间运算可抛出异常来标记该 overflow
+ *  2. 某些 overflow 可以通过公式的等价代换避免
+ *  3. 使用更长的整数类型或者 BigInteger 来消除 overflow
+ *二: 使用位运算特别是移位运算优化运算效率
  *
  *第九: 等价转换
  * 1. Java中整数的 +, -, * 运算，等价转换成立，无论是否 overflow, underflow. 如
- *  (a + b) * c == a*c + b*c, 如果等号左侧 overflow, 那么等号右侧也必将 overflow 并仍然得到相等的结果
+ *    (a + b) * c == a*c + b*c, 如果等号左侧 overflow, 那么等号右侧也必将 overflow 并仍然得到相等的结果
  *
  * 2. Java中整数的 div(/), mod(%) 运算，可以根据他们的运算法则，对式子等价代换. fresh/.../11_Month
  *
+ *第十: 数学中整数的运算公式与Java中整数的运算公式
+ *  现有数学中的 +, -, * 运算公式 (a + b) * c，在 Java 语言中直接对应过来，使用 (a + b) * c 来运算。如果没有 overflow，两边得到相同的结果。
+ *
+ *  现有数学中的 ÷ 运算公式 a ÷ b <==> Java 语言中 a/b + (a%b) ÷ b
+ *  
  */
 public class RangeLimitedIntegralTest {
 
