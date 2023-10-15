@@ -109,7 +109,7 @@ package com.juice.jv.lang;
  *第十: 数学中整数的运算公式与Java中整数的运算公式
  *  现有数学中的 +, -, * 运算公式 (a + b) * c，在 Java 语言中直接对应过来，使用 (a + b) * c 来运算。如果没有 overflow，两边得到相同的结果。
  *
- *  现有数学中的 ÷ 运算公式 a ÷ b <==> Java 语言中 a/b + (a%b) ÷ b
+ *  现有数学中的 ÷ 运算公式 a ÷ b <==> Java 语言中 a/b + (a%b) ÷ 10 ÷ b
  *  
  */
 public class RangeLimitedIntegralTest {
