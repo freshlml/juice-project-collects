@@ -104,12 +104,15 @@ package com.juice.jv.lang;
  * 1. Java中整数的 +, -, * 运算，等价转换成立，无论是否 overflow, underflow. 如
  *    (a + b) * c == a*c + b*c, 如果等号左侧 overflow, 那么等号右侧也必将 overflow 并仍然得到相等的结果
  *
- * 2. Java中整数的 div(/), mod(%) 运算，可以根据他们的运算法则，对式子等价代换. fresh/.../11_Month
+ * 2. 有 / 运算参与的式子的等价代换，必须证明"先除"与"后除"是等价的(相同的精度丢失)。如
+ *    (a + b/2) * c == a*c + (b/2)*c.  (b/2)*c  不一定等于  (b*c)/2, 根据 3. 当 b 能够整除 2时，(b/2)*c == (b*c)/2
+ *
+ * 3. Java中整数的 div(/), mod(%) 运算，可以根据他们的运算法则，对式子等价代换. fresh/.../11_Month
  *
  *第十: 数学中整数的运算公式与Java中整数的运算公式
  *  现有数学中的 +, -, * 运算公式 (a + b) * c，在 Java 语言中直接对应过来，使用 (a + b) * c 来运算。如果没有 overflow，两边得到相同的结果。
  *
- *  现有数学中的 ÷ 运算公式 a ÷ b <==> Java 语言中 a/b + (a%b) ÷ 10 ÷ b
+ *  现有数学中的 ÷ 运算公式 a ÷ b <==> Java 语言中 a/b + (a%b) ÷ b
  *  
  */
 public class RangeLimitedIntegralTest {
