@@ -133,24 +133,24 @@ package com.juice.jv.lang;
  *3. 将十进制小数转化为"规格化小数"的二进制存储
  *   a. 确定S，0表示正数，1表示负数。
  *   b. 除去符号，将实数(整数部分和小数部分)化为二进制表示
- *   c. 小数点左移或者右移至第一个有效数字右边，从小数点右边第一位开始数出二十三位数字，找到舍入位，进行舍入后得到M
+ *   c. 从第一个有效数字起，数24个有效位，对第25位进行舍入，将小数点左移或者右移至第一个有效数字右边得到M
  *   d. 如果小数点左移指数取+N, 如果小数点右移指数取-N, 将指数以补码表示，加上偏置值0111_1111, 可得到E
  * 以11.9为例
  *   a. S=0
- *   b. 11.9化为二进制为 1011.111_0011_0011_0011_0011_0011_0011...
- *   c. 小数点左移3位，并从小数点右边第一位开始数出二十三位数字舍入后得到 1.011_1110_0110_0110_0110_0110
- *   d. E = 0000_0011 + 0111_1111 = 1000_0010
+ *   b. 11.9化为二进制为 1011.1110_0110_0110_0110_0110|011_0011...
+ *   c. 从第一个有效数字起，数24个有效位，对第25位进行舍入后得到 1011.1110_0110_0110_0110_0110
+ *   d. 小数点需要左移 3 位，E = 0000_0011 + 0111_1111 = 1000_0010
  * 11.9的存储值为
  *   0 1000_0010 011_1110_0110_0110_0110_0110
  *
  *4. 存储精度丢失与舍入
- *                                               |舍入
- *   11.9 化为二进制 1011.111_0011_0011_0011_0011_0|011_0011_0011_0011...
+ *                                              |舍入
+ *   11.9 化为二进制 1011.1110_0110_0110_0110_0110|011_0011_0011_0011...
  *
- *   24位有效位后面的位舍入后，11.9的存储值为 0 1000_0010 011_111_0011_0011_0011_0011_0
+ *   24位有效位后面的位舍入后，11.9的存储值为 0 1000_0010 011_1110_0110_0110_0110_0110
  *
- *   如果按照11.9的存储值转化成十进制数，得到  1.011_111_0011_0011_0011_0011_0 * 2^3
- *                                   = 1011.111_0011_0011_0011_0011_0
+ *   如果按照11.9的存储值转化成十进制数，得到  1.011_1110_0110_0110_0110_0110 * 2^3
+ *                                   = 1011.1110_0110_0110_0110_0110
  *                                   = 11.8999996185302734 (十进制)
  *
  *   a. 打印浮点数，使用PrintStream.printf("%.16f", float), 11.9 打印出 11.8999996185302734
@@ -225,67 +225,111 @@ package com.juice.jv.lang;
  *
  *第六、数字类型转换
  *
- *float <-> double, float类型转换成double,其存储值被完整保留；double类型转换成float, 按舍入规则舍入
  *         符号位  .          .                                 |舍入                                                                  .
  *  float     □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱...⿱
  *                                                                                                                   |舍入                      .
  *  double    □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱...⿱
  *
+ * 1. float -> double: float类型转换成double,其存储值被完整保留. lose information about the overall magnitude of a numeric value???
+ *
+ * 2. double -> float: A narrowing primitive conversion from double to float is governed by the IEEE 754 rounding rules (§4.2.4).
+ *                 This conversion can lose precision, but also lose range, resulting in a float zero from a nonzero double and a float infinity from a finite double.
+ *                 A double NaN is converted to a float NaN and a double infinity is converted to the same-signed float infinity.
+ *
+ *
  *floating-point number to integral type:
- * 1. the floating-point number is converted either to a long if T is long, or to an int if T is byte、short、char、or int
- *    a: If the floating-point number is NaN, the result is an int or long 0.
- *    b: If floating-point number 的整数部分 is out of range[-2^32, 2^32-1]，the result is the smallest or largest value of int.
- *       If floating-point number 的整数部分 is out of range[-2^63, 2^63-1]，the result is the smallest or largest value of long.
- *    c: 否则，the floating-point value is rounded to an integral value
- * 2.
- *    a: If T is int or long, the result of the conversion is the result of the first step.
- *    b: If T is byte、short or char, the result of the conversion is the result of a narrowing conversion to type T of the result of the first step.
+ * 1. In the first step, the floating-point number is converted either to a long, if T is long, or to an int, if T is byte, short, char, or int, as follows:
+ *    1): If the floating-point number is NaN, the result is an int 0 or long 0.
+ *    2): Otherwise, if the floating-point number is not an infinity, the floating-point value is rounded to an integer value V,
+ *        rounding toward zero using IEEE 754 round-toward-zero mode (§ 4.2.4). Then there are two cases:
+ *           - If T is long, and this integer value can be represented as a long, then the result of the first step is the long value V.
+ *           - Otherwise, if this integer value can be represented as an int, then the result of the first step is the int value V.
+ *    3): Otherwise, one of the following two cases must be true:
+ *           - The value must be too small (a negative value of large magnitude or negative infinity),
+ *             and the result of the first step is the smallest representable value of type int or long.
+ *           - The value must be too large (a positive value of large magnitude or positive infinity),
+ *             and the result of the first step is the largest representable value of type int or long.
+ * 2. In the second step:
+ *    1): If T is int or long, the result of the conversion is the result of the first step.
+ *    2): If T is byte、short or char, the result of the conversion is the result of a narrowing conversion to type T of the result of the first step.
  *
  *
- *float -> byte模型图, float to int, int to byte
- *                   从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-128, 127]之间，即得到该整数值
- *         符号位  .          .   |末尾                  .        |舍入               .
- *  float     □     1□□□_□□□|□ □□□□_□□□□ □□□□_□□□□|⿱⿱⿱⿱_⿱⿱⿱⿱...⿱
- *  byte      □    □□□□_□□□|
- *byte -> float, 没有任何位丢失
- *注，double -> byte, byte->double与上述类似
- *
- *float -> short模型图, float to int, int to short
- *                    从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-32768, 32767]之间，即得到该整数值
- *         符号位  .          .                 |末尾    .        |舍入               .
- *  float     □     1□□□_□□□□ □□□□_□□□|□ □□□□_□□□□|⿱⿱⿱⿱_⿱⿱⿱⿱...⿱
- *  short     □    □□□□_□□□□ □□□□_□□□|
- *short -> float, 没有任何位丢失
- *注，double -> short, short->double与上述类似
- *
- *float -> int模型图, 从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-2^24, 2^24-1]之间，即得到该整数值；如果整数部分在 [-2^31, -2^24) 或 (2^24-1, 2^31-1]，整数部分精度丢失
- *                                                               否则，整数部分超过int范围，smallest or largest value
+ *float <-> int模型图
  *         符号位  .          .                                 |舍入       . |末尾          .
  *  float     □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□|⿱⿱⿱⿱_⿱⿱⿱|⿱ ⿱⿱⿱⿱...⿱
  *  int       □    □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□|
- *int -> float, 当数值 大于 2^24-1 或者小于 -2^24 时, 舍入造成数值精度丢失
  *
- *double -> int模型图, 从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-2^31, 2^31-1]之间，即得到该整数值；否则，smallest or largest value
+ * 1. float -> int: - NaN -> 0
+ *                  - infinity -> MIN OR MAX
+ *                  - 二进制存储值层面, 丢掉小数点和小数部分数值，如果数值在 [-2^31, 2^31-1] 范围外，取 Integer 的最值返回，否则返回数值
+ *
+ * 2. int -> float: 当数值∈[-2^24, 2^24]时，数值被完整保存，不会丢失精度
+ *                  当数值大于 2^24 或者小于 -2^24 时, 舍入造成数值精度丢失
+ *
+ *double <-> int模型图
  *         符号位  .          .                                              |末尾                  .                   |舍入       .              .
  *  double    □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□|□ □□□□_□□□□ □□□□_□□□□ □□□□_□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱...⿱
  *  int       □    □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□|
- *int -> double, 没有任何位丢失
  *
- *float -> long模型图, 从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-2^24, 2^24-1]之间，即得到该整数值；如果整数部分在 [-2^63, -2^24) 或 (2^24-1, 2^63-1]，整数部分精度丢失
- *                                                                否则，整数部分超过long范围，smallest or largest value
+ * 1. double -> int: - NaN -> 0
+ *                   - infinity -> MIN OR MAX
+ *                   - 二进制存储值层面, 丢掉小数点和小数部分数值，如果数值在 [-2^31, 2^31-1] 范围外，取 Integer 的最值返回，否则返回数值
+ *
+ * 2. int -> double: 数值被完整保存, 没有任何位丢失
+ *
+ *
+ *float <-> long模型图
  *         符号位  .          .                                 |舍入       .                                                           |末尾             .
  *  float     □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱_⿱⿱⿱|⿱ ⿱⿱⿱⿱_⿱...⿱
  *  long      □    □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□|
- *long -> float, 当long的数值 大于 2^24-1 或者小于 -2^24 时, 舍入造成数值精度丢失
  *
- *double -> long模型图, 从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-2^54, 2^54-1]之间，即得到该整数值；即得到该整数值；如果整数部分在 [-2^63, -2^54) 或 (2^54-1, 2^63-1]，整数部分精度丢失
+ * 1. float -> long: - NaN -> 0
+ *                   - infinity -> MIN OR MAX
+ *                   - 二进制存储值层面, 丢掉小数点和小数部分数值，如果数值在 [-2^63, 2^63-1] 范围外，取 Long 的最值返回，否则返回数值
+ *
+ * 2. long -> float: 当数值∈[-2^24, 2^24]时，数值被完整保存，不会丢失精度
+ *                   当数值大于 2^24 或者小于 -2^24 时, 舍入造成数值精度丢失
+ *
+ *
+ *double <-> long模型图, 从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-2^54, 2^54-1]之间，即得到该整数值；即得到该整数值；如果整数部分在 [-2^63, -2^54) 或 (2^54-1, 2^63-1]，整数部分精度丢失
  *                                                                 否则，整数部分超过long范围，smallest or largest value
  *         符号位  .          .                                                                                       |舍入       .     |末尾      .
  *  double    □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱|⿱⿱⿱...⿱
  *  long      □    □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□ □□□ □□□□_□□□|
- *long -> double, 当long的数值 大于 2^54-1 或者小于 -2^54 时, 舍入造成数值精度丢失
+ *
+ * 1. double -> long: - NaN -> 0
+ *                    - infinity -> MIN OR MAX
+ *                    - 二进制存储值层面, 丢掉小数点和小数部分数值，如果数值在 [-2^63, 2^63-1] 范围外，取 Long 的最值返回，否则返回数值
+ *
+ * 2. long -> double: 当数值∈[-2^54, 2^54]时，数值被完整保存，不会丢失精度
+ *                    当数值大于 2^54 或者小于 -2^54 时, 舍入造成数值精度丢失
  *
  *
+ *float <-> byte
+ *
+ *  1. float -> byte: float -> int -> byte
+ *
+ *  2. byte -> float: 数值被完整保存, 没有任何位丢失
+ *
+ *
+ *double <-> byte
+ *
+ *  1. double -> byte: double -> int -> byte
+ *
+ *  2. byte -> double: 数值被完整保存, 没有任何位丢失
+ *
+ *float <-> short
+ *
+ * 1. float -> short: float -> int -> short
+ *
+ * 2. short -> float: 数值被完整保存, 没有任何位丢失
+ *
+ *
+ *double <-> short
+ *
+ * 1. double -> short: double -> int -> short
+ *
+ * 2. short -> double: 数值被完整保存, 没有任何位丢失
  *
  */
 public class FloatingPointTypeTest {
