@@ -30,7 +30,7 @@ public class Exercise1 {
         System.out.printf("%" + lines + "c\n", c);  //line 1
         for(int i=2; i<=lines; i++) {
             if(i % 2 == 0) { //偶数行
-                System.out.printf("%" + (lines - i + 1) + "c" + "%" + (2*i - 2) + "c\n", c, c);
+                System.out.printf("%" + (lines - i + 1) + "c" + "%" + (2L*i - 2) + "c\n", c, c);
             } else {
                 sb.append(c).append(c);
 

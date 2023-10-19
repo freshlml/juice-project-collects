@@ -17,7 +17,7 @@ public class Exercise3 {
      * 数学中的计算公式: n*(a1 + an)÷2，结果是一个整数，即能够整除。
      *   1. n 为偶数，则 n 能够整除 2
      *   2. n 为奇数，则 a1 + an = 2*a1 + (n-1)*d 能够整除 2
-     * 因为 n*(a1 + an) 能够整除 2，将此数学中的公式变成 Java 语言中的公式为 (n*(a1 + an))/2
+     * 因为 n*(a1 + an) 能够整除 2，因此， n*(a1 + an)÷2 ==> (n*(a1 + an))/2
      *
      * 检测等差级数的 d 是否为整数，如果 (an-a1) 能够整除 (n-1)，则是整数，否则，IllegalArgumentException
      * 
@@ -50,7 +50,7 @@ public class Exercise3 {
 
     /**
      * 求等差级数的第 n 项。
-     * 数学中的计算公式: a1 + (n-1)*d. Java 中公式为 a1 + (n-1)*d.
+     * 计算公式: a1 + (n-1)*d.
      *
      * @param a1  首项，可能为负值
      * @param d   项差，可能为负值
