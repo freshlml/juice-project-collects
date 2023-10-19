@@ -25,7 +25,8 @@ public class Exercise5 {
         long incOfDay = 86400/7 - 86400/13 + 86400/45;
         long result = Math.multiplyExact(totalDays, incOfDay);
 
-        result += ( (totalDays * (86400 % 7))/7 - (totalDays * (86400 % 13))/13 + (totalDays * (86400 % 45))/45 );
+        long incOfRemained = (totalDays * (86400 % 7)) / 7 - (totalDays * (86400 % 13)) / 13 + (totalDays * (86400 % 45)) / 45;
+        result = Math.addExact(result, incOfRemained);
 
         return result;
     }
