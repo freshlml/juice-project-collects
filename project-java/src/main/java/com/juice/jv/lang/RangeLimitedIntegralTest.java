@@ -112,4 +112,13 @@ package com.juice.jv.lang;
  */
 public class RangeLimitedIntegralTest {
 
+    public static void main(String[] argv) {
+        //(i * 52429) >>> (16+3) == i/10 验证
+
+        for(int i=1; i<=65536; i++) {
+            if((i * 52429) >>> (16+3) != i/10) System.out.println(i);
+        }
+
+    }
+
 }
