@@ -54,5 +54,7 @@ public class Exercise5 {
             return year / -4 - year / -100 + year / -400;
         }
     }
-
+    static boolean isLeapYear(long year) {
+        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
 }

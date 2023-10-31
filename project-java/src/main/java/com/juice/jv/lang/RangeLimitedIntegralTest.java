@@ -1,5 +1,9 @@
 package com.juice.jv.lang;
 
+import java.time.Year;
+import java.time.chrono.IsoChronology;
+import java.util.HashMap;
+
 /**
  *有范围限定的整数存储及运算讨论
  *  Java中的整数类型有byte, short, int, long, 和char。
@@ -118,6 +122,19 @@ public class RangeLimitedIntegralTest {
         for(int i=1; i<=65536; i++) {
             if((i * 52429) >>> (16+3) != i/10) System.out.println(i);
         }
+
+
+        //0 ~ 146097
+        HashMap<Integer, Integer> hsm = new HashMap<>();
+        for(int rmd = (146097-1); rmd >= 0; rmd--) {
+            int r = (400 * rmd) / 146097;
+            hsm.put(r, rmd);
+        }
+        hsm.forEach((k, v) -> {
+            System.out.print(k);
+            System.out.println(" = " + "366*" + v/366 + "+" + v%366);
+        });
+
 
     }
 
