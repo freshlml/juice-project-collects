@@ -1,4 +1,4 @@
-package com.juice.jv.lang;
+package com.juice.jv.lang.numerical;
 
 public class Exercise2 {
 
