@@ -1,14 +1,12 @@
 package com.juice.jv.lang;
 
-import java.time.Year;
-import java.time.chrono.IsoChronology;
 import java.util.HashMap;
 
 /**
  *有范围限定的整数存储及运算讨论
- *  Java中的整数类型有byte, short, int, long, 和char。
- *  其中byte, short, int, long分别以8-bit, 16-bit, 32-bit and 64-bit signed two's-complement(二进制补码)存储整数值本身。
- *  char类型中存储的是16-bits unsigned integers(格式当然也是二进制补码)，其代表的意义是UTF-16的代码单元。
+ *  byte, short, int, long, 和char。
+ *  其中 byte, short, int, long 分别以 8-bit, 16-bit, 32-bit and 64-bit signed two's-complement(二进制补码)存储整数值本身。
+ *  char 类型中存储的是 16-bits unsigned integers(格式当然也是二进制补码)，其代表的意义是 UTF-16 的代码单元。
  *
  *第一: 以long类型为例，long类型的范围限定为[-2^63, 2^63-1]
  * 十进制 -2^63            -2^63 + 1           -2^63 + 2        ...    -1                 0                   1               ...   2^63-2            2^63-1
@@ -36,25 +34,26 @@ import java.util.HashMap;
  *  补码:  1,000 ,,, 0000    ->  1,000 ,,, 0000
  *
  *第五: 乘法
- *   在数轴上理解乘法: 镜像法 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6
+ *  1. 乘法运算: 数值运算，符号运算。
+ *  2. 在数轴上理解乘法: 镜像法 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6
  *                        1. a=3,  b=2
  *                        2. a=-3, b=2
  *                        3. a=3,  b=-2 ==> a=-3, b=2
  *                        4. a=-3, b=-2 ==> a=3,  b=2
  *
- *   note: Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
+ *  note: Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
  *
  *第六: 除法, 取余
- * 1. div(/), mod(%) 运算法则:
+ *  1. div(/), mod(%) 运算法则:
  *      a ÷ b，b != 0，a ∈ 整数 ==> 将 a 展开成 n*b+c, n ∈ 整数，|c| < |b| && |n*b| <= |a| ==> (n*b + c) ÷ b ==> a div b=n, a mod b=c
  *      eg: -57  ÷  12 ==> [ (-4)*12 + (-9) ] ÷  12  ==>  div = -4, mod = -9            ；-57不能写成 (-5)*12 + 3
  *      eg:  57  ÷  12 ==> [ (4*12 + 9) ]     ÷  12  ==>  div =  4, mod =  9            ； 57不能写成 5*12 - 3
  *      eg:  57  ÷ -12 ==> [ (-4)*(-12) + 9 ] ÷  12  ==>  div = -4, mod =  9            ； 57不能写成 (-5)*(-12) - 3
  *      eg: -57  ÷ -12 ==> [ 4*(-12) + (-9) ] ÷ -12  ==>  div =  4, mod = -9            ；-57不能写成 5*(-12) + 3
  *
- * 2. floordiv, floormod: 除数、被除数异号，mod 结果不等于0，并且与被除数异号时，产生一个借位。fresh/.../11_Month
- * 3. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
- * 4. 数学中 ÷ 与 整数 div(/) 的关系可以描述为: a ÷ b <==> a/b + (a%b) ÷ b
+ *  2. floordiv, floormod: 除数、被除数异号，mod 结果不等于0，并且与被除数异号时，产生一个借位。fresh/.../11_Month
+ *  3. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
+ *  4. 数学中 ÷ 与 整数 div(/) 的关系可以描述为: a ÷ b <==> a/b + (a%b) ÷ b
  *
  *第七: 整数类型转换原理
  *                                    -128    -127      ...        -1            0           1       ...        127
