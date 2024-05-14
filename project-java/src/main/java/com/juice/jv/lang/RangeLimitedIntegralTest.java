@@ -55,27 +55,7 @@ import java.util.HashMap;
  *  3. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
  *  4. 数学中 ÷ 与 整数 div(/) 的关系可以描述为: a ÷ b <==> a/b + (a%b) ÷ b
  *
- *第七: 整数类型转换原理
- *                                    -128    -127      ...        -1            0           1       ...        127
- * byte                               0x80    0x81      ...       0xff          0x00        0x01     ...        0x7f
- *
- *                                                                               0           1       ...        127        ...    32767   ...   65535
- * char                                                                        0x00_00    0x00_01    ...       0x00_7f     ...   0x7f_ff  ...  0xff_ff
- *
- *               -32768      ...     -128     -127      ...      -1              0          1        ...        127         ...   32767
- * short        0x80_00      ...   0xff_80   0xff_81    ...    0xff_ff         0x00_00    0x00_01    ...       0x00_7f      ...  0x7f_ff
- *
- *截断和补位算法:
- * 1. 小空间转大空间，补位，正数补0，负数补1
- * 2. 大空间转小空间，截断
- *
- *根据算法的规则，整数类型转换，只需看其范围，就能很快确定转换是否是可预料的正确的。
- *  Integral_Type common_convert(Integral_Type source_value, Class<Integral_Type> target_type):
- *      if source_value in range of target_type's valid range:
- *          return (target's Integral_Type) source_value
- *      else: throw unexpected
- *
- *第八: overflow 判断
+ *第七: overflow 判断
  * 1. 将 "938" 转化为数字
  *   1). 最低有效位
  *       0  + 8*10^0 = 8
@@ -104,13 +84,34 @@ import java.util.HashMap;
  *  3. 使用更长的整数类型或者 BigInteger 来消除 overflow
  *二: 使用位运算特别是移位运算优化运算效率
  *
- *第九: 等价代换
+ *第八: 等价代换
  * - `+`, `-`, `*` 运算等价代换成立. 如: (a - b) * c == a*c - b*c
  * - `/`, `%` 运算，根据他们的运算法则，可得若干等价代换式子: fresh/.../11_Month
  * - `/` 参与的运算，通常需要证明(证明方法，如，看式子两边是否丢失相同精度的值)等价代换是否成立，如 (a + b/2) * c == a*c + (b/2)*c，但 (b/2)*c  不一定等于  (b*c)/2
  *
  * 1. 如果等式两边均无 overflow，则两边有相同的正确的结果
  * 2. 如果等式一边 overflow，而另一边 no overflow，则可用 no overflow 的一边来得到正确的结果
+ *
+ *
+ *第九: 整数类型转换原理
+ *                                    -128    -127      ...        -1            0           1       ...        127
+ * byte                               0x80    0x81      ...       0xff          0x00        0x01     ...        0x7f
+ *
+ *                                                                               0           1       ...        127        ...    32767   ...   65535
+ * char                                                                        0x00_00    0x00_01    ...       0x00_7f     ...   0x7f_ff  ...  0xff_ff
+ *
+ *               -32768      ...     -128     -127      ...      -1              0          1        ...        127         ...   32767
+ * short        0x80_00      ...   0xff_80   0xff_81    ...    0xff_ff         0x00_00    0x00_01    ...       0x00_7f      ...  0x7f_ff
+ *
+ *截断和补位算法:
+ * 1. 小空间转大空间，补位，正数补0，负数补1
+ * 2. 大空间转小空间，截断
+ *
+ *根据算法的规则，整数类型转换，只需看其范围，就能很快确定转换是否是可预料的正确的。
+ *  Integral_Type common_convert(Integral_Type source_value, Class<Integral_Type> target_type):
+ *      if source_value in range of target_type's valid range:
+ *          return (target's Integral_Type) source_value
+ *      else: throw unexpected
  *
  */
 public class RangeLimitedIntegralTest {
