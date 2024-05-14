@@ -231,7 +231,7 @@ package com.juice.jv.lang;
  *                                                                                                                   |舍入                      .
  *  double    □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱⿱⿱⿱...⿱
  *
- * 1. float -> double: float类型转换成double,其存储值被完整保留. lose information about the overall magnitude of a numeric value???
+ * 1. float -> double: float类型转换成double, 其存储值被完整保留. todo not strictfp may lose information about the overall magnitude of the converted value?
  *
  * 2. double -> float: A narrowing primitive conversion from double to float is governed by the IEEE 754 rounding rules (§4.2.4).
  *                 This conversion can lose precision, but also lose range, resulting in a float zero from a nonzero double and a float infinity from a finite double.
@@ -292,8 +292,8 @@ package com.juice.jv.lang;
  *                   当数值大于 2^24 或者小于 -2^24 时, 舍入造成数值精度丢失
  *
  *
- *double <-> long模型图, 从数值层面看的表现: 丢弃小数点和小数部分，保留整数部分。如果整数部分在[-2^54, 2^54-1]之间，即得到该整数值；即得到该整数值；如果整数部分在 [-2^63, -2^54) 或 (2^54-1, 2^63-1]，整数部分精度丢失
- *                                                                 否则，整数部分超过long范围，smallest or largest value
+ *double <-> long模型图
+ *
  *         符号位  .          .                                                                                       |舍入       .     |末尾      .
  *  double    □     1□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□|⿱⿱⿱⿱_⿱⿱⿱⿱ ⿱|⿱⿱⿱...⿱
  *  long      □    □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□□□□ □□□□_□ □□□ □□□□_□□□|
@@ -335,7 +335,7 @@ package com.juice.jv.lang;
  */
 public class FloatingPointTypeTest {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         //NaN的存储值验证，7fc00000
         System.out.println(Integer.toHexString(Float.floatToIntBits(Float.NaN)));
         //正无穷的存储值验证，7f800000
