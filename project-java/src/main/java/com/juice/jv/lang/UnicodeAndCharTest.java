@@ -1,6 +1,7 @@
 package com.juice.jv.lang;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  *第一: unicode
@@ -122,15 +123,15 @@ import java.nio.charset.Charset;
  *  String中final char[] value;
  */
 public class UnicodeAndCharTest {
-    //java中，因为由jvm的存在，其字符的编译，运行过程，@link java/lang/encoding.uxf
-    public static void main(String argv[]) {
+    //java中，因为有jvm的存在，其字符的编译，运行过程，@link java/lang/encoding.uxf
+    public static void main(String[] argv) {
         //11101010101000110
         //char使用两个字节存储，截断成1101010101000110，54598
         char c = (char) 120134;
         System.out.println(c);    //핆
         char d = 54598;
         System.out.println(d);   //핆
-        System.out.println("--------1-------");
+        System.out.println("--------------------------------1-------------------------------");
 
 
         //当char赋值为 >U+FFFF码点 的字符时
@@ -146,16 +147,15 @@ public class UnicodeAndCharTest {
         System.out.println(Integer.toHexString(hello.charAt(0)));  //高位代理值，d835
         System.out.println(Integer.toHexString(hello.charAt(1)));  //低位代理值，dd46
 
-        System.out.println("--------2-------");
+        System.out.println("--------------------------------2-------------------------------");
 
 
         //编码与解码
         //编码: 将字符序列按照"编码"转换成字节序列
         //解码: 将字节序列按照"编码"转换成字符序列
 
-        //java中编码，str.getBytes("编码"): byte[]
+        //java中编码，String#getBytes("编码"): byte[]
         //java中解码，new String(bys, "编码"): String
-        //StringCoding类外部不可见
 
         /*第一: 在"utf编码"中编码与解码
             1、utf-8、utf-16、utf-32使用的都是unicode字符的码点
@@ -166,7 +166,7 @@ public class UnicodeAndCharTest {
          */
         String str = ", h 𝕆 中 😚 符 >";
         //编码: 将unicode字符序列按照"utf-8编码"转换成字节序列      值得注意的是，这里的"unicode字符序列"的说法是不准确的(在java中)，因为java中String使用char[]表示字符序列，每个char存unicode码点按照utf-16转化的值，不过这和char直接存储unicode字符的码点没有多大区别(至少是在"unicode字符序列这一说法上")
-        byte[] bys = str.getBytes(Charset.forName("utf-8"));
+        byte[] bys = str.getBytes(StandardCharsets.UTF_8);
         for (byte by : bys) {
             //utf-8编码的字节序列前面并没有添加bom
             //','的utf-8编码:0x2c，' 'utf-8编码:0x20，'h'的utf-8编码:0x68，'𝕆'的utf-8编码:0xf09d9586，'中'的utf-8编码:0xe4b8ad，'😚'的utf-8编码:0xf09f989a，'符'的utf-8编码:0xe7aca6，'>'的utf-8编码: 0x3e
@@ -174,34 +174,34 @@ public class UnicodeAndCharTest {
             //System.out.print("   ");
         }
         //解码: 将utf-8字节序列按照"utf-8编码"转换成unicode字符序列
-        System.out.println(new String(bys, Charset.forName("utf-8")));        //, h 𝕆 中 😚 符 >
+        System.out.println(new String(bys, StandardCharsets.UTF_8));        //, h 𝕆 中 😚 符 >
 
-        bys = str.getBytes(Charset.forName("utf-16"));//默认使用大字节序
+        bys = str.getBytes(StandardCharsets.UTF_16);//默认使用大字节序
         for (byte by : bys) {
             //0xfe 0xff大字节序标记
             //','的utf-16be编码:0x002c，' 'utf-16be编码:0x0020，'h'的utf-16be编码:0x0068，'𝕆'的utf-16be编码:0xd835dd46，'中'的utf-16be编码:0x4e2d，'😚'的utf-16be编码:0xd83dde1a，'符'的utf-16be编码:0x7b26，'>'的utf-16be编码: 0x003e
             //System.out.print(Integer.toHexString(by));
             //System.out.print("   ");
         }
-        System.out.println(new String(bys, Charset.forName("utf-16")));        //, h 𝕆 中 😚 符 >
+        System.out.println(new String(bys, StandardCharsets.UTF_16));        //, h 𝕆 中 😚 符 >
 
-        bys = str.getBytes(Charset.forName("utf-16le"));//小字节序
+        bys = str.getBytes(StandardCharsets.UTF_16LE);//小字节序
         for (byte by : bys) {
             //使用utf-16le时无bom
             //','的utf-16le编码:0x2c00，' 'utf-16le编码:0x2000，'h'的utf-16le编码:0x6800，'𝕆'的utf-16le编码:0x35d846dd，'中'的utf-16le编码:0x2d4e，'😚'的utf-16le编码:0x3dd81ade，'符'的utf-16le编码:0x267b，'>'的utf-16le编码: 0x3e00
             //System.out.print(Integer.toHexString(by));
             //System.out.print("   ");
         }
-        System.out.println(new String(bys, Charset.forName("utf-16le")));        //, h 𝕆 中 😚 符 >
+        System.out.println(new String(bys, StandardCharsets.UTF_16LE));        //, h 𝕆 中 😚 符 >
 
-        bys = str.getBytes(Charset.forName("utf-16be"));//大字节序
+        bys = str.getBytes(StandardCharsets.UTF_16BE);//大字节序
         for (byte by : bys) {
             //使用utf-16be时无bom
             //','的utf-16be编码:0x002c，' 'utf-16be编码:0x0020，'h'的utf-16be编码:0x0068，'𝕆'的utf-16be编码:0xd835dd46，'中'的utf-16be编码:0x4e2d，'😚'的utf-16be编码:0xd83dde1a，'符'的utf-16be编码:0x7b26，'>'的utf-16be编码: 0x003e
             //System.out.print(Integer.toHexString(by));
             //System.out.print("   ");
         }
-        System.out.println(new String(bys, Charset.forName("utf-16be")));        //, h 𝕆 中 😚 符 >
+        System.out.println(new String(bys, StandardCharsets.UTF_16BE));        //, h 𝕆 中 😚 符 >
 
         //第二: 其他编码规范中的编码与解码,eg: gbk、gb18030
         /* 1、字符在不同编码规范下的对比
@@ -243,8 +243,8 @@ public class UnicodeAndCharTest {
         bys = str.getBytes(Charset.forName("gb18030"));
         System.out.println(new String(bys, Charset.forName("gb18030")));       //, h 𝕆 中 😚 符 >
 
-        bys = str.getBytes(Charset.forName("iso-8859-1"));
-        System.out.println(new String(bys, Charset.forName("iso-8859-1")));    //, h ? ? ? ? >
+        bys = str.getBytes(StandardCharsets.ISO_8859_1);
+        System.out.println(new String(bys, StandardCharsets.ISO_8859_1));    //, h ? ? ? ? >
 
         System.out.println("--------3-------");
 
