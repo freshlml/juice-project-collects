@@ -3,13 +3,13 @@ package com.juice.jv.lang.hsh;
 import com.fresh.common.utils.ObjectUtils;
 
 public class EqsHshExp {
-    private int code;
-    private boolean isPrimary;
-    private Integer wing;
-    private String name;
-    private Bean2Cool cool;
-    private int[] codes;
-    private Bean2Cool[] cools;
+    private final int code;
+    private final boolean isPrimary;
+    private final Integer wing;
+    private final String name;
+    private final Bean2Cool cool;
+    private final int[] codes;
+    private final Bean2Cool[] cools;
 
     public EqsHshExp(int code, boolean isPrimary, Integer wing, String name, Bean2Cool cool, int[] codes, Bean2Cool[] cools) {
         this.code = code;
@@ -22,16 +22,13 @@ public class EqsHshExp {
     }
 
     /*
-     *相等性比较运算符:
-     * 1、 ==, 比较变量内存存储值
-     *   a: primitive变量存储的二进制值就代表其本身，int i=1; //变量i,类型是int,本地栈空间存整数1的二进制值
-     *   b: 引用型变量存的是引用值，指向堆区的对象
-     *   c: int[] i = {1, 2};  //primitive数组,变量i存引用值，指向堆区的数组对象(内置的数组类型)，但遗憾的是该内置类型没有重写equals方法
-     * 2、equals()，对象相等性测试的规则方法
-     *      Object中equals方法实现: 比较引用值
-     *      public boolean equals(Object obj) {
+     * 1、== 运算符
+     * 2、equals 方法，对象相等性测试的规则方法
+     *    Object {
+     *       public boolean equals(Object obj) {
      *          return (this == obj);  # 对象引用值比较(从实现上来看，比较变量的内存存储值，和primitive的==比较没有本质上的区别)
-     *      }
+     *       }
+     *    }
      */
 
     /*
@@ -47,25 +44,28 @@ public class EqsHshExp {
     public boolean equals(Object o) {
         //1.直接比较引用值; for 性质1
         if(this == o) return true;
+
         //2.判空; for 性质5
         if(o == null) return false;
-        //3.比较Class 或者 instanceof
-        if(this.getClass() != o.getClass()) return false; //1.比较Class; for 性质2
-        //if(!(o instanceof EqsHshExp)) return false; //2.instanceof: 允许o是子类型; 违背性质2
+
+        //3.比较Class 或者 instanceof. 通常，不兼容的类型之间不具备比较性。
+        if(this.getClass() != o.getClass()) return false;  //this 与 o 要有相同的 Class。this 与 o 的所属类为 EqsHshExp 或其子类。
+        //if(!(o instanceof EqsHshExp)) return false;      //o 的所属类可为 EqsHshExp 或者其子类，this 的所属类亦可为 EqsHshExp 或者其子类，并且两者不一定有相同的所属类。
+        //if(EqsHshExp.class == this.getClass() && EqsHshExp.class == o.getClass()) return false;  //此种写法，则较为严格...
+
         EqsHshExp that = (EqsHshExp) o;
         //4.比较字段值
-        // 1).对于primitive类型(byte,short,int,long,char,boolean,"float","double")，通过 == 比较,比较存储的二进制是否相等，注意浮点数的相等性计较@see FloatTest
-        // 2).declared class(如primitive包装类型, String, 自定义class), 数组(primitive数组, declared class数组)
-        //   调用ObjectUtils.objEquals方法
+        // 1).对于primitive type(byte, short, int, long, char, boolean, float, double)，通过 == 比较,比较存储的二进制是否相等
+        // 2).对于reference type(ClassOrInterfaceType, Type Variable, Array Type), 调用ObjectUtils.objEquals方法
         boolean flag = this.code==that.code;        //int, 通过==比较
         flag &= this.isPrimary==that.isPrimary;     //boolean, 通过==比较
-        flag &= ObjectUtils.objEquals(this.wing, that.wing);    //Integer, declared class
-        flag &= ObjectUtils.objEquals(this.name, that.name);    //String, declared class
-        flag &= ObjectUtils.objEquals(this.cool, that.cool);    //Bean2Cool, declared class
-        flag &= ObjectUtils.objEquals(this.codes, that.codes);  //int[], primitive数组
-        flag &= ObjectUtils.objEquals(this.cools, that.cools);  //Bean2Cool[], declared class数组
-        //5.super的equals;如果基类是Object不需要调用super.equals
-        //如果当前类时子类,需要调用基类的equals,则需要调用
+        flag &= ObjectUtils.objEquals(this.wing, that.wing);    //Integer
+        flag &= ObjectUtils.objEquals(this.name, that.name);    //String
+        flag &= ObjectUtils.objEquals(this.cool, that.cool);    //Bean2Cool
+        flag &= ObjectUtils.objEquals(this.codes, that.codes);  //int[]
+        flag &= ObjectUtils.objEquals(this.cools, that.cools);  //Bean2Cool[]
+
+        //5.可调用基类的equals来重用代码
         //flag &= super.equals(o);
         return flag;
     }
@@ -85,9 +85,8 @@ public class EqsHshExp {
      */
     @Override
     public int hashCode() {
-        //1).对于primitive类型(byte,short,int,long,char,boolean,"float","double")，使用其包装器的static hashCode方法
-        //2).declared class(如primitive包装类型, String, 自定义class), 数组(primitive数组, declared class数组)
-        //   调用ObjectUtils.objHashCode方法
+        //1).primitive type(byte, short, int, long, char, boolean, float, double)，使用其包装类型的static hashCode方法
+        //2).reference type(ClassOrInterfaceType, Type Variable, Array Type), 调用ObjectUtils.objHashCode方法
         int hashCode = Integer.hashCode(this.code);
         hashCode = 29*hashCode + ObjectUtils.objHashCode(name);
         hashCode = 29*hashCode + ObjectUtils.objHashCode(cool);
@@ -99,8 +98,8 @@ public class EqsHshExp {
     }
 
 
-    public static void main(String argv[]) {
-        /** EqsHshExp.equals(EqsHshExp)
+    public static void main(String[] argv) {
+        /* EqsHshExp.equals(EqsHshExp)
          * */
         EqsHshExp exp1 = new EqsHshExp(1, true,
                 1, "name", new Bean2Cool(1), new int[]{1}, new Bean2Cool[]{new Bean2Cool(2)});
@@ -109,7 +108,7 @@ public class EqsHshExp {
                 1, "name", new Bean2Cool(1), new int[]{1}, new Bean2Cool[]{new Bean2Cool(2)});
         System.out.println("exp1 == exp2: " + exp1.equals(exp2));
 
-        /**EqsHshExp.equals(EqsHshExpSub)
+        /* EqsHshExp.equals(EqsHshExpSub)
          * */
         EqsHshExpSub sub1 = new EqsHshExpSub(2, 1, true,
                 1, "name", new Bean2Cool(1), new int[]{1}, new Bean2Cool[]{new Bean2Cool(2)});

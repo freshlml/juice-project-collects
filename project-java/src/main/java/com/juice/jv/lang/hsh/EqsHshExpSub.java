@@ -2,7 +2,7 @@ package com.juice.jv.lang.hsh;
 
 public class EqsHshExpSub extends EqsHshExp {
 
-    private int e;
+    private final int e;
     public EqsHshExpSub(int e, int code, boolean isPrimary, Integer wing, String name, Bean2Cool cool, int[] codes, Bean2Cool[] cools) {
         super(code, isPrimary, wing, name, cool, codes, cools);
         this.e = e;
@@ -27,8 +27,8 @@ public class EqsHshExpSub extends EqsHshExp {
         return hashCode;
     }
 
-    public static void main(String argv[]) {
-        /** EqsHshExpSub.equals(EqsHshExpSub)
+    public static void main(String[] argv) {
+        /* EqsHshExpSub.equals(EqsHshExpSub)
          * */
         EqsHshExpSub sub1 = new EqsHshExpSub(2, 1, true,
                 1, "name", new Bean2Cool(1), new int[]{1}, new Bean2Cool[]{new Bean2Cool(2)});

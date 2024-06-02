@@ -1,7 +1,7 @@
 package com.juice.jv.lang.hsh;
 
 public class Bean2Cool {
-    private int i;
+    private final int i;
 
     public Bean2Cool(int i) {
         this.i = i;
@@ -13,8 +13,7 @@ public class Bean2Cool {
         if(o == null) return false;
         if(this.getClass() != o.getClass()) return false;
         Bean2Cool that = (Bean2Cool) o;
-        boolean flag = this.i==that.i;
-        return flag;
+        return this.i == that.i;
     }
 
     @Override
