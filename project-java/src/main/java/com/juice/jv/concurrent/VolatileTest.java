@@ -162,6 +162,10 @@ class CopyOnWriteTemp {
     public int get() {
         return this.temp.getI();
     }
+
+    public Temp getTemp() {
+        return new UnmodifiableTemp(this.temp);
+    }
 }
 class Temp {
     private int i;
@@ -177,5 +181,26 @@ class Temp {
     }
     public void add(int added) {
         this.i += added; //may overflow
+    }
+}
+
+class UnmodifiableTemp extends Temp {
+    private final Temp temp;
+    public UnmodifiableTemp(Temp temp) {
+        this.temp = temp;
+    }
+
+    @Override
+    public int getI() {
+        return this.temp.getI();
+    }
+
+    @Override
+    public void setI(int i) {
+        throw new UnsupportedOperationException("不支持修改");
+    }
+    @Override
+    public void add(int added) {
+        throw new UnsupportedOperationException("不支持修改");
     }
 }
