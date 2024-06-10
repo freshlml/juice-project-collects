@@ -2,7 +2,7 @@ package com.juice.jv.concurrent;
 
 public class ImmutableMeaningTest {
 
-    //An object is immutable: 该对象构造之后，其状态保持不变. A class is immutable, 则额外要求类加载之后 static field 保持不变.
+    //An object is immutable: 该对象构造之后，其状态保持不变. A class is immutable, 则额外要求类初始化之后 static field 保持不变.
 
     //class Boolean, Byte, Short, Integer, Long, Float, Double, String is immutable.
     //class Enum Constant, Annotation Instance is immutable.
@@ -158,7 +158,7 @@ public class ImmutableMeaningTest {
     }*/
 
 
-    //immutable 的例子甚多，总之，要紧扣 immutable 的定义，即，对象构造(类加载)之后，状态不变.
+    //immutable 的例子甚多，总之，要紧扣 immutable 的定义，即，对象构造(类初始化)之后，状态不变.
 
     //A class 中存在若干 field，其状态保持不变，同时存在若干 field，其状态会发生改变.
 

@@ -163,7 +163,7 @@ class CopyOnWriteTemp {
         return this.temp.getI();
     }
 
-    public Temp getTemp() {
+    public Temp getReadOnly() {
         return new UnmodifiableTemp(this.temp);
     }
 }

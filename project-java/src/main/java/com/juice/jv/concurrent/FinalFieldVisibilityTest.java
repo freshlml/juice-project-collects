@@ -48,9 +48,10 @@ public class FinalFieldVisibilityTest {
     }
 
     //final practice
-    // final --> immutable
-    // final --> effectively immutable
-    // final --> mutable unmodifiable wrap
+    //  1). --> immutable
+    //  2). --> effectively immutable
+    //  3). --> mutable unmodifiable wrap
+    //  4). --> thread-safe type
 }
 
 
