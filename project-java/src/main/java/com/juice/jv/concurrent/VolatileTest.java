@@ -185,16 +185,9 @@ class Temp {
 }
 
 class UnmodifiableTemp extends Temp {
-    private final Temp temp;
     public UnmodifiableTemp(Temp temp) {
-        this.temp = temp;
+        super(temp.getI());
     }
-
-    @Override
-    public int getI() {
-        return this.temp.getI();
-    }
-
     @Override
     public void setI(int i) {
         throw new UnsupportedOperationException("不支持修改");
