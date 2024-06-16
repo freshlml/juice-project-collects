@@ -36,9 +36,8 @@ public class EqsHshExp {
      * 1. reflexive(自反性): x.equals(x) return true
      * 2. symmetric(对称性): x.equals(y) return true <==> y.equals(x) return true
      * 3. transitive(传递性): x.equals(y) return true; y.equals(x) return true ==> x.equals(z) return true
-     * 4. consistent(一致性): 多次调用 x.equals(y) 返回相同的值，只要不修改对象的equals比较中使用的信息
+     * 4. consistent(一致性): 多次调用 x.equals(y) 不修改对象的equals比较中使用的信息 & 多线程之间的线程安全性
      * 5. null: x.equals(null) return false
-     * 6. immutable保证
      */
     @Override
     public boolean equals(Object o) {
