@@ -22,13 +22,13 @@ public class ThreadSafeTest {
      *       将该共享对象封装在 scope，在 scope 中跟踪该对象只作读操作，控制不对 scope 之外返回该对象
      *
      *    5. not thread-safe 共享对象
-     *       将该"not thread-safe 共享对象"封装在 scope，在 scope 中跟踪该对象作线程安全控制，控制对 scope 之外的返回值满足"return-type-safe"原则
+     *       原则上，一个"not thread-safe 共享对象"不直接暴露给scope之外。在 scope 中对该对象作线程安全控制。控制对 scope 之外的返回值满足"return-type-safe"原则
      *
      *    6. thread-safe 共享对象
      *       1). 直接暴露给 scope 之外
      *       2). ConcurrentHashMap 泛型实例化的类型 thread-safe & return-type-safe
      *       3). 如果存在方法返回值不满足"return-type-safe"原则
-     *           将该"thread-safe 共享对象"封装在 scope，在 scope 中跟踪该对象返回值作线程安全控制，控制对 scope 之外的返回值满足"return-type-safe"原则
+     *           将该"thread-safe 共享对象"封装在 scope，在 scope 中对该对象返回值作线程安全控制，控制对 scope 之外的返回值满足"return-type-safe"原则
      *
      * 共享对象的返回值原则
      *    1. 共享对象本身的方法返回值满足"return-type-safe"原则: 在当前线程中使用(方法调用，返回值等级联的、任意的使用)不存在线程安全问题
@@ -56,14 +56,11 @@ public class ThreadSafeTest {
      *
      * A class(object) is thread-safe: (前提: body 之中共享变量、共享对象的使用需要线程安全)。instance field (当成共享的) 在 body 中的使用需要线程安全，即 object can be shared
      *
-     * A thread-safe class(object):
-     *    1. 在任意线程中构造器调用，方法调用是线程安全(如果不考虑参数的影响)
-     *    2. 如果传参一个 not return-type-safe 的共享对象(或者包含共享数据)，则该参数的使用不一定是线程安全的
-     *    3. 方法返回值:
-     *       1). 一般的，满足"return-type-safe"原则
-     *       2). 存在一些情况无法保证此原则，如返回值类型是泛型
-     *
+     * 构造器和方法传参: 如果传递一个共享对象(或者包含共享数据)，则要确保内部使用时线程安全
+     * 方法返回值: 如果返回一个共享对象(或者包含共享数据)，则要跟踪之使之使用线程安全
      *
      */
+
+
 
 }
