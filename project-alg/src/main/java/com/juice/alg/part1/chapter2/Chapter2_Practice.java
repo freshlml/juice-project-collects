@@ -1,16 +1,172 @@
-package com.juice.alg.chapter1_2;
+package com.juice.alg.part1.chapter2;
+
+import java.util.Arrays;
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
+
+public class Chapter2_Practice {
+
+    //练习题 2.1-4
+    public static int[] binary_add(int[] a, int[] b) {
+        int[] c = new int[a.length+1];
+
+        for(int i=0; i < a.length; i++) {
+            int sum = a[i] + b[i] + c[i];
+            switch (sum) {
+                case 3:
+                    c[i+1] = 1;
+                    c[i] = 1;
+                    break;
+                case 1:
+                    c[i+1] = 0;
+                    c[i] = 1;
+                    break;
+                case 2:
+                    c[i+1] = 1;
+                    c[i] = 0;
+                    break;
+                case 0:
+                    c[i+1] = 0;
+                    c[i] = 0;
+                    break;
+                default :
+                    c[i+1] = 0;
+                    c[i] = -1;
+            }
+        }
+        return c;
+    }
+    /*
+     *"循环不不变式":
+     * 初始化: c[a.length+1] all赋值为0; i=0
+     * 保持: c[k+1,k,...,0]为a[k,...,0]与b[k,...,0]的和 ===> c[k+2,k+1,...,0]为a[k+1,...,0]与b[k+1,...,0]
+     * 终止: i=a.length终止
+     */
 
 
-public class Chapter1_2_2 {
+    //练习题 2.2-1: 用Θ记号表示 n^3/1000 - 100*n^2 - 100*n + 3
+    //  Θ = n^3
+
+    /** 练习题 2.2-2: 选择排序 {@link Chapter2#selection_sort(int[])}*/
+
+
+    public static void main(String[] argv) {
+        int[] a = {1, 2, 2, 3, 4, 4, 5, 6};
+
+        int pos = binary_search_af(a, 3);
+        System.out.println(pos);
+        System.out.println("#############################################");
+
+        int[] b = {3, 6, 1, 2, 9, 2, 4, 7, 1};
+        insertion_sort_binary(b);
+        Arrays.stream(b).forEach(ArrayPrinter.of(a.length)::print);
+        System.out.println("#############################################");
+
+        int[] c = {9,2,3,2,3,8,6,1};
+        System.out.println(merge_reverse_pair(c));
+    }
+
+
+    //练习题 2.3-5，二分查找法,Ω=log2(n)
+    public static boolean binary_search(int[] a, int key) {
+        if(a == null) return false;
+        if(a.length == 0) return false;
+
+        return binary_search(a, 0, a.length, key);
+    }
+    public static boolean binary_search(int[] a, int begin, int end, int key) {
+        int n = end - begin;
+        if(n==0) return false;
+        if(n==1) return a[begin]==key;
+
+        boolean ret;
+        if(a[begin + n/2] > key) {
+            ret = binary_search(a, begin, begin + n / 2, key);
+        } else if(a[begin + n/2] < key) {
+            ret = binary_search(a, begin + n/2 + 1, end, key);
+        } else {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    //练习2.3-6
+    //1.递增序列找到第一个(逆序来看)<=的
+    public static int binary_search_af(int[] a, int key) {
+        if(a == null) return -1;
+        if(a.length == 0) return -1;
+
+        return binary_search_af(a, 0, a.length, key);
+    }
+    public static int binary_search_af(int[] a, int begin, int end, int key) {
+
+        int n = end - begin;
+        if(n == 0) return -1;
+        if(n == 1) return a[begin]<=key ? begin : -1;
+
+        int pos = -1;
+        if(a[begin + n/2] > key) {
+            pos = binary_search_af(a, begin, begin + n / 2, key);
+        } else if(a[begin + n/2] <= key) {
+            pos = binary_search_af(a, begin + n/2 + 1, end, key);
+            if(pos == -1) pos = begin + n/2;
+        }
+
+        return pos;
+    }
+    //2.并不能做到Ω=n*log2(n),实际还是Ω=n^2
+    public static int binary_search_af_mv(int[] a, int begin, int end, int key) {
+
+        int n = end - begin;
+        if(n == 0) return -1;
+        if(n == 1) {
+            if(a[begin]<=key) return begin;
+            else {
+                a[begin+1] = a[begin];
+                return -1;
+            }
+        }
+
+        int pos = -1;
+        if(a[begin + n/2] > key) {
+            for(int k=end; k>(begin + n/2); k--) {
+                a[k] = a[k-1];
+            }
+            pos = binary_search_af_mv(a, begin, begin + n / 2, key);
+        } else if(a[begin + n/2] <= key) {
+            pos = binary_search_af_mv(a, begin + n/2 + 1, end, key);
+            if(pos == -1) pos = begin + n/2;
+        }
+
+        return pos;
+    }
+    public static void insertion_sort_binary(int[] a) {
+        if(a == null) return;
+        if(a.length == 0 || a.length == 1) return;
+
+        for(int j = 1; j<a.length; j++) {
+            int key = a[j];
+            int pos = binary_search_af_mv(a, 0, j, key);
+            a[pos+1] = key;
+        }
+
+    }
+
+
+    //练习2.3-7
+    //1.先归并排序，再二分查找
+    //2.n个元素，任取两个元素: C(2,n)=n*(n-1)/2
+    //3.todo
+
 
     //思考题2-1
-    public static void merge_insert_sort(int a[], int k) {
+    public static void merge_insert_sort(int[] a, int k) {
         if(a == null) return;
         if(a.length == 0 || a.length == 1) return;
 
         merge_insert_sort(a, 0, a.length, k);
     }
-    public static void merge_insert_sort(int a[], int begin, int end, int k) {
+    public static void merge_insert_sort(int[] a, int begin, int end, int k) {
 
         int n = end - begin;
         if(n <= k) {
@@ -21,7 +177,7 @@ public class Chapter1_2_2 {
         merge_insert_sort(a, begin, begin + n/2, k);
         merge_insert_sort(a, begin + n/2, end, k);
 
-        Chapter1_2.merge(a, begin, begin + n/2, end);
+        Chapter2.merge(a, begin, begin + n/2, end);
     }
     private static void sort_by_insert(int[] a, int begin, int end) {
         if(a == null) return;
@@ -101,13 +257,13 @@ public class Chapter1_2_2 {
 
     //思考题2-4
     //b. {1,2,3,...,n}的递减数列最多，共(n-1)*n/2个逆序对
-    public static int merge_reverse_pair(int a[]) {
+    public static int merge_reverse_pair(int[] a) {
         if(a == null) return 0;
         if(a.length == 0 || a.length == 1) return 0;
 
         return merge_reverse_pair(a, 0, a.length);
     }
-    public static int merge_reverse_pair(int a[], int begin, int end) {
+    public static int merge_reverse_pair(int[] a, int begin, int end) {
 
         int n = end-begin;
         if(n == 1) return 0;
@@ -119,7 +275,7 @@ public class Chapter1_2_2 {
 
         return left + right + re;
     }
-    public static int merge_reverse(int a[], int p, int q, int r) {
+    public static int merge_reverse(int[] a, int p, int q, int r) {
         int[] left = new int[q-p+1];
         left[left.length-1] = Integer.MAX_VALUE;
         int[] right = new int[r-q+1];
@@ -141,9 +297,5 @@ public class Chapter1_2_2 {
         return re;
     }
 
-    public static void main(String argv[]) {
-        int a[] = {9,2,3,2,3,8,6,1};
-        System.out.println(merge_reverse_pair(a));
-    }
 
 }

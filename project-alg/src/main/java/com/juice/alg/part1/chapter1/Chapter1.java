@@ -1,6 +1,6 @@
-package com.juice.alg.chapter1_1;
+package com.juice.alg.part1.chapter1;
 
-public class Chapter1_1 {
+public class Chapter1 {
     /**
      *第一: 子序列数量计算
      *   n个元素的集合(A1,A2,A3,...,An), 其子集个数: 2^n
@@ -20,7 +20,6 @@ public class Chapter1_1 {
      *练习题 1.2-2: 对规模为 n 的输入，插入排序取 8*n^2，归并排序取 64*n*lgN，求哪些 n 值，插入排序优于归并排序？
      *  令 F(n) = 8*n*n - 64*n*lgN
      *  F'(n) = 0  ==> 极值点，分析单调区间，从而得出在哪些区间 F(n) < 0，即可得到这些 n 值，使得插入排序优于归并排序
-     *
      */
 
 

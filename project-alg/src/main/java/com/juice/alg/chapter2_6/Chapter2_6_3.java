@@ -1,6 +1,6 @@
 package com.juice.alg.chapter2_6;
 
-import com.juice.alg.chapter1_2.Chapter1_2;
+import com.juice.alg.part1.chapter2.Chapter2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,13 +38,13 @@ public class Chapter2_6_3 {
         for(int i=0, start=0; i<k_list.size(); ) {
 
             if (i + 1 < k_list.size()) {
-                Chapter1_2.merge(a, start, k_list.get(i), k_list.get(i + 1));
+                Chapter2.merge(a, start, k_list.get(i), k_list.get(i + 1));
                 start = k_list.get(i+1);
                 n_k_list.add(start);
                 i = i+2;
             }
             else {
-                Chapter1_2.merge(a, start, k_list.get(i), a.length);
+                Chapter2.merge(a, start, k_list.get(i), a.length);
                 break;
             }
         }

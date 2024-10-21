@@ -1,25 +1,25 @@
-package com.juice.alg.chapter1_2;
+package com.juice.alg.part1.chapter2;
 
 import java.util.Arrays;
 
-public class Chapter1_2 {
+public class Chapter2 {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
 
-        int a[] = {7, 3, 2, 4, 5, 2};
+        int[] a = {7, 3, 2, 4, 5, 2};
         insertion_sort(a);
-        Arrays.stream(a).forEach(System.out::println);
-        System.out.println("###############");
+        Arrays.stream(a).forEach(ArrayPrinter.of(a.length)::print);
+        System.out.println("#############################################");
 
-        int b[] = {7, 3, 2, 4, 5, 2};
+        int[] b = {7, 3, 2, 4, 5, 2};
         selection_sort(b);
-        Arrays.stream(b).forEach(System.out::println);
-        System.out.println("###############");
+        Arrays.stream(b).forEach(ArrayPrinter.of(a.length)::print);
+        System.out.println("#############################################");
 
-        int c[] = {7, 3, 2, 4, 5, 2};
+        int[] c = {7, 3, 2, 4, 5, 2};
         merge_sort(c);
-        Arrays.stream(c).forEach(System.out::println);
-        System.out.println("###############");
+        Arrays.stream(c).forEach(ArrayPrinter.of(a.length)::print);
+        System.out.println("#############################################");
     }
 
 
@@ -27,46 +27,46 @@ public class Chapter1_2 {
         if(a == null) return;
         if(a.length == 0 || a.length == 1) return;
 
-        for(int j = 1; j<a.length; j++) {
-            int key = a[j];
-            int i = j-1;
-            while(i >= 0 && a[i] > key) {  //if >=: 相等的值的相对位置发生逆转
-                a[i+1] = a[i];
-                i--;
+        for(int i=1; i < a.length; i++) {
+            int ka = a[i];
+            int j = i - 1;
+            while(j >= 0 && a[j] > ka) {  //如果使用 a[j] >= ka: 相等的值的原相对位置发生逆转
+                a[j+1] = a[j];
+                j--;
             }
-            a[i+1] = key;
+            a[j+1] = ka;
         }
 
     }
     /**
      *"循环不变时式"的数学归纳法证明
      *
-     * 初始化: 初始化令j=1，因为A[0]是有序的
+     * 初始化: 初始化令i=1，因为A[0]是有序的
      * 保持: A[0,1...,k]有序，循环一次后，A[0,1,...,k,k+1]有序
-     * 终止: j=n时终止，此时A{0,1,...,n-1}有序
+     * 终止: i=n时终止，此时A{0,1,...,n-1}有序
      *
-     *insertion_sort运行时间分析(假设每条语句运行的时间是一个常数C)
-     * T(n) = C1*n + C2*(n-1) + C3*ΣPj,j=1 to n-1 + C4*(ΣPj - 1)
-     * 其中ΣPj'max = 1 + 2 + 3 + ... + (n-1) = n*(n-1)/2
-     *    ΣPj'min = 1 + 1 + 1 + ... + 1 = n-1
+     *insertion_sort运行时间分析( 假设每条语句运行的时间是一个常数 C )
+     * T(n) = C1*n + C2*(n-1) + C3*ΣPi + C4*(ΣPi - 1)   , i=1 to n-1
+     * 其中ΣPi'max = 1 + 2 + 3 + ... + (n-1) = n*(n-1)/2
+     *    ΣPi'min = 1 + 1 + 1 + ... + 1 = n-1
      * T(n)'max = C1*n + C2*(n-1) + C3*[n*(n-1)/2] + C4*[n*(n-1)/2 - 1]
      *          = C1*n + C2*n - C2 + (C3+C4)/2*n^2 - (C3+C4)/2*n - C4
      *          ≈ C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n
-     *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中语句一次执行的时间之和; C1=for外围; C2=for中while外围
-     *O=n^2
+     *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中所有语句执行一次的时间之和; C1=for; C2=for中除while之外的语句
+     *Θ = n^2
      *
      */
 
 
-    public static void selection_sort(int a[]) {
+    public static void selection_sort(int[] a) {
         if(a == null) return;
         if(a.length == 0 || a.length == 1) return;
 
-        for(int i=0; i<a.length-1; i++) {
+        for(int i=0; i < a.length-1; i++) {
             int j = i+1;
             int p = i;
             while(j < a.length) {
-                if (a[j] < a[p]) {
+                if(a[j] < a[p]) {
                     p = j;
                 }
                 j++;
@@ -96,13 +96,13 @@ public class Chapter1_2 {
      *     ≈ (C3+C4)*n*log2(n) ,C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
      *O=n*log2(n)
      */
-    public static void merge_sort(int a[]) {
+    public static void merge_sort(int[] a) {
         if(a == null) return;
         if(a.length == 0 || a.length == 1) return;
 
         merge_sort(a, 0, a.length);
     }
-    public static void merge_sort(int a[], int begin, int end) {
+    public static void merge_sort(int[] a, int begin, int end) {
 
         int n = end - begin;
         if(n == 1) return;
@@ -113,7 +113,7 @@ public class Chapter1_2 {
         merge(a, begin, begin + n/2, end);
 
     }
-    public static void merge(int a[], int p, int q, int r) {
+    public static void merge(int[] a, int p, int q, int r) {
 
         /*for(int i=p, j=q; i<j && j<r; ) {
 
@@ -146,4 +146,28 @@ public class Chapter1_2 {
         }
     }
 
+
+    static class ArrayPrinter {
+        private final int length;
+        private int count = 1;
+
+        ArrayPrinter(int length) {
+            //assert length > 0
+            this.length = length;
+        }
+
+        <T> void print(T t) {
+            System.out.print(t);
+            if(count < length) {
+                System.out.print(", ");
+            } else {
+                System.out.println();
+            }
+            count++;
+        }
+
+        static ArrayPrinter of(int length) {
+            return new ArrayPrinter(length);
+        }
+    }
 }
