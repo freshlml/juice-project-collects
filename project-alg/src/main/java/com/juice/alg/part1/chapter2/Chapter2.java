@@ -20,6 +20,8 @@ public class Chapter2 {
         merge_sort(c);
         Arrays.stream(c).forEach(ArrayPrinter.of(a.length)::print);
         System.out.println("#############################################");
+
+        Arrays.stream(c).forEach(ArrayPrinter.of(3)::print);  //ArrayPrinter.of(3): parameter 3 is not a matched length
     }
 
 
@@ -168,11 +170,10 @@ public class Chapter2 {
 
     static class ArrayPrinter {
         static final String SEP = ", ";
-        private final int length;
-        private int count = 1;
+        final int length;
+        int count = 1;
 
         ArrayPrinter(int length) {
-            //assert length > 0
             this.length = length;
         }
 
