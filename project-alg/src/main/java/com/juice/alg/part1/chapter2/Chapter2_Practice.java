@@ -68,6 +68,8 @@ public class Chapter2_Practice {
         insertion_sort_binary(b);
         Arrays.stream(b).forEach(ArrayPrinter.of(a.length)::print);
         System.out.println("#############################################");
+
+        Arrays.stream(b).forEach(ArrayPosPrinter.of(3, 5)::print);  //ArrayPosPrinter.of(3): parameter 3 is not a matched length
     }
 
 
@@ -187,49 +189,58 @@ public class Chapter2_Practice {
 
 
     static class ArrayPosPrinter extends ArrayPrinter {
-        private final int limit;
+        private final int position;
         private int weight = 0;
-        private int pos = 0;
+        private boolean tag = true;
 
-        ArrayPosPrinter(int length, int limit) {
-            //assert limit < length
+        ArrayPosPrinter(int length, int position) {
             super(length);
-            this.limit = limit;
+            this.position = position;
         }
 
         @Override
         <T> void printElement(T t) {
             System.out.print(t);
-            if(pos < limit) {
+            if(count <= position) {
                 String s = String.valueOf(t);
                 weight += s.length();  //may overflow
+                /*if(count >= length) {
+                    tag = false;
+                    weight = 0;
+                }*/
+            }
+
+            if(count == position + 1) {
+                tag = true;
             }
         }
 
         @Override
         void printSep() {
             super.printSep();
-            if(pos < limit) {
+            if(count <= position) {
                 weight += SEP.length();  //may overflow
-                pos++;
             }
         }
 
         @Override
         void printEnd() {
             System.out.println();
-            for(int i=0; i < weight; i++) {
-                System.out.print(" ");
-            }
-            if(limit >= 0) {
-                System.out.println("🚩, at position " + limit);
-            } else {
-                System.out.println("could not found...");
+            if(tag) {
+                for (int i = 0; i < weight; i++) {
+                    System.out.print(" ");
+                }
+                if (position >= 0) {
+                    System.out.println("🚩, at position " + position);
+                } else {
+                    System.out.println("could not find, position = " + position);
+                }
+                tag = false;
             }
         }
 
-        static ArrayPosPrinter of(int length, int pos) {
-            return new ArrayPosPrinter(length, pos);
+        static ArrayPosPrinter of(int length, int position) {
+            return new ArrayPosPrinter(length, position);
         }
 
     }
