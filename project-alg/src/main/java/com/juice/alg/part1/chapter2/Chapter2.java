@@ -53,7 +53,7 @@ public class Chapter2 {
      *          = C1*n + C2*n - C2 + (C3+C4)/2*n^2 - (C3+C4)/2*n - C4
      *          ≈ C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n
      *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中所有语句执行一次的时间之和; C1=for; C2=for中除while之外的语句
-     *Θ = n^2
+     *Θ(n^2)  注: 之前的写法: Ω = n^2
      *
      */
 
@@ -80,7 +80,7 @@ public class Chapter2 {
 
 
     /**
-     *merge_sort运行时间分析
+     *merge_sort运行时间分析 (递归树)
      *                        [n]
      *           [n/2]                      [n/2]                   第1次分解, n/2^1   2^0次merge
      *      [n/4]      [n/4]          [n/4]         [n/4]           第2次分解, n/2^2   2^1次merge
@@ -94,7 +94,7 @@ public class Chapter2 {
      *     = 2*C1*n - C1 + C2*n - C2 + (C3+C4)*x*2^x - C4*n
      *     ≈ 2*C1*n + C2*n + (C3+C4)*n*log2(n) - C4*n
      *     ≈ (C3+C4)*n*log2(n) ,C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
-     *O=n*log2(n)
+     *Θ(n*log2(n))   注: 之前的写法: Ω = n*log2(n)
      */
     public static void merge_sort(int[] a) {
         if(a == null) return;
@@ -103,15 +103,14 @@ public class Chapter2 {
         merge_sort(a, 0, a.length);
     }
     public static void merge_sort(int[] a, int begin, int end) {
-
         int n = end - begin;
         if(n == 1) return;
 
-        merge_sort(a, begin, begin + n/2);
-        merge_sort(a, begin + n/2, end);
+        int mi = begin + n/2;
+        merge_sort(a, begin, mi);
+        merge_sort(a, mi, end);
 
-        merge(a, begin, begin + n/2, end);
-
+        merge(a, begin, mi, end);
     }
     public static void merge(int[] a, int p, int q, int r) {
 
@@ -144,10 +143,31 @@ public class Chapter2 {
                 i++;
             }
         }
+
+        /*int[] left = new int[q-p];
+        System.arraycopy(a, p, left, 0, left.length);
+        int[] right = new int[r-q];
+        System.arraycopy(a, q, right, 0, right.length);
+
+        for(int i = 0, j = 0, k = p; k < r; k++) {
+            if(j == right.length || (i != left.length && left[i] < right[j])) {
+                a[k] = left[i];
+                i++;
+            } else if(i == left.length || left[i] > right[j]) {
+                a[k] = right[j];
+                j++;
+            } else {  //j != right.length && i != left.length && left[i] == right[j]
+                a[k] = left[i];
+                i++;
+                a[++k] = right[j];
+                j++;
+            }
+        }*/
     }
 
 
     static class ArrayPrinter {
+        static final String SEP = ", ";
         private final int length;
         private int count = 1;
 
@@ -157,13 +177,23 @@ public class Chapter2 {
         }
 
         <T> void print(T t) {
-            System.out.print(t);
+            printElement(t);
             if(count < length) {
-                System.out.print(", ");
+                printSep();
             } else {
-                System.out.println();
+                printEnd();
             }
             count++;
+        }
+
+        <T> void printElement(T t) {
+            System.out.print(t);
+        }
+        void printSep() {
+            System.out.print(SEP);
+        }
+        void printEnd() {
+            System.out.println();
         }
 
         static ArrayPrinter of(int length) {
