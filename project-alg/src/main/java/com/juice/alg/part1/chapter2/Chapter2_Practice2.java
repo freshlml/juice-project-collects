@@ -1,9 +1,21 @@
 package com.juice.alg.part1.chapter2;
 
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
+import com.juice.alg.part1.chapter2.Chapter2_Practice.ArrayPosPrinter;
+
 public class Chapter2_Practice2 {
 
     public static void main(String[] argv) {
-        int[] c = {9,2,3,2,3,8,6,1};
+        int[] a = {3, 6, 1, 2, 9, 2, 4, 7, 1};
+
+        merge_insert_sort(a, 4);
+        IntArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
+        System.out.println("#############################################");
+
+        IntArrayTraversal.of(a, 2,7).forEach(ArrayPosPrinter.of(3)::print);
+        System.out.println("#############################################");
+
+        int[] c = {9, 2, 3, 2, 3, 8, 6, 1};
         System.out.println(merge_reverse_pair(c));
     }
 
@@ -29,13 +41,11 @@ public class Chapter2_Practice2 {
         Chapter2.merge(a, begin, mi, end);
     }
     private static void sort_by_insert(int[] a, int begin, int end) {
-        if(a == null) return;
-        if(a.length == 0 || a.length == 1) return;
-
-        for(int j = begin+1; j<end; j++) {
+        int j = begin + 1;
+        for(; j < end; j++) {
             int key = a[j];
-            int i = j-1;
-            while(i >= 0 && a[i] > key) {
+            int i = j - 1;
+            while(i >= begin && a[i] > key) {
                 a[i+1] = a[i];
                 i--;
             }
@@ -149,4 +159,58 @@ public class Chapter2_Practice2 {
         return re;
     }
 
+
+    static class IntArrayTraversal {
+        private final int[] array;
+        private final int begin;
+        private final int end;
+
+        /**
+         * @param array  the array for traversal
+         * @throws NullPointerException          if the specified array is null
+         */
+        private IntArrayTraversal(int[] array) {
+            this(array, 0, array.length);
+        }
+
+        /**
+         * @param array  the array for traversal
+         * @param begin  the start position of traversal, inclusive
+         * @param end    the end position of traversal, exclusive
+         * @throws NullPointerException          if the specified array is null
+         * @throws IllegalArgumentException      if the specified begin, end is negative
+         *                                    or if begin >= array.length, end > array.length
+         *                                    or if begin > end
+         */
+        private IntArrayTraversal(int[] array, int begin, int end) {
+            if(array == null) throw new NullPointerException("array can not be null");
+            if(begin < 0 || end < 0 || begin >= array.length || end > array.length || begin > end)
+                throw new IllegalArgumentException("begin, end parameter error");
+
+            this.array = array;
+            this.begin = begin;
+            this.end = end;
+        }
+
+        @FunctionalInterface
+        interface PerElement<E> {
+            void per(E e, int pos, int limit);
+        }
+
+        static IntArrayTraversal of(int[] array) {
+            return new IntArrayTraversal(array);
+        }
+
+        static IntArrayTraversal of(int[] array, int begin, int end) {
+            return new IntArrayTraversal(array, begin, end);
+        }
+
+        void forEach(PerElement<Integer> handler) {
+            int i;
+            for(i = begin; i < end; i++) {
+                handler.per(array[i], i, end - 1);
+            }
+        }
+
+    }
 }
