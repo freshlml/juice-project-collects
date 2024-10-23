@@ -188,7 +188,7 @@ public class Chapter2_Practice {
     //     }
 
 
-    static class ArrayPosPrinter extends ArrayPrinter {
+    static class ArrayPosPrinter<E> extends ArrayPrinter<E> {
         private final int position;
         private int weight = 0;
         private boolean tag = true;
@@ -197,9 +197,13 @@ public class Chapter2_Practice {
             super(length);
             this.position = position;
         }
+        ArrayPosPrinter(int position) {
+            super();
+            this.position = position;
+        }
 
         @Override
-        <T> void printElement(T t) {
+        void printElement(E t) {
             System.out.print(t);
             if(count <= position) {
                 String s = String.valueOf(t);
@@ -239,8 +243,12 @@ public class Chapter2_Practice {
             }
         }
 
-        static ArrayPosPrinter of(int length, int position) {
-            return new ArrayPosPrinter(length, position);
+        static <E> ArrayPosPrinter<E> of(int length, int position) {
+            return new ArrayPosPrinter<>(length, position);
+        }
+
+        static <E> ArrayPosPrinter<E> of(int position) {
+            return new ArrayPosPrinter<>(position);
         }
 
     }
