@@ -168,16 +168,27 @@ public class Chapter2 {
     }
 
 
-    static class ArrayPrinter {
+    static class ArrayPrinter<E> {
         static final String SEP = ", ";
+        @Deprecated
         final int length;
         int count = 1;
 
         ArrayPrinter(int length) {
             this.length = length;
         }
+        ArrayPrinter() {
+            this.length = -1;
+        }
 
-        <T> void print(T t) {
+        void print(E e, int pos, int limit) {
+            printElement(e);
+            if(pos == limit) printEnd();
+            else printSep();
+            count++;
+        }
+
+        void print(E t) {
             printElement(t);
             if(count < length) {
                 printSep();
@@ -187,8 +198,8 @@ public class Chapter2 {
             count++;
         }
 
-        <T> void printElement(T t) {
-            System.out.print(t);
+        void printElement(E e) {
+            System.out.print(e);
         }
         void printSep() {
             System.out.print(SEP);
@@ -197,8 +208,12 @@ public class Chapter2 {
             System.out.println();
         }
 
-        static ArrayPrinter of(int length) {
-            return new ArrayPrinter(length);
+        static <E> ArrayPrinter<E> of(int length) {
+            return new ArrayPrinter<>(length);
+        }
+
+        static <E> ArrayPrinter<E> of() {
+            return new ArrayPrinter<>();
         }
     }
 }
