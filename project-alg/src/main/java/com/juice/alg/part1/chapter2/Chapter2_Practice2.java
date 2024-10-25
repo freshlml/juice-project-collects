@@ -10,9 +10,11 @@ public class Chapter2_Practice2 {
 
         merge_insert_sort(a, 4);
         IntArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
+        IntArrayTraversal.of(a, a.length, 0).forEach(ArrayPrinter.of()::print);
         System.out.println("#############################################");
 
         IntArrayTraversal.of(a, 2,7).forEach(ArrayPosPrinter.of(3)::print);
+        IntArrayTraversal.of(a, 7,2).forEach(ArrayPosPrinter.of(3)::print);
         System.out.println("#############################################");
 
         int[] c = {9, 2, 3, 2, 3, 8, 6, 1};
@@ -174,18 +176,24 @@ public class Chapter2_Practice2 {
         }
 
         /**
+         * if `begin <= end`, traversal from `begin`   to `end-1` at range [begin, end)
+         * if `begin >  end`, traversal from `begin-1` to `end`   at range [end, begin)
          * @param array  the array for traversal
          * @param begin  the start position of traversal, inclusive
          * @param end    the end position of traversal, exclusive
          * @throws NullPointerException          if the specified array is null
          * @throws IllegalArgumentException      if the specified begin, end is negative
-         *                                    or if begin >= array.length, end > array.length
-         *                                    or if begin > end
+         *                                    or if begin <= end and end > array.length
+         *                                    or if begin >  end and begin > array.length
          */
         private IntArrayTraversal(int[] array, int begin, int end) {
             if(array == null) throw new NullPointerException("array can not be null");
-            if(begin < 0 || end < 0 || begin >= array.length || end > array.length || begin > end)
-                throw new IllegalArgumentException("begin, end parameter error");
+            if(begin < 0 || end < 0)
+                throw new IllegalArgumentException("the specified begin or end is negative, begin = " + begin + ", end = " + end);
+            if(begin <= end && end > array.length)
+                throw new IllegalArgumentException("the specified end is large than array's length, end = " + end);
+            if(begin > end && begin > array.length)
+                throw new IllegalArgumentException("the specified begin is large than array's length, begin = " + begin);
 
             this.array = array;
             this.begin = begin;
@@ -206,9 +214,14 @@ public class Chapter2_Practice2 {
         }
 
         void forEach(PerElement<Integer> handler) {
-            int i;
-            for(i = begin; i < end; i++) {
-                handler.per(array[i], i, end - 1);
+            if(begin <= end) {
+                for(int i = begin; i < end; i++) {
+                    handler.per(array[i], i, end - 1);
+                }
+            } else {
+                for(int i = begin-1; i >= end; i--) {
+                    handler.per(array[i], i, end);
+                }
             }
         }
 
