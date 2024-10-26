@@ -1,6 +1,6 @@
-package com.juice.alg.chapter1_4;
+package com.juice.alg.part1.chapter4;
 
-public class Chapter1_4_3 {
+public class Chapter4_Practice {
 
     //思考题4-5,芯片检测
 

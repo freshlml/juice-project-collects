@@ -203,7 +203,7 @@ public class Chapter2_Practice {
         }
 
         @Override
-        void printElement(E t) {
+        protected void printElement(E t) {
             System.out.print(t);
             if(count <= position) {
                 String s = String.valueOf(t);
@@ -220,7 +220,7 @@ public class Chapter2_Practice {
         }
 
         @Override
-        void printSep() {
+        protected void printSep() {
             super.printSep();
             if(count <= position) {
                 weight += SEP.length();  //may overflow
@@ -228,7 +228,7 @@ public class Chapter2_Practice {
         }
 
         @Override
-        void printEnd() {
+        protected void printEnd() {
             System.out.println();
             if(tag) {
                 for (int i = 0; i < weight; i++) {

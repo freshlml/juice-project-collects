@@ -162,7 +162,7 @@ public class Chapter2_Practice2 {
     }
 
 
-    static class IntArrayTraversal {
+    public static class IntArrayTraversal {
         private final int[] array;
         private final int begin;
         private final int end;
@@ -201,19 +201,19 @@ public class Chapter2_Practice2 {
         }
 
         @FunctionalInterface
-        interface PerElement<E> {
+        public interface PerElement<E> {
             void per(E e, int pos, int limit);
         }
 
-        static IntArrayTraversal of(int[] array) {
+        public static IntArrayTraversal of(int[] array) {
             return new IntArrayTraversal(array);
         }
 
-        static IntArrayTraversal of(int[] array, int begin, int end) {
+        public static IntArrayTraversal of(int[] array, int begin, int end) {
             return new IntArrayTraversal(array, begin, end);
         }
 
-        void forEach(PerElement<Integer> handler) {
+        public void forEach(PerElement<Integer> handler) {
             if(begin <= end) {
                 for(int i = begin; i < end; i++) {
                     handler.per(array[i], i, end - 1);

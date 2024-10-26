@@ -1,9 +1,40 @@
-package com.juice.alg.chapter1_4;
+package com.juice.alg.part1.chapter4;
 
-public class Chapter1_4_2 {
+public class Chapter4 {
+    /**
+     *Chapter 4 分治策略
+     *
+     *分治策略思想
+     *  分解(Divide):  将问题划分成若干子问题，子问题的形式和原问题相同只，是规模更小
+     *  解决(Conquer): 递归地求解子问题，当子问题的规模足够小，停止递归，直接求解
+     *  合并(Combine): 将子问题的解合并成原问题的解
+     *
+     *递归式
+     *  递归式与分治策略是紧密相关的，使用递归式可以很自然的刻画分治算法的运行时间。
+     *
+     *  例如，归并排序 {@link com.juice.alg.part1.chapter2.Chapter2#merge_sort(int[])} 的最坏情况运行时间 T(n) 的递归式为:
+     *    T(n) = Θ(1)               若 n == 1
+     *         = 2*T(n/2) + Θ(n)    若 n >  1
+     *
+     *  一个通用递归式:
+     *
+     *  递归式有几种求解方法:
+     *    - Chapter 4.3 用代入法求解递归式, 猜测一个界，然后证明之
+     *    - Chapter 4.4 用递归树求解递归式, 将递归式转化成递归树求解
+     *    - Chapter 4.5 用主方法求解递归式, 可求解 T(n) = a*T(n/b) + f(n), a>=1, b>1 此种递归式的界
+     *
+     */
+    public static void main(String[] argv) {
+
+    }
 
     /**
-     *递归树
+     *Chapter 4.3 用代入法求解递归式
+     */
+
+    /**
+     *Chapter 4.4 用递归树求解递归式
+     *
      *T(n) = m*T(n/k) + f(n), f(n)为本次分解+合并的消耗
      * m决定树的茂盛，m越小，partition/merge次数越少
      * k决定树的高度，k越大，树越矮，每次partition/merge的规模越小
@@ -28,8 +59,9 @@ public class Chapter1_4_2 {
      *影响速度的因素: m,k,f(n)
      */
 
-
-
+    /**
+     *Chapter 4.5 用主方法求解递归式
+     */
 
 
 

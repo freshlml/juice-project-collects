@@ -1,6 +1,6 @@
-package com.juice.alg.chapter1_4;
+package com.juice.alg.part1.chapter4;
 
-public class Chapter1_4_1 {
+public class Chapter4_2 {
 
     /**
      *矩阵乘法

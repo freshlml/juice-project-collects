@@ -170,20 +170,20 @@ public class Chapter2 {
     }
 
 
-    static class ArrayPrinter<E> {
-        static final String SEP = ", ";
+    public static class ArrayPrinter<E> {
+        protected static final String SEP = ", ";
         @Deprecated
         final int length;
-        int count = 1;
+        protected int count = 1;
 
         ArrayPrinter(int length) {
             this.length = length;
         }
-        ArrayPrinter() {
+        protected ArrayPrinter() {
             this.length = -1;
         }
 
-        void print(E e, int pos, int limit) {
+        public void print(E e, int pos, int limit) {
             printElement(e);
             if(pos == limit) printEnd();
             else printSep();
@@ -200,13 +200,13 @@ public class Chapter2 {
             count++;
         }
 
-        void printElement(E e) {
+        protected void printElement(E e) {
             System.out.print(e);
         }
-        void printSep() {
+        protected void printSep() {
             System.out.print(SEP);
         }
-        void printEnd() {
+        protected void printEnd() {
             System.out.println();
         }
 
