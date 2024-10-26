@@ -41,13 +41,13 @@ public class Chapter4_1 {
         return result;
     }
     //分治法
-    public static SubArrayNode fzMaxSubArray(int a[]) {
+    public static SubArrayNode fzMaxSubArray(int[] a) {
         if(a == null) return new SubArrayNode();
         if(a.length == 0 || a.length == 1) return new SubArrayNode();
 
         return fzMaxSubArray(a, 0, a.length);
     }
-    public static SubArrayNode fzMaxSubArray(int a[], int begin, int end) {
+    public static SubArrayNode fzMaxSubArray(int[] a, int begin, int end) {
 
         int n = end - begin;
         if(n == 1) return new SubArrayNode(a[begin], begin, end);
@@ -58,7 +58,7 @@ public class Chapter4_1 {
         SubArrayNode max = merge(left_max, right_max, a, begin, begin + n/2, end);
         return max;
     }
-    public static SubArrayNode merge(SubArrayNode left_max, SubArrayNode right_max, int a[], int p, int q, int r) {
+    public static SubArrayNode merge(SubArrayNode left_max, SubArrayNode right_max, int[] a, int p, int q, int r) {
         SubArrayNode max = left_max;
         if(right_max.getSum() > left_max.getSum()) {
             max = right_max;
@@ -103,21 +103,21 @@ public class Chapter4_1 {
     }
 
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         int[] a = {13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7};
 
         SubArrayNode blSub = blMaxSubArray(a);
-        IntArrayTraversal.of(a).forEach(ArraySubArrayPosPrinter.of(blSub)::print);
-        System.out.println("#############################################");
+        IntArrayTraversal.of(a).forEach(ArraySubArrayNodePrinter.of(blSub)::print);
+        System.out.println("##########################################################################################");
 
         int[] a2 = {-1, -2, -3, -1};
         int[] a3 = {1, -2, -3, 1};
         //System.out.println(fzMaxSubArray(a));
         System.out.println(fzMaxSubArray(a2));
         System.out.println(fzMaxSubArray(a3));
-        System.out.println("#############################################");
+        System.out.println("##########################################################################################");
 
-        IntArrayTraversal.of(a).forEach(ArraySubArrayPosPrinter.of(new SubArrayNode(-1, 2, 7))::print);
+        IntArrayTraversal.of(a).forEach(ArraySubArrayNodePrinter.of(new SubArrayNode(-1, a.length, 7000))::print);
     }
 
     @Getter
@@ -142,12 +142,12 @@ public class Chapter4_1 {
         }
     }
 
-    static class ArraySubArrayPosPrinter<E> extends ArrayPrinter<E> {
+    static class ArraySubArrayNodePrinter<E> extends ArrayPrinter<E> {
         private final SubArrayNode subArrayNode;
         private int weight = 0;
         private int weightAccum = 0;
 
-        ArraySubArrayPosPrinter(SubArrayNode subArrayNode) {
+        private ArraySubArrayNodePrinter(SubArrayNode subArrayNode) {
             super();
             this.subArrayNode = subArrayNode;
         }
@@ -180,20 +180,20 @@ public class Chapter4_1 {
                 System.out.print(" ");
             }
             if(subArrayNode.i >= 0) {
-                System.out.print("🚩");
+                System.out.print("€");
             }
             int weightAccumAdjust = subArrayNode.i >= 0 ? weightAccum-1 : weightAccum;
             for (int i = 0; i < weightAccumAdjust; i++) {
                 System.out.print(" ");
             }
             if(subArrayNode.j >= 0 && subArrayNode.j != subArrayNode.i) {
-                System.out.print("🏴");
+                System.out.print("¶");
             }
             System.out.println(", " + subArrayNode);
         }
 
-        static <E> ArraySubArrayPosPrinter<E> of(SubArrayNode subArrayNode) {
-            return new ArraySubArrayPosPrinter<>(subArrayNode);
+        static <E> ArraySubArrayNodePrinter<E> of(SubArrayNode subArrayNode) {
+            return new ArraySubArrayNodePrinter<>(subArrayNode);
         }
     }
 }
