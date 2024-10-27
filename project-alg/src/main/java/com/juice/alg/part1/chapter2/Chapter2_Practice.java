@@ -57,11 +57,11 @@ public class Chapter2_Practice {
         int[] a = {100, 200, 200, 300, 301, 400, 400, 500, 600};
 
         int pos = binary_search(a, 4);
-        Arrays.stream(a).forEach(ArrayPosPrinter.of(a.length, pos)::print);
+        Arrays.stream(a).forEach(PositionArrayPrinter.of(a.length, pos)::print);
         System.out.println("#############################################");
 
         pos = binary_search_af(a, 300);
-        Arrays.stream(a).forEach(ArrayPosPrinter.of(a.length, pos)::print);
+        Arrays.stream(a).forEach(PositionArrayPrinter.of(a.length, pos)::print);
         System.out.println("#############################################");
 
         int[] b = {3, 6, 1, 2, 9, 2, 4, 7, 1};
@@ -69,7 +69,7 @@ public class Chapter2_Practice {
         Arrays.stream(b).forEach(ArrayPrinter.of(a.length)::print);
         System.out.println("#############################################");
 
-        Arrays.stream(b).forEach(ArrayPosPrinter.of(3, 5)::print);  //ArrayPosPrinter.of(3): parameter 3 is not a matched length
+        Arrays.stream(b).forEach(PositionArrayPrinter.of(3, 5)::print);  //ArrayPosPrinter.of(3): parameter 3 is not a matched length
     }
 
 
@@ -188,16 +188,16 @@ public class Chapter2_Practice {
     //     }
 
 
-    static class ArrayPosPrinter<E> extends ArrayPrinter<E> {
+    static class PositionArrayPrinter<E> extends ArrayPrinter<E> {
         private final int position;
         private int weight = 0;
         private boolean tag = true;
 
-        ArrayPosPrinter(int length, int position) {
+        PositionArrayPrinter(int length, int position) {
             super(length);
             this.position = position;
         }
-        ArrayPosPrinter(int position) {
+        PositionArrayPrinter(int position) {
             super();
             this.position = position;
         }
@@ -243,12 +243,12 @@ public class Chapter2_Practice {
             }
         }
 
-        static <E> ArrayPosPrinter<E> of(int length, int position) {
-            return new ArrayPosPrinter<>(length, position);
+        static <E> PositionArrayPrinter<E> of(int length, int position) {
+            return new PositionArrayPrinter<>(length, position);
         }
 
-        static <E> ArrayPosPrinter<E> of(int position) {
-            return new ArrayPosPrinter<>(position);
+        static <E> PositionArrayPrinter<E> of(int position) {
+            return new PositionArrayPrinter<>(position);
         }
 
     }

@@ -1,7 +1,7 @@
 package com.juice.alg.part1.chapter2;
 
 import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
-import com.juice.alg.part1.chapter2.Chapter2_Practice.ArrayPosPrinter;
+import com.juice.alg.part1.chapter2.Chapter2_Practice.PositionArrayPrinter;
 
 public class Chapter2_Practice2 {
 
@@ -13,8 +13,8 @@ public class Chapter2_Practice2 {
         IntArrayTraversal.of(a, a.length, 0).forEach(ArrayPrinter.of()::print);
         System.out.println("#############################################");
 
-        IntArrayTraversal.of(a, 2,7).forEach(ArrayPosPrinter.of(3)::print);
-        IntArrayTraversal.of(a, 7,2).forEach(ArrayPosPrinter.of(3)::print);
+        IntArrayTraversal.of(a, 2,7).forEach(PositionArrayPrinter.of(3)::print);
+        IntArrayTraversal.of(a, 7,2).forEach(PositionArrayPrinter.of(3)::print);
         System.out.println("#############################################");
 
         int[] c = {9, 2, 3, 2, 3, 8, 6, 1};
