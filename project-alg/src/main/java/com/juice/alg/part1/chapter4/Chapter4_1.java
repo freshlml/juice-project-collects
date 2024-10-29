@@ -13,13 +13,14 @@ public class Chapter4_1 {
      *  2. 暴力解法
      *     遍历每一个连续子数组，利用先前计算的子数组和计算当前子数组的和，O(n^2)
      *  3. 分治法
-     *     1).最大连续子数组的左，右相邻元素一定<=0
-     *     2).最大连续子数组的左，右项分别相加一定<=0
-     *     3).merge策略
-     *        left(max), right(max), left(max) + left(all) + right(m)
-     *        left(max) + left(all) + right(all) + right(max)
-     *        left(m) + right(m), left(m) + right(all) + right(max)
-     *  4. 分治法的递归式，递归树求解O，递归式推出O
+     *     1). left_gap、right_gap 的和必定 < 0
+     *     2). merge策略
+     *        left_max, right_max, left_max + left_gap_sum + right_gap_max
+     *        left_max + left_gap_sum + right_gap_sum + right_max
+     *        left_gap_max + right_gap_max, left_gap_max + right_gap_sum + right_max
+     *  4. 分治法的递归式
+     *     T(n) = 2*T(n/2) + Θ(n)
+     *     解得 T(n) = Θ(n*lgn)
      */
     //暴力法
     public static SubArrayNode blMaxSubArray(int[] a) {
@@ -42,8 +43,7 @@ public class Chapter4_1 {
     }
     //分治法
     public static SubArrayNode fzMaxSubArray(int[] a) {
-        if(a == null) return new SubArrayNode();
-        if(a.length == 0 || a.length == 1) return new SubArrayNode();
+        if(a == null || a.length == 0) return new SubArrayNode();
 
         return fzMaxSubArray(a, 0, a.length);
     }
@@ -52,54 +52,69 @@ public class Chapter4_1 {
         int n = end - begin;
         if(n == 1) return new SubArrayNode(a[begin], begin, end);
 
-        SubArrayNode left_max = fzMaxSubArray(a, begin, begin + n / 2);
-        SubArrayNode right_max = fzMaxSubArray(a, begin + n / 2, end);
+        int mi = begin + n/2;
+        SubArrayNode left_max  = fzMaxSubArray(a, begin, mi);
+        SubArrayNode right_max = fzMaxSubArray(a, mi, end);
 
-        SubArrayNode max = merge(left_max, right_max, a, begin, begin + n/2, end);
+        SubArrayNode max = merge(left_max, right_max, a, begin, mi, end);
         return max;
     }
-    public static SubArrayNode merge(SubArrayNode left_max, SubArrayNode right_max, int[] a, int p, int q, int r) {
-        SubArrayNode max = left_max;
-        if(right_max.getSum() > left_max.getSum()) {
-            max = right_max;
+    static SubArrayNode merge(SubArrayNode left_max, SubArrayNode right_max, int[] a, int p, int q, int r) {
+        int sum = left_max.getSum();
+        int sum_i = left_max.getI();
+        int sum_j = left_max.getJ();
+
+        if(right_max.getSum() > sum) {
+            sum = right_max.getSum();
+            sum_i = right_max.getI();
+            sum_j = right_max.getJ();
         }
 
-        SubArrayNode left_all = new SubArrayNode(0, left_max.getJ(), q);
-        SubArrayNode left_m = new SubArrayNode(left_max.getJ()==q?0:a[q-1],left_max.getJ()==q?q:q-1, q);
-        for(int i=q-1; i>=left_max.getJ(); i--) {
-            int cur = left_all.getSum() + a[i];
-            if(cur > left_m.getSum()) {
-                left_m.setSum(cur);
-                left_m.setI(i);
+        SubArrayNode left_gap_sum = new SubArrayNode(0, left_max.getJ(), q);
+        SubArrayNode left_gap_max = new SubArrayNode(left_max.getJ()==q ? 0 : a[q-1], left_max.getJ()==q ? q : q-1, q);
+        for(int i=q-1; i >= left_max.getJ(); i--) {
+            int cur = left_gap_sum.getSum() + a[i];
+            if(cur > left_gap_max.getSum()) {
+                left_gap_max.setSum(cur);
+                left_gap_max.setI(i);
             }
-            left_all.setSum(cur);
+            left_gap_sum.setSum(cur);
         }
 
-        SubArrayNode right_all = new SubArrayNode(0, q, right_max.getI());
-        SubArrayNode right_m = new SubArrayNode(right_max.getI()==q?0:a[q], q, right_max.getI()==q?q:q+1);
-        for(int j=q; j<right_max.getI(); j++) {
-            int cur = right_all.getSum() + a[j];
-            if(cur > right_m.getSum()) {
-                right_m.setSum(cur);
-                right_m.setJ(j+1);
+        SubArrayNode right_gap_sum = new SubArrayNode(0, q, right_max.getI());
+        SubArrayNode right_gap_max = new SubArrayNode(right_max.getI()==q ? 0 : a[q], q, right_max.getI()==q ? q : q+1);
+        for(int j=q; j < right_max.getI(); j++) {
+            int cur = right_gap_sum.getSum() + a[j];
+            if(cur > right_gap_max.getSum()) {
+                right_gap_max.setSum(cur);
+                right_gap_max.setJ(j+1);
             }
-            right_all.setSum(cur);
+            right_gap_sum.setSum(cur);
         }
 
-        if(left_max.getSum() + left_all.getSum() + right_m.getSum() > max.getSum()) {
-            max = new SubArrayNode(left_max.getSum() + left_all.getSum() + right_m.getSum(), left_max.getI(), right_m.getJ());
+        int m;
+        if((m = left_max.getSum() + left_gap_sum.getSum() + right_gap_max.getSum()) > sum) {
+            sum = m;
+            sum_i = left_max.getI();
+            sum_j = right_gap_max.getJ();
         }
-        if(left_max.getSum() + left_all.getSum() + right_all.getSum() + right_max.getSum() > max.getSum()) {
-            max = new SubArrayNode(left_max.getSum() + left_all.getSum() + right_all.getSum() + right_max.getSum(), left_max.getI(), right_max.getJ());
+        if((m = left_max.getSum() + left_gap_sum.getSum() + right_gap_sum.getSum() + right_max.getSum()) > sum) {
+            sum = m;
+            sum_i = left_max.getI();
+            sum_j = right_max.getJ();
         }
-        if( (left_m.getSum() != 0 || right_m.getSum() != 0) && (left_m.getSum() + right_m.getSum() > max.getSum()) ) {
-            max = new SubArrayNode(left_m.getSum() + right_m.getSum(), left_m.getI(), right_m.getJ());
+        if((left_gap_max.getSum() != 0 || right_gap_max.getSum() != 0) && ((m = left_gap_max.getSum() + right_gap_max.getSum()) > sum)) {
+            sum = m;
+            sum_i = left_gap_max.getI();
+            sum_j = right_gap_max.getJ();
         }
-        if(left_m.getSum() + right_all.getSum() + right_max.getSum() > max.getSum()) {
-            max = new SubArrayNode(left_m.getSum() + right_all.getSum() + right_max.getSum(), left_m.getI(), right_max.getJ());
+        if((m = left_gap_max.getSum() + right_gap_sum.getSum() + right_max.getSum()) > sum) {
+            sum = m;
+            sum_i = left_gap_max.getI();
+            sum_j = right_max.getJ();
         }
 
-        return max;
+        return new SubArrayNode(sum, sum_i, sum_j);
     }
 
 
@@ -107,17 +122,15 @@ public class Chapter4_1 {
         int[] a = {13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7};
 
         SubArrayNode blSub = blMaxSubArray(a);
-        IntArrayTraversal.of(a).forEach(ArraySubArrayNodePrinter.of(blSub)::print);
+        IntArrayTraversal.of(a).forEach(SubArrayNodeArrayPrinter.of(blSub)::print);
         System.out.println("##########################################################################################");
 
-        int[] a2 = {-1, -2, -3, -1};
-        int[] a3 = {1, -2, -3, 1};
-        //System.out.println(fzMaxSubArray(a));
-        System.out.println(fzMaxSubArray(a2));
-        System.out.println(fzMaxSubArray(a3));
+        //a = new int[] {-13, -3, -25, -1, -1, -5};
+        SubArrayNode fzSub = fzMaxSubArray(a);
+        IntArrayTraversal.of(a).forEach(SubArrayNodeArrayPrinter.of(fzSub)::print);
         System.out.println("##########################################################################################");
 
-        IntArrayTraversal.of(a).forEach(ArraySubArrayNodePrinter.of(new SubArrayNode(-1, a.length, 7000))::print);
+        IntArrayTraversal.of(a).forEach(SubArrayNodeArrayPrinter.of(new SubArrayNode(-1, a.length, 7000))::print);
     }
 
     @Getter
@@ -142,12 +155,12 @@ public class Chapter4_1 {
         }
     }
 
-    static class ArraySubArrayNodePrinter<E> extends ArrayPrinter<E> {
+    static class SubArrayNodeArrayPrinter<E> extends ArrayPrinter<E> {
         private final SubArrayNode subArrayNode;
         private int weight = 0;
         private int weightAccum = 0;
 
-        private ArraySubArrayNodePrinter(SubArrayNode subArrayNode) {
+        private SubArrayNodeArrayPrinter(SubArrayNode subArrayNode) {
             super();
             this.subArrayNode = subArrayNode;
         }
@@ -192,8 +205,8 @@ public class Chapter4_1 {
             System.out.println(", " + subArrayNode);
         }
 
-        static <E> ArraySubArrayNodePrinter<E> of(SubArrayNode subArrayNode) {
-            return new ArraySubArrayNodePrinter<>(subArrayNode);
+        static <E> SubArrayNodeArrayPrinter<E> of(SubArrayNode subArrayNode) {
+            return new SubArrayNodeArrayPrinter<>(subArrayNode);
         }
     }
 }

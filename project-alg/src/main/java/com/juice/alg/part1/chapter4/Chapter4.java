@@ -5,7 +5,7 @@ public class Chapter4 {
      *Chapter 4 分治策略
      *
      *分治策略思想
-     *  分解(Divide):  将问题划分成若干子问题，子问题的形式和原问题相同只，是规模更小
+     *  分解(Divide):  将问题划分成若干子问题，子问题的形式和原问题相同，只是规模更小
      *  解决(Conquer): 递归地求解子问题，当子问题的规模足够小，停止递归，直接求解
      *  合并(Combine): 将子问题的解合并成原问题的解
      *
@@ -15,8 +15,6 @@ public class Chapter4 {
      *  例如，归并排序 {@link com.juice.alg.part1.chapter2.Chapter2#merge_sort(int[])} 的最坏情况运行时间 T(n) 的递归式为:
      *    T(n) = Θ(1)               若 n == 1
      *         = 2*T(n/2) + Θ(n)    若 n >  1
-     *
-     *  一个通用递归式:
      *
      *  递归式有几种求解方法:
      *    - Chapter 4.3 用代入法求解递归式, 猜测一个界，然后证明之
