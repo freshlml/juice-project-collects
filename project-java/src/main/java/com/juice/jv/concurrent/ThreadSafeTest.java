@@ -2,7 +2,7 @@ package com.juice.jv.concurrent;
 
 public class ThreadSafeTest {
 
-    /**
+    /*
      * 多线程共享数据的方法: static field
      *    1. primitive type: 共享数值
      *    2. reference type: 共享引用值和对象
@@ -51,16 +51,9 @@ public class ThreadSafeTest {
      *       1). 需要进入 Type A 内部，追踪共享对象，而这个追踪网络可能很复杂
      *
      *
-     *
-     * Every type: body 之中共享变量、共享对象的使用需要线程安全
-     *
-     * A class(object) is thread-safe: (前提: body 之中共享变量、共享对象的使用需要线程安全)。instance field (当成共享的) 在 body 中的使用需要线程安全，即 object can be shared
-     *
-     * 构造器和方法传参: 如果传递一个共享对象(或者包含共享数据)，则要确保内部使用时线程安全
-     * 方法返回值: 如果返回一个共享对象(或者包含共享数据)，则要跟踪之使之使用线程安全
+     *A class(object) is thread-safe:
+     *  - instance field 当成共享数据在多线程中没有线程安全问题(即，正确处理了可能存在的 data race，保证了可见性，摒除了可能存在的指令重排序的影响等)
+     *  - 该 class(object) 在多线程中使用没有线程安全问题
      *
      */
-
-
-
 }

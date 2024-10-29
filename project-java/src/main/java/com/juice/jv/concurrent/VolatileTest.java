@@ -29,7 +29,7 @@ class VolatileTest1 {
                 i = 1;
             }
         }
-        System.out.println("running end...");        //can not run
+        System.out.println("running end...");        //不会执行到此
     }
 }
 
@@ -97,7 +97,7 @@ class VolatileTest3 {
 //2.If Thread A reads a volatile variable, then all all variables visible to Thread A
 //  when reading the volatile variable will also be re-read from main memory.
 
-//volatile happens-before: 保障 Full volatile Visibility 性质
+//为了保证 volatile 的可见性，对指令重排序的限制如下:
 // 1. 对 volatile 变量写之前的变量读写，不能重排序到对 volatile 变量写之后
 // 2. 对 volatile 变量读之后的变量读写，不能重排序到对 volatile 变量读之前
 
@@ -124,7 +124,7 @@ class MyClass {
     }
 }
 
-//MyClass 类的问题: update方法中，years, months 依赖于 days 对线程本地缓存的同步刷新，当代码执行到 `this.months = months` 结束时，仍然有可见性问题。
+//MyClass 类的问题: update方法中，years, months 依赖于 days 对线程本地缓存的同步刷新，当代码执行到 `this.months = months` 线程切换时，仍然有可见性问题。
 //使用 CopyOnWrite 解决上述问题: 使"依赖方"在"被依赖方"同步刷新本地缓存之前，对其他线程不可见。
 
 class CopyOnWriteTemp {
