@@ -53,6 +53,7 @@ public class ThreadSafeTest {
      *
      *A class(object) is thread-safe:
      *  - instance field 当成共享数据在多线程中没有线程安全问题(即，正确处理了可能存在的 data race，保证了可见性，摒除了可能存在的指令重排序的影响等)
+     *  - 在一个线程中创建 object, 当其被分享到其他线程之时，其初始状态是否可见
      *  - 该 class(object) 在多线程中使用没有线程安全问题
      *
      */
