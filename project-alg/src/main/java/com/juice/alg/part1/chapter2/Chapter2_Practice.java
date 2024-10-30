@@ -53,6 +53,7 @@ public class Chapter2_Practice {
     //练习题 2.3-4
     //T(n) = T(n-1) + D(n) + C(n)
     //     = T(n-1) + Θ(1) + Θ(n)
+
     public static void main(String[] argv) {
         int[] a = {100, 200, 200, 300, 301, 400, 400, 500, 600};
 
