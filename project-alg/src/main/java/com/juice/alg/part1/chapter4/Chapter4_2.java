@@ -1,65 +1,61 @@
 package com.juice.alg.part1.chapter4;
 
-public class Chapter4_2 {
 
+public class Chapter4_2 {
     /**
      *矩阵乘法
-     * 1.暴力法
-     *   3层循环
-     * 2.分治法
-     *   分解: 一横一竖，分成四个
-     *   解决: 当ai==1 or aj==1 or bj==1
-     *   合并: A =  A1,A2  B = B1,B2
-     *             A4,A3      B4,B3
-     *     A * B = A1*B1 + A2*B3, A1*B2 + A2*B3
-     *             A4*B1 + A3*B4, A4*B2 + A3*B3
-     *
+     *  1.暴力法
+     *    3层循环，Θ(n^3)
+     *  2.分治法
+     *    分解: 一横一竖，分成四个
+     *         A =  A1,A2  B = B1,B2
+     *              A4,A3      B4,B3
+     *    解决: 当 ai==1 or aj==1 or bj==1
+     *    合并:
+     *      A * B = A1*B1 + A2*B4, A1*B2 + A2*B3
+     *              A4*B1 + A3*B4, A4*B2 + A3*B3
      */
-
     //暴力法
     public static int[][] blMatrixMulti(int[][] a, int[][] b) {
         if(a == null || b == null) return null;
-        if(a.length == 0 || b.length == 0) return null;
-        if(a[0].length == 0 || b[0].length == 0) return null;
+        int m, n, l;
+        if((m = a.length) == 0 || a[0].length == 0) return null;
+        if(b.length == 0 || (n = b[0].length) == 0) return null;
+        if((l = a[0].length) != b.length) return null;
 
-        int n = a.length;
-        //assert n == a[0].length; assert n == b.length; assert n == b[0].length;
-        int[][] c = new int[n][n];
-        for(int i=0; i<n; i++) {
+        int[][] c = new int[m][n];
+        for(int i=0; i<m; i++) {
             for(int j=0; j<n; j++) {
                 int sum = 0;
-                for(int k=0; k<n; k++) {
+                for(int k=0; k<l; k++) {
                     sum += a[i][k] * b[k][j];
                 }
                 c[i][j] = sum;
             }
         }
-
         return c;
     }
-
     //分治法
-    /* T(n) = 8*T(n/2) + n^2
+    /* T(n) = 8*T(n/2) + Θ(n^2)
     此分治法的递归树
                 [n]
         [n/2] ...                   第1次分解,n/2          1次merge, 1*n^2
         [n/4] ...                   第2次分解,n/4          8次merge, 8*(n/2)^2
         ...
-                [1]                 第x次分解,n/2^x        8^(x-1)次merge, 8^(x-1) * [n/x^(x-1)]^2
+                [1]                 第x次分解,n/2^x        8^(x-1)次merge, 8^(x-1) * [n/2^(x-1)]^2
 
       n/2^x = 1 ==> 2^x = n ==> x=log2(n)
-      merge消耗:
-        = 1/15*n^2*16^x - 1/15*n^2
-        = 4/15*n^3 - 1/15*n^2
-      可见，此分治并不非常优于暴力
+      merge总和: 1*n^2 + 8*(n/2)^2 + ... + 8^(x-1) * [n/2^(x-1)]^2
+              = (n-1) * n^2
      */
     public static int[][] fzMatrixMulti(int[][] a, int[][] b) {
         if(a == null || b == null) return null;
-        if(a.length == 0 || b.length == 0 || a[0].length == 0 || b[0].length == 0) return null;
+        int m, n, l;
+        if((m = a.length) == 0 || a[0].length == 0) return null;
+        if(b.length == 0 || (n = b[0].length) == 0) return null;
+        if((l = a[0].length) != b.length) return null;
 
-        int n = a.length;
-        //assert n == a[0].length; assert n == b.length; assert n == b[0].length;
-        int[][] c = fzMatrixMulti(a, 0, n, 0, n, b, 0, n, 0, n);
+        int[][] c = fzMatrixMulti(a, 0, m, 0, l, b, 0, l, 0, n);
         return c;
     }
     public static int[][] fzMatrixMulti(int[][] a, int aiBegin, int aiEnd, int ajBegin, int ajEnd,
@@ -170,17 +166,25 @@ public class Chapter4_2 {
         return c;
     }
 
+    public static void main(String[] argv) {
+        int[][] a = {{120, 2, 3}, {3, 4, 5}};
+        int[][] b = {{1, 2}, {4, 5}, {6, 8}};
 
-    public static void main(String argv[]) {
+        int[][] blc = blMatrixMulti(a, b);
 
-        int[][] a1 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
-        int[][] b1 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
+        mergeAndPrintMatrix(a, b);
+        System.out.println("------------------------------");
+        printMatrix(blc);
+        System.out.println("#############################################");
 
-        int[][] bl1 = blMatrixMulti(a1, b1);
-        int[][] fz1 = fzMatrixMulti(a1, b1);
+        int[][] fzc = fzMatrixMulti(a, b);
 
+        mergeAndPrintMatrix(a, b);
+        System.out.println("------------------------------");
+        printMatrix(fzc);
+        System.out.println("#############################################");
 
-        int[][] a2 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
+        /*int[][] a2 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
         int[][] b2 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
 
         int[][] bl2 = blMatrixMulti(a2, b2);
@@ -193,7 +197,103 @@ public class Chapter4_2 {
         int[][] bl3 = blMatrixMulti(a3, b3);
         int[][] fz3 = fzMatrixMulti(a3, b3);
 
-        System.out.println(1);
+        System.out.println(1);*/
     }
 
+    static void mergeAndPrintMatrix(int[][] a, int[][] b) {
+        boolean leftNone = a.length <= b.length;
+        int rowLimit = Math.min(a.length, b.length);
+        int columnLimit;
+
+        int m = Math.max(a.length, b.length);
+        int n = (columnLimit = a[0].length) + b[0].length;  //may overflow
+        int[][] c = new int[m][n];
+
+        int[] width = new int[n];
+        for(int i=0; i<a.length; i++) {
+            for(int j=0; j<a[i].length; j++) {
+                c[i][j] = a[i][j];
+                int w = String.valueOf(a[i][j]).length();
+                if(i == 0 || width[j] < w) {
+                    width[j] = w;
+                }
+            }
+        }
+        for(int i=0; i<b.length; i++) {
+            for(int j=0; j<b[i].length; j++) {
+                c[i][j+columnLimit] = b[i][j];
+                int w = String.valueOf(b[i][j]).length();
+                if(i == 0 || width[j+columnLimit] < w) {
+                    width[j+columnLimit] = w;
+                }
+            }
+        }
+
+        StringBuilder element = new StringBuilder();
+        String sep;
+        final String split = "    ";
+        final char LF = '\n';
+        for(int i=0; i<c.length; i++) {
+            for(int j=0; j<c[i].length; j++) {
+                String s;
+                int w;
+                if(i >= rowLimit && ((j < columnLimit) == leftNone)) {
+                    s = "";
+                    w = width[j];
+                    sep = "  ";
+                } else {
+                    s = String.valueOf(c[i][j]);
+                    w = width[j] - s.length();
+                    sep = ", ";
+                }
+                for(int l=0; l<w; l++)
+                    element.append(' ');
+                element.append(s);
+
+                if(j != (columnLimit - 1) && j != (c[i].length - 1)) {
+                    element.append(sep);
+                } else if(j == (columnLimit - 1)) {
+                    element.append(split);
+                } else {
+                    element.append(LF);
+                }
+            }
+        }
+        System.out.print(element);
+    }
+
+    static void printMatrix(int[][] c) {
+        StringBuilder element = new StringBuilder();
+        int m = c.length;
+        int n = c[0].length;
+        int[] width = new int[n];
+
+        //先扫描一遍，求得最大位宽
+        for(int i=0; i<m; i++) {
+            for (int j = 0; j < n; j++) {
+                int w = String.valueOf(c[i][j]).length();
+                if (i == 0 || width[j] < w) {
+                    width[j] = w;
+                }
+            }
+        }
+        for(int i=0; i<m; i++) {
+            for (int j = 0; j<n; j++) {
+
+                String s = String.valueOf(c[i][j]);
+                int w = s.length();
+
+                for (int l = 0; l < (width[j] - w); l++)
+                    element.append(' ');
+                element.append(s);
+
+                if (j != (c[i].length - 1)) {
+                    element.append(", ");
+                } else {
+                    element.append('\n');
+                }
+            }
+        }
+        System.out.print(element);
+    }
 }
