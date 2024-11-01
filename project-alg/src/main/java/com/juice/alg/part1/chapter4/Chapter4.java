@@ -23,7 +23,9 @@ public class Chapter4 {
      *
      */
     public static void main(String[] argv) {
-
+        dy();
+        dys();
+        zff();
     }
     /**
      *Chapter 4.3 用代入法求解递归式
@@ -42,7 +44,7 @@ public class Chapter4 {
      *  2. 令 S(m) = T(2^m), 得 S(m/2) = T(2^(m/2))     因变量代换？
      *       T(2^m) = S(m) = 2*S(m/2) + m
      */
-    void dy() {}
+    static void dy() {}
     /**
      *Chapter 4.4 用递归树求解递归式
      *
@@ -91,10 +93,22 @@ public class Chapter4 {
      * m=3, k=2: c*2 * n^(lg3) - cn*2 = c*2 * n^(lg3)  >= c * 2/3 * n^(1.5) >= c * 2/3 * n * n^(0.5)     ,lg3 ≈ 1.5849625
      * m=4, k=2: c * n^2 - cn  = c * n^2
      */
-    void dys() {}
+    static void dys() {}
     /**
      *Chapter 4.5 用主方法求解递归式
+     * 所谓主方法，即对 T(n) = m*T(n/k) + f(n) 的通项解:
+     *        [n]
+     *    [n/k]              1, n/k,     1 * f(n)
+     *    [n/k^2]            2, n/k^2    m * f(n/k)
+     *    [n/k^3]            3, n/k^3    m^2 * f(n/k^2)
+     *    ...
+     *    [1]                x, n/k^x    m^(x-1) * f(n/k^(x-1))
+     *
+     * 1. n/k^x = 1, k^x = n, x = logk(n)
+     * 2. 分解加合并的消耗之和
+     *    1 * f(n) + m * f(n/k) + m^2 * f(n/k^2) + ... + m^(x-1) * f(n/k^(x-1))
+     *    todo
      */
-    void zff() {}
+    static void zff() {}
 
 }
