@@ -179,8 +179,8 @@ public class Chapter2_Practice2 {
          * if `begin <= end`, traversal from `begin`   to `end-1` at range [begin, end)
          * if `begin >  end`, traversal from `begin-1` to `end`   at range [end, begin)
          * @param array  the array for traversal
-         * @param begin  the start position of traversal, inclusive
-         * @param end    the end position of traversal, exclusive
+         * @param begin  the start position of traversal
+         * @param end    the end position of traversal
          * @throws NullPointerException          if the specified array is null
          * @throws IllegalArgumentException      if the specified begin, end is negative
          *                                    or if begin <= end and end > array.length
