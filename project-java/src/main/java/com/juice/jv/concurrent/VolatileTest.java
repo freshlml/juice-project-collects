@@ -3,8 +3,6 @@ package com.juice.jv.concurrent;
 import sun.misc.Unsafe;
 
 public class VolatileTest {
-    //JMM，线程本地缓存
-    //共享变量可见性
 }
 
 class VolatileTest1 {
@@ -73,12 +71,12 @@ class VolatileTest3 {
                 e.printStackTrace();
             }
             System.out.println("update begin...");
-            x = 1;                                   //线程本地缓存同步刷到主存
+            x = 1;                                   //线程本地缓存同步刷到主存 (内存屏障指令)
             System.out.println("update end...");
         }).start();
 
         int i = 0;
-        while(x == 0) {                              //失效化线程本地缓存，去主存中取 x 的值
+        while(x == 0) {                              //失效化线程本地缓存，去主存中取 x 的值 (内存屏障指令)
             if(i == 0) {
                 System.out.println("running begin...");
                 i = 1;
@@ -109,15 +107,15 @@ class MyClass {
     public void update(int years, int months, int days){
         this.years  = years;
         this.months = months;
-        this.days   = days;    //线程本地缓存同步刷新
-        // when a value is written to days, then all variables visible to the thread are also written to main memory.
+        this.days   = days;    //线程本地缓存同步刷新 (内存屏障指令)
+        // when a value is written to days, then all variables "visible" to the thread are also written to main memory.
         // That means, that when a value is written to days, the values of years and months are also written to main memory.
     }
 
     public int totalDays() {
         // When reading the value of days, the values of months and years are also read into main memory.
         // Therefore you are guaranteed to see the latest values of days, months and years with the below read sequence.
-        int total = this.days;    //失效化线程本地缓存
+        int total = this.days;    //失效化线程本地缓存 (内存屏障指令)
         total += this.months * 30;  //may overflow
         total += this.years * 365;  //may overflow
         return total;
