@@ -1,6 +1,6 @@
-package com.juice.alg.chapter1_5;
+package com.juice.alg.part1.chapter5;
 
-public class Chapter1_5_2 {
+public class Chapter5_Practice2 {
 
     /**
      *练习5.2-5: n个数1~n的均匀随机排列的输入序列,i<j&A[i]>A[j],则<i,j>是逆序对,求逆序对的数量

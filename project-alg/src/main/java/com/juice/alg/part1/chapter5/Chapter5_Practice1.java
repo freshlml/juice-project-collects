@@ -1,8 +1,8 @@
-package com.juice.alg.chapter1_5;
+package com.juice.alg.part1.chapter5;
 
 import java.util.Arrays;
 
-public class Chapter1_5_1 {
+public class Chapter5_Practice1 {
 
     //练习5.1-2
     /*
@@ -194,7 +194,7 @@ public class Chapter1_5_1 {
 
 
     public static void main(String argv[]) {
-        Chapter1_5_1 c = new Chapter1_5_1();
+        Chapter5_Practice1 c = new Chapter5_Practice1();
         int[][] ins = c.invalids_o(3, 1);
 
         ins = c.invalids2(3, 1);

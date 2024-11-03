@@ -1,6 +1,6 @@
-package com.juice.alg.chapter1_5;
+package com.juice.alg.part1.chapter5;
 
-public class Chapter1_5_3 {
+public class Chapter5_4 {
 
     /**
      *解概率问题
