@@ -170,34 +170,49 @@ public class Chapter4_2 {
         int[][] a = {{120, 2, 3}, {3, 4, 5}};
         int[][] b = {{1, 2}, {4, 5}, {6, 8}};
 
+        mergeAndPrintMatrix(a, b);
+        System.out.println("------------------------------");
+
         int[][] blc = blMatrixMulti(a, b);
+        TwoDimensionIntArrayTraversal.of(blc).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("#############################################");
 
         mergeAndPrintMatrix(a, b);
         System.out.println("------------------------------");
-        printMatrix(blc);
-        System.out.println("#############################################");
 
         int[][] fzc = fzMatrixMulti(a, b);
-
-        mergeAndPrintMatrix(a, b);
-        System.out.println("------------------------------");
-        printMatrix(fzc);
+        TwoDimensionIntArrayTraversal.of(fzc).forEach(TwoDimensionArrayPrinter.of()::print);
         System.out.println("#############################################");
 
-        /*int[][] a2 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
-        int[][] b2 = {{1, 2, 3}, {3, 4, 5}, {6, 7, 8}};
+        int[][] c = {{109, 2, 3}, {4, 555, 6}, {7, 8}};
+        TwoDimensionIntArrayTraversal.of(c).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
 
-        int[][] bl2 = blMatrixMulti(a2, b2);
-        int[][] fz2 = fzMatrixMulti(a2, b2);
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
 
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.REVERSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
 
-        int[][] a3 = {{1, 2, 3, 4, 101}, {3, 4, 5, 6, 102}, {103, 6, 7, 8, 9}, {104, 1, 2, 3, 4}, {104111, 1, 2, 3, 4}};
-        int[][] b3 = {{1, 2, 3, 4, 101}, {3, 4, 5, 6, 102}, {103, 6, 7, 8, 9}, {104, 1, 2, 3, 4}, {104111, 1, 2, 3, 4}};
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.REVERSE_TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
 
-        int[][] bl3 = blMatrixMulti(a3, b3);
-        int[][] fz3 = fzMatrixMulti(a3, b3);
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.ROW_REVERSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
 
-        System.out.println(1);*/
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.ROW_REVERSE_TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
+
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.COLUMN_REVERSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        System.out.println("------------------------------");
+
+        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.COLUMN_REVERSE_TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+
+        System.out.println("#############################################");
+
+        c = new int[][] {{1}, {1, 2, 3, 4, 5, 10000, 109876}, {4, 555, 600, 4, 5}, {7, 8}, {1, 2, 3, 4, 5, 6}, {1}};
+        TwoDimensionIntArrayTraversal.of(c, 1, 5, 2, 6).forEach(TwoDimensionArrayPrinter.of()::print);
+
     }
 
     static void mergeAndPrintMatrix(int[][] a, int[][] b) {
@@ -262,38 +277,361 @@ public class Chapter4_2 {
         System.out.print(element);
     }
 
-    static void printMatrix(int[][] c) {
-        StringBuilder element = new StringBuilder();
-        int m = c.length;
-        int n = c[0].length;
-        int[] width = new int[n];
+    public static class TwoDimensionArrayPrinter<E> {
+        protected static final String SEP = ", ";
+        protected static final char LINE_END = '\n';
+        protected int count = 1;
 
-        //先扫描一遍，求得最大位宽
-        for(int i=0; i<m; i++) {
-            for (int j = 0; j < n; j++) {
-                int w = String.valueOf(c[i][j]).length();
-                if (i == 0 || width[j] < w) {
-                    width[j] = w;
+        private TwoDimensionArrayPrinter() {}
+
+        public void print(E e, int i, int iLimit, int j, int jLimit, int width) {
+            printElement(e, width);
+            if(i == iLimit && j == jLimit) printEnd();
+
+            if(j == jLimit) printLineEnd();
+            else printSep();
+
+            this.count++;
+        }
+
+        protected void printElement(E e, int width) {
+            StringBuilder element = new StringBuilder();
+
+            String s = String.valueOf(e);
+            int w = s.length();
+
+            for (int l = 0; l < (width - w); l++)
+                element.append(' ');
+            element.append(s);
+
+            System.out.print(element);
+        }
+
+        protected void printEnd() {
+            //printLineEnd();
+        }
+
+        protected void printLineEnd() {
+            System.out.print(LINE_END);
+        }
+
+        protected void printSep() {
+            System.out.print(SEP);
+        }
+
+        public static <E> TwoDimensionArrayPrinter<E> of() {
+            return new TwoDimensionArrayPrinter<>();
+        }
+    }
+
+
+    public static class TwoDimensionIntArrayTraversal {
+        private final int[][] array;
+        private final int rowBegin;
+        private final int rowEnd;
+        private final int columnBegin;
+        private final int columnEnd;
+        private final TraversalMode mode;
+        private final int[] rowWidth;
+        private final int[] columnWidth;
+
+        /**
+         * @param array  the array for traversal
+         * @param mode   矩阵的 traversal 方式: 正序，转置，逆序，逆序-转置，行-逆序，行-逆序-转置，列-逆序，列-逆序-转置
+         * @throws NullPointerException          if the specified `array` is null, or `array[0]` is null
+         */
+        private TwoDimensionIntArrayTraversal(int[][] array, TraversalMode mode, int[]... widths) {
+            this(array, 0, array.length, 0, array[0].length, mode, widths);
+        }
+
+        /**
+         * @param array          the array for traversal
+         * @param rowBegin       the start row position of traversal, inclusive
+         * @param rowEnd         the end row position of traversal,   exclusive
+         * @param columnBegin    the start column position of traversal, inclusive
+         * @param columnEnd      the end column position of traversal,   exclusive
+         * @param mode           矩阵的 traversal 方式: 正序，转置，逆序，逆序-转置，行-逆序，行-逆序-转置，列-逆序，列-逆序-转置
+         * @throws NullPointerException          if the specified `array` is null
+         * @throws IllegalArgumentException      if the specified `rowBegin`, `rowEnd`, `columnBegin`, `columnEnd` is negative
+         *                                    or if `rowBegin` > `rowEnd` or `rowEnd` > `array.length`
+         *                                    or if `columnBegin` > `columnEnd` or `columnEnd` > the largest column length
+         */
+        private TwoDimensionIntArrayTraversal(int[][] array, int rowBegin, int rowEnd, int columnBegin, int columnEnd, TraversalMode mode, int[]... widths) {
+            if(array == null/* || array[0] == null*/) throw new NullPointerException("array can not be null");
+            if(rowBegin < 0 || rowEnd < 0 || columnBegin < 0 || columnEnd < 0)
+                throw new IllegalArgumentException("the specified rowBegin, rowEnd, columnBegin, columnEnd is negative, rowBegin = "
+                        + rowBegin + ", rowEnd = " + rowEnd + ", columnBegin = " + columnBegin + ", rowEnd = " + rowEnd);
+            if(rowBegin > rowEnd || rowEnd > array.length)
+                throw new IllegalArgumentException("the specified rowBegin is large than the specified rowEnd or, rowEnd is large than array's row length");
+            if(columnBegin > columnEnd/* || columnEnd > array[0].length*/)
+                throw new IllegalArgumentException("the specified columnBegin is large than the specified columnEnd");
+
+            this.array = array;
+            this.rowBegin = rowBegin;
+            this.rowEnd = rowEnd;
+            this.columnBegin = columnBegin;
+            //this.columnEnd = columnEnd;
+            this.mode = mode;
+
+            // 遍历 array, 寻找 the largest column length
+            int largest_column_length = 0;
+            for (int i=this.rowBegin; i < this.rowEnd; i++) {
+                if(largest_column_length < array[i].length)
+                    largest_column_length = array[i].length;
+            }
+            if(columnEnd > largest_column_length)
+                throw new IllegalArgumentException("the specified columnEnd [" + columnEnd + "] is large than the largest column length [" + largest_column_length + "]");
+            this.columnEnd = columnEnd;
+
+            int rows = this.rowEnd - this.rowBegin;
+            int columns = this.columnEnd - this.columnBegin;
+
+            //计算行最大位宽和列最大位宽
+            if(widths != null && widths.length >= 2 && widths[0].length >= rows && widths[1].length >= columns) {
+                this.rowWidth = widths[0];
+                this.columnWidth = widths[1];
+            } else {
+                this.rowWidth = new int[rows];
+                this.columnWidth = new int[columns];
+
+                for(int i=this.rowBegin; i < this.rowEnd; i++) {
+                    for (int j=this.columnBegin; j < Math.min(this.columnEnd, array[i].length); j++) {
+                        int w = String.valueOf(this.array[i][j]).length();
+                        if(columnWidth[j - this.columnBegin] < w) {
+                            columnWidth[j - this.columnBegin] = w;
+                        }
+                        if(rowWidth[i - this.rowBegin] < w) {
+                            rowWidth[i - this.rowBegin] = w;
+                        }
+                    }
                 }
             }
         }
-        for(int i=0; i<m; i++) {
-            for (int j = 0; j<n; j++) {
 
-                String s = String.valueOf(c[i][j]);
-                int w = s.length();
+        public static TwoDimensionIntArrayTraversal of(int[][] a, int[]... widths) {
+            return of(a, TraversalMode.NORMAL, widths);
+        }
 
-                for (int l = 0; l < (width[j] - w); l++)
-                    element.append(' ');
-                element.append(s);
+        public static TwoDimensionIntArrayTraversal of(int[][] a, TraversalMode mode, int[]... widths) {
+            return new TwoDimensionIntArrayTraversal(a, mode, widths);
+        }
 
-                if (j != (c[i].length - 1)) {
-                    element.append(", ");
+        public static TwoDimensionIntArrayTraversal of(int[][] a, int rowBegin, int rowEnd, int columnBegin, int columnEnd, int[]... widths) {
+            return of(a, rowBegin, rowEnd, columnBegin, columnEnd, TraversalMode.NORMAL, widths);
+        }
+
+        public static TwoDimensionIntArrayTraversal of(int[][] a, int rowBegin, int rowEnd, int columnBegin, int columnEnd, TraversalMode mode, int[]... widths) {
+            return new TwoDimensionIntArrayTraversal(a, rowBegin, rowEnd, columnBegin, columnEnd, mode, widths);
+        }
+
+        public TraversalMode getMode() {
+            return this.mode;
+        }
+
+        public boolean reverse() {
+            return rowReverse() && columnReverse();
+        }
+
+        public boolean rowReverse() {
+            return rowReverse(this.mode);
+        }
+
+        public static boolean rowReverse(TraversalMode mode) {
+            return  mode == TraversalMode.ROW_REVERSE
+                    || mode == TraversalMode.ROW_REVERSE_TRANSPOSE
+                    || mode == TraversalMode.REVERSE
+                    || mode == TraversalMode.REVERSE_TRANSPOSE
+                    ;
+        }
+
+        public boolean columnReverse() {
+            return columnReverse(this.mode);
+        }
+
+        public static boolean columnReverse(TraversalMode mode) {
+            return mode == TraversalMode.COLUMN_REVERSE
+                    || mode == TraversalMode.COLUMN_REVERSE_TRANSPOSE
+                    || mode == TraversalMode.REVERSE
+                    || mode == TraversalMode.REVERSE_TRANSPOSE
+                    ;
+        }
+
+        public boolean transpose() {
+            return transpose(this.mode);
+        }
+
+        public static boolean transpose(TraversalMode mode) {
+            return mode == TraversalMode.TRANSPOSE
+                    || mode == TraversalMode.REVERSE_TRANSPOSE
+                    || mode == TraversalMode.ROW_REVERSE_TRANSPOSE
+                    || mode == TraversalMode.COLUMN_REVERSE_TRANSPOSE
+                    ;
+        }
+
+        public void forEach(PerElement<Object> handler) {
+            TraversalNode node = new TraversalNode(
+                    this.rowBegin, this.rowEnd, this.rowEnd - 1, IntBiFunction::less, IntFunction::preIncrement,
+                    this.columnBegin, this.columnEnd, this.columnEnd - 1, IntBiFunction::less, IntFunction::preIncrement,
+                    ElementGather::getIndexSafe, columnWidth);
+
+            if(rowReverse()) {
+                node.rowReverse(this.rowEnd - 1, this.rowBegin, this.rowBegin, IntBiFunction::greaterEqual, IntFunction::preDecrement);
+            }
+            if(columnReverse()) {
+                node.columnReverse(this.columnEnd - 1, this.columnBegin, this.columnBegin, IntBiFunction::greaterEqual, IntFunction::preDecrement);
+            }
+
+            if(transpose()) {
+                node = node.transpose(this.rowWidth);
+            }
+
+            for (int i = node.i; node.iComp.cal(i, node.ie); i = node.iAccum.cal(i)) {
+                for (int j = node.j; node.jComp.cal(j, node.je); j = node.jAccum.cal(j)) {
+                    //如果是转置输出，则 i 不在表示 array 的行号，而是列号
+                    handler.per(node.gather.get(this.array, i, j), i, node.iLimit, j, node.jLimit, node.getWidth(j));
+                }
+            }
+        }
+
+        @FunctionalInterface
+        public interface PerElement<E> {
+            void per(E e, int i, int iLimit, int j, int jLimit, int width);
+        }
+
+        public enum TraversalMode {
+            NORMAL,                     //矩阵的正序输出
+            TRANSPOSE,                  //矩阵的转置输出
+            REVERSE,                    //矩阵的逆序输出
+            REVERSE_TRANSPOSE,          //矩阵的逆序-转置输出
+            ROW_REVERSE,                //矩阵的行-逆序输出
+            ROW_REVERSE_TRANSPOSE,      //矩阵的行-逆序-转置输出
+            COLUMN_REVERSE,             //矩阵的列-逆序输出
+            COLUMN_REVERSE_TRANSPOSE    //矩阵的列-逆序-转置输出
+        }
+
+        @FunctionalInterface
+        interface IntBiFunction {
+            boolean cal(int a, int b);
+
+            static boolean less(int a, int b) {
+                return a < b;
+            }
+            static boolean greaterEqual(int a, int b) {
+                return a >= b;
+            }
+        }
+        @FunctionalInterface
+        interface IntFunction {
+            int cal(int a);
+
+            static int preIncrement(int a) {
+                return ++a;
+            }
+            static int preDecrement(int a) {
+                return --a;
+            }
+        }
+        @FunctionalInterface
+        interface ElementGather {
+            String get(int[][] array, int i, int j);
+
+            static String getIndexSafe(int[][] array, int i, int j) {
+                try {
+                    return Integer.toString(array[i][j]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return "";
+                }
+            }
+            static String getIndexSafeTranspose(int[][] array, int i, int j) {
+                try {
+                    return Integer.toString(array[j][i]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return "";
+                }
+            }
+        }
+
+        private static class TraversalNode {
+            int i, ie, iLimit;
+            int j, je, jLimit;
+
+            IntBiFunction iComp;
+            IntFunction iAccum;
+
+            IntBiFunction jComp;
+            IntFunction jAccum;
+
+            ElementGather gather;
+            private int[] width;
+
+            private boolean rowReverse = false;
+            private boolean columnReverse = false;
+            private boolean transpose = false;
+
+            TraversalNode(int i, int ie, int iLimit, IntBiFunction iComp, IntFunction iAccum,
+                          int j, int je, int jLimit, IntBiFunction jComp, IntFunction jAccum,
+                          ElementGather gather, int[] width) {
+                this.i = i;
+                this.ie = ie;
+                this.iLimit = iLimit;
+                this.j = j;
+                this.je = je;
+                this.jLimit = jLimit;
+                this.iComp = iComp;
+                this.iAccum = iAccum;
+                this.jComp = jComp;
+                this.jAccum = jAccum;
+                this.gather = gather;
+                this.width = width;
+            }
+
+            int getWidth(int a) {
+                if(transpose) {
+                    if(rowReverse) {
+                        return this.width[a - je];
+                    } else {
+                        return this.width[a - j];
+                    }
                 } else {
-                    element.append('\n');
+                    if(columnReverse) {
+                        return this.width[a - je];
+                    } else {
+                        return this.width[a - j];
+                    }
                 }
             }
+
+            void rowReverse(int i, int ie, int iLimit, IntBiFunction iComp, IntFunction iAccum) {
+                this.iComp = iComp;
+                this.iAccum = iAccum;
+
+                this.i = i;
+                this.ie = ie;
+                this.iLimit = iLimit;
+                this.rowReverse = true;
+            }
+
+            void columnReverse(int j, int je, int jLimit, IntBiFunction jComp, IntFunction jAccum) {
+                this.jComp = jComp;
+                this.jAccum = jAccum;
+
+                this.j = j;
+                this.je = je;
+                this.jLimit = jLimit;
+                this.columnReverse = true;
+            }
+
+            TraversalNode transpose(int[] rowWidth) {
+                TraversalNode node = new TraversalNode(
+                        this.j, this.je, this.jLimit, this.jComp, this.jAccum,
+                        this.i, this.ie, this.iLimit, this.iComp, this.iAccum,
+                        ElementGather::getIndexSafeTranspose, rowWidth);
+
+                node.transpose = true;
+                node.rowReverse = this.rowReverse;
+                node.columnReverse = this.columnReverse;
+                return node;
+            }
         }
-        System.out.print(element);
     }
 }
