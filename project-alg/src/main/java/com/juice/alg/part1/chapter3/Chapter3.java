@@ -33,6 +33,8 @@ public class Chapter3 {
      *     1). T(n) = w(g(n)):  D1*g(n)  <  T(n)  and  lim T(n)/g(n) = ∞
      *         w 描述了 D1*g(n) 是 T(n) 的渐近下界，而且不是紧确的
      *
+     *当计算出算法的准确运行时间后，如何得到其界，从而使用渐进记号替代呢？
+     *   part8/appendix.md
      */
 
     public static void main(String[] argv) {
