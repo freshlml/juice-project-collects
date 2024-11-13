@@ -11,28 +11,29 @@ public class Chapter6_Practice1 {
 
     //练习6.5-9: k个有序链表合并成一个有序链表，时间复杂度O(n*lgk)
     /*
-       ... l(i),l(j)  l(k),l(u) ...     x,   k个list               共n个元素的merge
-                l(ij),l(ku)             x-1, k/2个list             共n个元素的merge
-                    ...
-                    l,l                 1, 2个list=k/2^(x-1)       共n个元素的merge
-                     L                  0, 1个list=k/2^x
+        [k 个链表]
+        [k/2 个链表] [k/2 个链表]                               1    1 * n
+        [k/4 个链表] [k/4 个链表] [k/4 个链表] [k/4 个链表]        2    2 * n/2
+        ...
+        [1 个链表] [1 个链表] ...                               x     2^(x-1) * n/2^(x-1)
 
-        k/2^x = 1 ==> x=lgk
-        时间复杂度: n*x = n*lgk
+        k/2^x = 1, k = 2^x, x = lgk
+
+        1 * n + 2 * n/2 + ... + 2^(x-1) * n/2^(x-1) = n * lgk
      */
     public void merge_list(int[] a) {
         if(a == null || a.length == 0) return;
+
         List<Integer> k_list = build_k_list();
         check_k_list(k_list, a.length);
         if(k_list == null || k_list.size() == 0) return;
+
         merge_list(a, k_list);
     }
     public void merge_list(int[] a, List<Integer> k_list) {
         if (k_list.size() == 0) return;
 
         List<Integer> n_k_list = new ArrayList<>();
-        //[0, k_list(0)) merge [k_list(0), k_list(1)); [k_list(1), k_list(2)) merge [k_list(2), n)
-        //             [0, k_list(0)) merge [k_list(0), n);
         //[0, k_list(0)) merge [k_list(0), k_list(1)); [k_list(1), k_list(2)) merge [k_list(2), k_list(3)); [k_list(3), n)
         //             [0, k_list(0)) merge [k_list(0), k_list(1)); [k_list(1), n);
         //             [0, k_list(0)) merge [k_list(0), n);
@@ -68,7 +69,6 @@ public class Chapter6_Practice1 {
                 throw new RuntimeException("k_list异常");
         }
 
-        return;
     }
     public List<Integer> build_k_list() {
         List<Integer> k_list = new ArrayList<>();
@@ -79,18 +79,13 @@ public class Chapter6_Practice1 {
         return k_list;
     }
 
-
-
     public static void main(String[] argv) {
-        Chapter6_Practice1 chapter2_6_3 = new Chapter6_Practice1();
+        Chapter6_Practice1 chapter6_Practice1 = new Chapter6_Practice1();
 
         int[] a = new int[]{1,2,3, 5,7,9, 2,3,4,5,6, 1,1,2,2,3,3,4,5,7, -5,-2,-1};
-        chapter2_6_3.merge_list(a);
+        chapter6_Practice1.merge_list(a);
         System.out.println(Arrays.toString(a));
 
     }
-
-
-
 
 }
