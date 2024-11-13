@@ -1,7 +1,7 @@
-package com.juice.alg.chapter2_6;
+package com.juice.alg.part2.chapter6;
 
 
-public class Chapter2_6_4 {
+public class Chapter6_Practice2 {
 
     //思考题6-1
     //a: 不一定一样

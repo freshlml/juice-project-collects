@@ -248,7 +248,7 @@ public class Chapter2_Practice {
             return new PositionArrayPrinter<>(length, position);
         }
 
-        static <E> PositionArrayPrinter<E> of(int position) {
+        public static <E> PositionArrayPrinter<E> of(int position) {
             return new PositionArrayPrinter<>(position);
         }
 

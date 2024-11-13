@@ -1,9 +1,11 @@
-package com.juice.alg.chapter2_6;
+package com.juice.alg.part2.chapter6;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Chapter2_6_2 {
+public class Chapter6_5 {
+
+
 
     public static void main(String argv[]) {
         MaxPriorityQueue maxPriorityQueue = new MaxPriorityQueue();

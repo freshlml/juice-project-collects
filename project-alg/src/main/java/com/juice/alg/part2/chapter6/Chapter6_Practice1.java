@@ -1,4 +1,4 @@
-package com.juice.alg.chapter2_6;
+package com.juice.alg.part2.chapter6;
 
 import com.juice.alg.part1.chapter2.Chapter2;
 
@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Chapter2_6_3 {
+public class Chapter6_Practice1 {
+    //练习6.1-4: 位于叶子节点
 
     //练习6.5-9: k个有序链表合并成一个有序链表，时间复杂度O(n*lgk)
     /*
@@ -81,7 +82,7 @@ public class Chapter2_6_3 {
 
 
     public static void main(String[] argv) {
-        Chapter2_6_3 chapter2_6_3 = new Chapter2_6_3();
+        Chapter6_Practice1 chapter2_6_3 = new Chapter6_Practice1();
 
         int[] a = new int[]{1,2,3, 5,7,9, 2,3,4,5,6, 1,1,2,2,3,3,4,5,7, -5,-2,-1};
         chapter2_6_3.merge_list(a);
