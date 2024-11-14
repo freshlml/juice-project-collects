@@ -26,7 +26,7 @@ public class Chapter6 {
      *  2.下标计算法
      *      1).每一层的最左节点的下标: i(x) = i(x-1) + 2^(x-2)   x 表示层数，x = 2, ..., h+1
      *      2).叶子节点的下标: ⌊(n/2)⌋, floor(n/2) + 1, ..., n-1                                               //练习6.1-7
-     *      3).下标 i 的节点，parent(i) = ⌊((i+1)/2)⌋ - 1; left_child(i) = 2*i + 1; right_child(i) = 2*i + 2
+     *      3).下标 i 的节点，parent(i) = ⌊(i+1)/2⌋ - 1; left_child(i) = 2*i + 1; right_child(i) = 2*i + 2
      *
      *  3.A.length: 堆中元素个数(数组大小)。heap_size: 堆大小，heap_size <= A.length
      *

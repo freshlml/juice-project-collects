@@ -4,38 +4,30 @@ package com.juice.alg.part2.chapter6;
 public class Chapter6_Practice2 {
 
     //思考题6-1
-    //a: 不一定一样
-    /* 如
-    4
-   5  6
-     */
-    //b: lg1 + lg2 + lg3 + ... + lg(n-1)
-    // = Σ(1,n-1)lgx
-    // <= ∫(1,n) lgx dx
-    // = x*lnx - x + C |(1,n)
-    // = n*lnn - n + 1
+    //a: 不总是一样。如
+    //    4
+    //   5  6
+    //b: @link Chapter6/MaxHeap#max_heapify(int, int)
 
 
-    //思考题6-2
-    //d叉堆
+    //思考题6-2: d叉堆
     /*a:
-                    [0]
-            [1] [2] [3] [4] [...] [d]
-        [d*1+1]               [d*d+1] ... [d*d+d]
-    [d*(d+1)+1] ...
+                    [0]                                       第 1 层    高度为 0
+            [1] [2] [3] [4] [...] [d]                         第 2 层    高度为 1
+        [d*1+1] ... [d*1+d]   ... [d*d+1] ... [d*d+d]         第 3 层    高度为 2
+    [d*(d*1+1)+1] ...                                         第 4 层    高度为 3
       ...
-      最左left(i) = d*i+1
-      最右right(i) = d*i+d
-      parent(i) = (i+d-1)/2 - 1
+      每一层的最左节点的下标: i(x) = i(x-1) + d^(x-2)   x 表示层数，x = 2, ..., h+1
+      下标 i 的节点，parent(i) = ⌊(i+d-1)/d⌋ - 1; first_child(i) = i*d + 1; last_child(i) = i*d + d
     */
-    /*b:
-    n个元素的d叉堆，设高度为h
-        d^0 + d^1 + d^2 + ... + d^(h-1) + s(h) = n, s(h)max = d^h, s(h)min=1
-        ===>   (d^h-1)/(d-1) + 1 <= n <= (d^(h+1)-1)/(d-1)
-        ===>   d^h/(d-1) <= (d^h+d-2)/(d-1) <= n <= (d(h+1)-1)/(d-1) < d^(h+1)/(d-1)
-        ===>   d>=2:      d^h <= n*(d-1) < d^(h+1)
-        ===>               h <=  logd(n*(d-1)) < h+1
-        ===>          h = 下界(logd(n*(d-1)))
+    /*b: n 个元素的 d 叉堆，设高度为 h
+        n = d^0 + d^1 + d^2 + ... + d^(h-1) + s(h),    s(h)'max = d^h, s(h)'min = 1
+        可得: d^0 + d^1 + ... + d^(h-1) + 1 <= n <= d^0 + d^1 + ... + d^(h-1) + d^h
+        ===>   (d^h-1)/(d-1) + 1 <= n <= (d^(h+1)-1)/(d-1)    ,d>=2
+        ===>   d^h/(d-1) <= (d^h+d-2)/(d-1) <= n <= (d^(h+1)-1)/(d-1) < d^(h+1)/(d-1)
+        ===>   d^h <= n*(d-1) < d^(h+1)
+        ===>   logd(n*(d-1)) - 1 < h <= logd(n*(d-1))
+        ===>   h = ⌊logd(n*(d-1))⌋
      */
     //c: d*logd(n*(d-1))
     //d: logd(d-1) + logd(2*(d-1)) + logd(3*(d-1)) + ... + logd((n-1)*(d-1))
@@ -45,13 +37,12 @@ public class Chapter6_Practice2 {
     //e: logd(n*(d-1)) ~ d*logd(n*(d-1))
 
 
-
-    //思考题6-3: young矩阵
-    //每一行数据从左到右排序，每一列数据从上到下排序，矩阵中为填充的位置其值为无穷大(或无穷小)
-    //如果y[0][0] = ∞ , 则任意y[i][j] = ∞
-    //如果y[m][n] != ∞, 则任意y[i][j] != ∞
-    //最小值: y[0][0], 最大值: 边界值之中，i,j位置是否是边界值: (i=m-1 || y[i+1][j]=∞ ) && (j=n-1 || y[i][j+1]=∞)
-    /*young矩阵看成堆,从[0,0]看是最小堆(最大堆)时从[m-1,n-1]看就是最大堆(最小堆)
+    //思考题6-3: young 矩阵
+    //  每一行数据从左到右排序，每一列数据从上到下排序，矩阵中不存在值的位置使用无穷大(或无穷小)表示
+    //  如果 y[0][0]  =  ∞ , 则任意 y[i][j]  =  ∞
+    //  如果 y[m-1][n-1] !=  ∞, 则任意 y[i][j] !=  ∞
+    //  最小值: y[0][0], 最大值: 边界值之中。i, j位置是否是边界值: (i=m-1 || y[i+1][j]=∞ ) && (j=n-1 || y[i][j+1]=∞)
+    /*young 矩阵看成二叉堆, 从 [0,0] 看是最小堆(最大堆), 从 [m-1,n-1] 看就是最大堆(最小堆)
         [
             [1,  3,  4,  ∞]
             [2,  3,  10, ∞]
@@ -68,19 +59,20 @@ public class Chapter6_Practice2 {
       [4,2]                       [3,3] [3,3] [2,4]                                                [3,3]
         [4,3]                   [4,3]                                                            [4,3]
 
-     下标计算: y[i,j],  left(i,j) = y[i+1, j], i+1<=m-1, 最后一行没有left
-                      right(i,j) = y[i, j+1], j+1<=n-1, 最有一列没有right
-                      p_left(i,j) = y[i, j-1], j-1>=0, 第一列没有p_left
-                      p_right(i,j) = y[i-1, j], i-1>=0, 第一行没有p_right
+     下标计算: y[i,j]
+             left(i,j)  =  y[i+1, j], i+1<=m-1, 最后一行没有 left
+             right(i,j) =  y[i, j+1], j+1<=n-1, 最有一列没有 right
 
-     树的高度: m+n-2
+             p_left(i,j)  = y[i, j-1], j-1>=0, 第一列没有 p_left
+             p_right(i,j) = y[i-1, j], i-1>=0, 第一行没有 p_right
+
+     树的最大高度: m+n-2
      两个头的美妙的树
      */
     static class Young {
-
-        private int[][] a;
-        private int m;
-        private int n;
+        private final int[][] a;
+        private final int m;
+        private final int n;
 
         public Young(int m, int n) {
             //assert m>0
@@ -99,6 +91,7 @@ public class Chapter6_Practice2 {
             }
         }
 
+        //d
         public void insert(int v) {
             a[m-1][n-1] = v;
             insert_heapify(m - 1, n - 1);
@@ -150,6 +143,7 @@ public class Chapter6_Practice2 {
             return -1;  //todo, 根据插入标记可快速得到
         }
 
+        //c
         public int next() {
             int ret = this.a[0][0];
             this.a[0][0] = Integer.MAX_VALUE;
@@ -186,6 +180,7 @@ public class Chapter6_Practice2 {
 
         }
 
+        //e
         public void sort() {
 
             int heap_size_i = m-1;
@@ -210,8 +205,9 @@ public class Chapter6_Practice2 {
             }
         }
 
+        //f
         public YoungContains contains(int v) {
-            YoungContains ret = new YoungContains();
+            YoungContains ret = new YoungContains(v);
 
             for(int i=m-1, j=0; i>=0 && j<n; ) {
                 if (this.a[i][j] == v) {
@@ -229,11 +225,10 @@ public class Chapter6_Practice2 {
             return ret;
         }
         private YoungContains contains(int v, int i, int j) {
-
-            if(i < 0 || j >= n) return new YoungContains();
+            YoungContains ret = new YoungContains(v);
+            if(i < 0 || j >= n) return ret;
 
             if(this.a[i][j] == v) {
-                YoungContains ret = new YoungContains();
                 ret.i = i;
                 ret.j = j;
                 ret.contains = true;
@@ -243,18 +238,23 @@ public class Chapter6_Practice2 {
             } else {
                 return contains(v, i, j+1);
             }
-
         }
 
         static class YoungContains {
-            public int i = -1;
-            public int j = -1;
-            public boolean contains = false;
+            int v;
+            int i = -1;
+            int j = -1;
+            boolean contains = false;
+
+            public YoungContains(int v) {
+                this.v = v;
+            }
 
             @Override
             public String toString() {
                 return "YoungContains{" +
-                        "i=" + i +
+                        "v=" + v +
+                        ", i=" + i +
                         ", j=" + j +
                         ", contains=" + contains +
                         '}';
@@ -318,13 +318,12 @@ public class Chapter6_Practice2 {
         System.out.println(young);
 
         System.out.println(young.contains(1333));
-        System.out.println("");
+        System.out.println();
 
         young.sort();
 
         System.out.println(young);
 
     }
-
 
 }
