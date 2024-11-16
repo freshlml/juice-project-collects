@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 public class Chapter6_Practice1 {
     //练习6.1-4: 位于叶子节点
 
-    //练习 6.5-3
+    //练习6.5-3
     static class MinPriorityQueue<T> extends AbstractPriorityQueue<T> {
 
         public MinPriorityQueue() {
