@@ -210,7 +210,7 @@ public class Chapter2 {
             System.out.println();
         }
 
-        public static <E> ArrayPrinter<E> of(int length) {
+        static <E> ArrayPrinter<E> of(int length) {
             return new ArrayPrinter<>(length);
         }
 

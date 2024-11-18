@@ -189,7 +189,7 @@ public class Chapter2_Practice {
     //     }
 
 
-    static class PositionArrayPrinter<E> extends ArrayPrinter<E> {
+    public static class PositionArrayPrinter<E> extends ArrayPrinter<E> {
         private final int position;
         private int weight = 0;
         private boolean tag = true;
