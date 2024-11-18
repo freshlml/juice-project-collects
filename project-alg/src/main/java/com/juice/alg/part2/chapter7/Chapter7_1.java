@@ -16,7 +16,7 @@ public class Chapter7_1 {
      *  给定数组求 q 的方法: (仅遍历一遍)
      *    partition(...)
      */
-    public static int partition(int[] a, int p, int r) {
+    public static int partition(int[] a, int p, int r) {  //规模为 n 的数组，运行时间为 Θ(n)
         int pos = r - 1;
         int e = a[pos];
         int j = p - 1, k = p;
