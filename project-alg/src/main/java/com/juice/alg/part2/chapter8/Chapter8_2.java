@@ -1,6 +1,8 @@
 package com.juice.alg.part2.chapter8;
 
-import java.util.Arrays;
+
+import com.juice.alg.part1.chapter2.Chapter2_Practice2.IntArrayTraversal;
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
 
 public class Chapter8_2 {
 
@@ -36,16 +38,16 @@ public class Chapter8_2 {
      *   B[n] = 1  2  3  5  5  6  6  7
      *
      */
-    public int[] counting_sort(int a[], int begin, int end) {
+    public static int[] counting_sort(int[] a, int min, int max) { //数组中元素的取值范围为 [min, max)
         if(a == null) return null;
         if(a.length == 0 || a.length == 1) return a;
 
         //assert begin < end
 
-        int[] c = new int[end - begin];  //初始值为0
+        int[] c = new int[max - min];  //初始值为 0
 
         for(int i=0; i<a.length; i++) {
-            int idx = indexPos(begin, a[i]);
+            int idx = indexPos(min, a[i]);
             c[idx] = c[idx] + 1;
         }
 
@@ -54,30 +56,26 @@ public class Chapter8_2 {
         }
 
         int[] b = new int[a.length];
-        for(int i=a.length-1; i>=0; i--) { //from a.length-1 to 0，保持相同元素的排序稳定性
-            int idx = indexPos(begin, a[i]);
+        for(int i=a.length-1; i>=0; i--) { //from a.length-1 to 0，保证了计数排序是稳定的
+            int idx = indexPos(min, a[i]);
             b[ c[idx] - 1 ] = a[i];
-            c[idx] = c[idx] - 1;   //for 相等元素
+            c[idx] = c[idx] - 1;
         }
 
         return b;
     }
-    public int indexPos(int begin, int ai) {
-        if(begin == 0) return ai;
-        else if(begin > 0) return ai - begin;
-        else return ai + begin;
+    static int indexPos(int min, int ai) {
+        return ai - min;
+    }
+
+    public static void main(String[] argv) {
+        int[] a = new int[] {-100, 50, 1, 79, -9, -23, 6, -23, -23, 7, -100};
+        int[] b = counting_sort(a, -100, 80);
+
+        IntArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
+        IntArrayTraversal.of(b).forEach(ArrayPrinter.of()::print);
     }
 
     //练习8.2-4： Count[a, b] = Count[0, b] - Count[0, a] + Count(a)
-
-
-    public static void main(String argv[]) {
-
-        Chapter8_2 chapter2_8_2 = new Chapter8_2();
-        int[] a = new int[]{6, 5, 5, 2, 1, 3, 6, 7};
-        int[] b = chapter2_8_2.counting_sort(a, 0, 8);
-        Arrays.stream(b).forEach(System.out::println);
-
-    }
 
 }
