@@ -1,8 +1,8 @@
-package com.juice.alg.chapter2_8;
+package com.juice.alg.part2.chapter8;
 
 import java.util.Arrays;
 
-public class Chapter2_8_2 {
+public class Chapter8_2 {
 
     /**
      *计数排序
@@ -73,7 +73,7 @@ public class Chapter2_8_2 {
 
     public static void main(String argv[]) {
 
-        Chapter2_8_2 chapter2_8_2 = new Chapter2_8_2();
+        Chapter8_2 chapter2_8_2 = new Chapter8_2();
         int[] a = new int[]{6, 5, 5, 2, 1, 3, 6, 7};
         int[] b = chapter2_8_2.counting_sort(a, 0, 8);
         Arrays.stream(b).forEach(System.out::println);

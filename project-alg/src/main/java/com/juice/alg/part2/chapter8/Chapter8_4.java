@@ -1,4 +1,4 @@
-package com.juice.alg.chapter2_8;
+package com.juice.alg.part2.chapter8;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 
 import java.util.Arrays;
 
-public class Chapter2_8_4 {
+public class Chapter8_4 {
 
     /**
      *桶排序思想
@@ -22,7 +22,7 @@ public class Chapter2_8_4 {
      *
      *计数排序中应用桶思想
      * 1.k的大小是确定的
-     * 2.桶下标映射 {@link Chapter2_8_2#indexPos(int, int)}，满足
+     * 2.桶下标映射 {@link Chapter8_2#indexPos(int, int)}，满足
      * 3.√
      *
      *
@@ -176,7 +176,7 @@ public class Chapter2_8_4 {
 
 
     public static void main(String argv[]) {
-        Chapter2_8_4 chapter2_8_4 = new Chapter2_8_4();
+        Chapter8_4 chapter2_8_4 = new Chapter8_4();
 
         int[] a = new int[]{6, 5, 5, 2, 1, 3, 6, 7};
         int[] b = chapter2_8_4.bucket_sort_for_counting(a, 0, 10);

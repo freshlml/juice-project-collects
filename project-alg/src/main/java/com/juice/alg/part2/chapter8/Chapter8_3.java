@@ -1,7 +1,7 @@
-package com.juice.alg.chapter2_8;
+package com.juice.alg.part2.chapter8;
 
 
-public class Chapter2_8_3 {
+public class Chapter8_3 {
 
     /**
      *第一：基数排序: 段式排序。最高有效位；最低有效位
@@ -153,7 +153,7 @@ public class Chapter2_8_3 {
 
 
     public static void main(String argv[]) {
-        Chapter2_8_3 chapter2_8_3 = new Chapter2_8_3();
+        Chapter8_3 chapter2_8_3 = new Chapter8_3();
 
         int a[][] = new int[][]{ {3,2,9}, {3,2,8}, {3,5,5}, {6,5,7}, {6,5,7}, {8,3,7} };
         chapter2_8_3.radix_sort(a);

@@ -1,6 +1,6 @@
-package com.juice.alg.chapter2_8;
+package com.juice.alg.part2.chapter8;
 
-public class Chapter2_8_5 {
+public class Chapter8_Practice {
 
     //思考题8-2
     //a: 计数，计数桶思想
