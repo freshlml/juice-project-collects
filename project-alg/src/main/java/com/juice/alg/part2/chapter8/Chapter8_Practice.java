@@ -1,5 +1,12 @@
 package com.juice.alg.part2.chapter8;
 
+import com.juice.alg.part1.chapter2.Chapter2_Practice2;
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+
 public class Chapter8_Practice {
 
     //思考题8-2
@@ -119,4 +126,166 @@ public class Chapter8_Practice {
 
     //思考题8-7 todo
 
+    public static void main(String[] argv) {
+
+        int[] a = new int[] {1, 3, 2, 5, 6};
+        ArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
+    }
+
+    /**
+     * A more broad array traversal, not only for int array.
+     * @see com.juice.alg.part1.chapter2.Chapter2_Practice2.IntArrayTraversal
+     * @param <ARRAY_TYPE>
+     */
+    public static class ArrayTraversal<ARRAY_TYPE> {
+        private final ARRAY_TYPE array;
+        private final int begin;
+        private final int end;
+
+        /**
+         * Array traversal
+         * @param array  the array for traversal
+         * @throws NullPointerException    if the specified array is null
+         */
+        private ArrayTraversal(ARRAY_TYPE array) {
+            this(array, 0, Array.getLength(array));
+        }
+
+        /**
+         * if `begin <= end`, traversal from `begin`   to `end-1` at range [begin, end)
+         * if `begin >  end`, traversal from `begin-1` to `end`   at range [end, begin)
+         * @param array  the array for traversal
+         * @param begin  the start position of traversal
+         * @param end    the end position of traversal
+         * @throws NullPointerException          if the specified array is null
+         * @throws IllegalArgumentException      if the specified begin, end is negative
+         *                                    or if begin <= end and end > array.length
+         *                                    or if begin >  end and begin > array.length
+         *                                    or if the specified array is not an array-type
+         * @throws RuntimeException with a nested reflection-based exception
+         */
+        private ArrayTraversal(ARRAY_TYPE array, int begin, int end) {
+            this(array, begin, end, false);
+        }
+
+        /**
+         * if `begin <= end`, traversal from `begin`   to `end-1` at range [begin, end)
+         * if `begin >  end`, traversal from `begin-1` to `end`   at range [end, begin)
+         * @param array  the array for traversal
+         * @param begin  the start position of traversal
+         * @param end    the end position of traversal
+         * @param byUnsafe true: by Unsafe api, false: by reflect api
+         * @throws NullPointerException          if the specified array is null
+         * @throws IllegalArgumentException      if the specified begin, end is negative
+         *                                    or if begin <= end and end > array.length
+         *                                    or if begin >  end and begin > array.length
+         *                                    or if the specified array is not an array-type
+         * @throws RuntimeException with a nested reflection-based exception
+         */
+        private ArrayTraversal(ARRAY_TYPE array, int begin, int end, boolean byUnsafe) {
+            if(array == null) throw new NullPointerException("array can not be null");
+            int length = Array.getLength(array);
+
+            if(begin < 0 || end < 0)
+                throw new IllegalArgumentException("the specified begin or end is negative, begin = " + begin + ", end = " + end);
+            if(begin <= end && end > length)
+                throw new IllegalArgumentException("the specified end is large than array's length, end = " + end);
+            if(begin > end && begin > length)
+                throw new IllegalArgumentException("the specified begin is large than array's length, begin = " + begin);
+
+            this.array = array;
+            this.begin = begin;
+            this.end = end;
+
+            init(array, byUnsafe);
+        }
+
+        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array) {
+            return new ArrayTraversal<>(array);
+        }
+
+        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array, int begin, int end) {
+            return new ArrayTraversal<>(array, begin, end);
+        }
+
+        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array, int begin, int end, boolean byUnsafe) {
+            return new ArrayTraversal<>(array, begin, end, byUnsafe);
+        }
+
+        public void forEach(Chapter2_Practice2.IntArrayTraversal.PerElement<Object> handler) {
+            if(begin <= end) {
+                for(int i = begin; i < end; i++) {
+                    handler.per(this.get(i), i, end - 1);
+                }
+            } else {
+                for(int i = begin-1; i >= end; i--) {
+                    handler.per(this.get(i), i, end);
+                }
+            }
+        }
+
+        private Object get(int i) {
+            if(!byUnsafe) {
+                return Array.get(array, i);
+            }
+
+            long offset = byteOffset(i);
+            Object e;
+            if(boolean.class == componentType) {
+                e = unsafe.getBoolean(array, offset);
+            } else if(byte.class == componentType) {
+                e = unsafe.getByte(array, offset);
+            } else if(short.class == componentType) {
+                e = unsafe.getShort(array, offset);
+            } else if(char.class == componentType) {
+                e = unsafe.getChar(array, offset);
+            } else if(int.class == componentType) {
+                e = unsafe.getInt(array, offset);
+            } else if(long.class == componentType) {
+                e = unsafe.getLong(array, offset);
+            } else if(float.class == componentType) {
+                e = unsafe.getFloat(array, offset);
+            } else if(double.class == componentType) {
+                e = unsafe.getDouble(array, offset);
+            } else {
+                e = unsafe.getObject(array, offset);
+            }
+
+            return e;
+        }
+
+        private boolean byUnsafe;
+        private Unsafe unsafe;
+        private int base;
+        private int shift;
+        private Class<?> componentType;
+
+        private void init(ARRAY_TYPE array, boolean byUnsafe) {
+            this.byUnsafe = byUnsafe;
+            if(!byUnsafe) return;
+
+            Class<?> arrayType = array.getClass();
+            //assert arrayType.isArray();
+
+            componentType = arrayType.getComponentType();
+            try {
+                Field f = Unsafe.class.getDeclaredField("theUnsafe");
+                f.setAccessible(true);
+                unsafe = (Unsafe) f.get(null);
+
+                base = unsafe.arrayBaseOffset(arrayType);
+                int scale = unsafe.arrayIndexScale(arrayType);
+                if ((scale & (scale - 1)) != 0)
+                    throw new Error("data type scale not a power of two");
+                shift = 31 - Integer.numberOfLeadingZeros(scale);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private long byteOffset(int i) {
+            return ((long) i << shift) + base;
+        }
+
+    }
 }
