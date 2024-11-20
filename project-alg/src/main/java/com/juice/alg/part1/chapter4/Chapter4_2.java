@@ -556,19 +556,28 @@ public class Chapter4_2 {
         interface ElementGather {
             Object get(int[][] array, int i, int j);
 
-            static String getIndexSafe(int[][] array, int i, int j) {
+            static Object getIndexSafe(int[][] array, int i, int j) {
                 try {
                     return String.valueOf(array[i][j]);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    return "";
+                    return NullObj.nullObj;
                 }
             }
-            static String getIndexSafeTranspose(int[][] array, int i, int j) {
+            static Object getIndexSafeTranspose(int[][] array, int i, int j) {
                 try {
                     return String.valueOf(array[j][i]);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    return "";
+                    return NullObj.nullObj;
                 }
+            }
+        }
+
+        public static class NullObj {
+            private static final NullObj nullObj = new NullObj();
+
+            @Override
+            public String toString() {
+                return "";
             }
         }
 
