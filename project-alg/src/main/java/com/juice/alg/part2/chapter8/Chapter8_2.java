@@ -28,7 +28,7 @@ public class Chapter8_2 {
      *
      *    C[i] = C[i] + C[i-1]
      *              _  _  _  _     _  _  _
-     *    C[0, 8):  0  1  2  3  4  5  6  7  8 下标
+     *    C[0, 9):  0  1  2  3  4  5  6  7  8 下标
      *              1  2  3  4  4  6  8  9  9
      *
      *    for i from A.length-1 to 0:
@@ -40,7 +40,7 @@ public class Chapter8_2 {
         if(a == null) return null;
         if(a.length == 0 || a.length == 1) return a;
 
-        //assert begin < end
+        //assert min < max
 
         int[] c = new int[max - min];  //初始值为 0
 
