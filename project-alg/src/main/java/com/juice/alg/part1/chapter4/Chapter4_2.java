@@ -174,44 +174,44 @@ public class Chapter4_2 {
         System.out.println("------------------------------");
 
         int[][] blc = blMatrixMulti(a, b);
-        TwoDimensionIntArrayTraversal.of(blc).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(blc).forEach(MatrixPrinter.of()::print);
         System.out.println("#############################################");
 
         mergeAndPrintMatrix(a, b);
         System.out.println("------------------------------");
 
         int[][] fzc = fzMatrixMulti(a, b);
-        TwoDimensionIntArrayTraversal.of(fzc).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(fzc).forEach(MatrixPrinter.of()::print);
         System.out.println("#############################################");
 
         int[][] c = {{109, 2, 3}, {4, 555, 6}, {7, 8}};
-        TwoDimensionIntArrayTraversal.of(c).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.TRANSPOSE).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.REVERSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.REVERSE).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.REVERSE_TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.REVERSE_TRANSPOSE).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.ROW_REVERSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.ROW_REVERSE).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.ROW_REVERSE_TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.ROW_REVERSE_TRANSPOSE).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.COLUMN_REVERSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
         System.out.println("------------------------------");
 
-        TwoDimensionIntArrayTraversal.of(c, TwoDimensionIntArrayTraversal.TraversalMode.COLUMN_REVERSE_TRANSPOSE).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.COLUMN_REVERSE_TRANSPOSE).forEach(MatrixPrinter.of()::print);
 
         System.out.println("#############################################");
 
         c = new int[][] {{1}, {1, 2, 3, 4, 5, 10000, 109876}, {4, 555, 600, 4, 5}, {7, 8}, {1, 2, 3, 4, 5, 6}, {1}};
-        TwoDimensionIntArrayTraversal.of(c, 1, 5, 2, 6).forEach(TwoDimensionArrayPrinter.of()::print);
+        IntMatrixTraversal.of(c, 1, 5, 2, 6).forEach(MatrixPrinter.of()::print);
 
     }
 
@@ -277,12 +277,12 @@ public class Chapter4_2 {
         System.out.print(element);
     }
 
-    public static class TwoDimensionArrayPrinter<E> {
+    public static class MatrixPrinter<E> {
         protected static final String SEP = ", ";
         protected static final char LINE_END = '\n';
         protected int count = 1;
 
-        private TwoDimensionArrayPrinter() {}
+        private MatrixPrinter() {}
 
         public void print(E e, int i, int iLimit, int j, int jLimit, int width) {
             printElement(e, width);
@@ -319,13 +319,13 @@ public class Chapter4_2 {
             System.out.print(SEP);
         }
 
-        public static <E> TwoDimensionArrayPrinter<E> of() {
-            return new TwoDimensionArrayPrinter<>();
+        public static <E> MatrixPrinter<E> of() {
+            return new MatrixPrinter<>();
         }
     }
 
 
-    public static class TwoDimensionIntArrayTraversal {
+    public static class IntMatrixTraversal {
         private final int[][] array;
         private final int rowBegin;
         private final int rowEnd;
@@ -340,7 +340,7 @@ public class Chapter4_2 {
          * @param mode   矩阵的 traversal 方式: 正序，转置，逆序，逆序-转置，行-逆序，行-逆序-转置，列-逆序，列-逆序-转置
          * @throws NullPointerException          if the specified `array` is null, or `array[0]` is null
          */
-        private TwoDimensionIntArrayTraversal(int[][] array, TraversalMode mode, int[]... widths) {
+        private IntMatrixTraversal(int[][] array, TraversalMode mode, int[]... widths) {
             this(array, 0, array.length, 0, array[0].length, mode, widths);
         }
 
@@ -356,7 +356,7 @@ public class Chapter4_2 {
          *                                    or if `rowBegin` > `rowEnd` or `rowEnd` > `array.length`
          *                                    or if `columnBegin` > `columnEnd` or `columnEnd` > the largest column length
          */
-        private TwoDimensionIntArrayTraversal(int[][] array, int rowBegin, int rowEnd, int columnBegin, int columnEnd, TraversalMode mode, int[]... widths) {
+        private IntMatrixTraversal(int[][] array, int rowBegin, int rowEnd, int columnBegin, int columnEnd, TraversalMode mode, int[]... widths) {
             if(array == null/* || array[0] == null*/) throw new NullPointerException("array can not be null");
             if(rowBegin < 0 || rowEnd < 0 || columnBegin < 0 || columnEnd < 0)
                 throw new IllegalArgumentException("the specified rowBegin, rowEnd, columnBegin, columnEnd is negative, rowBegin = "
@@ -408,20 +408,20 @@ public class Chapter4_2 {
             }
         }
 
-        public static TwoDimensionIntArrayTraversal of(int[][] a, int[]... widths) {
+        public static IntMatrixTraversal of(int[][] a, int[]... widths) {
             return of(a, TraversalMode.NORMAL, widths);
         }
 
-        public static TwoDimensionIntArrayTraversal of(int[][] a, TraversalMode mode, int[]... widths) {
-            return new TwoDimensionIntArrayTraversal(a, mode, widths);
+        public static IntMatrixTraversal of(int[][] a, TraversalMode mode, int[]... widths) {
+            return new IntMatrixTraversal(a, mode, widths);
         }
 
-        public static TwoDimensionIntArrayTraversal of(int[][] a, int rowBegin, int rowEnd, int columnBegin, int columnEnd, int[]... widths) {
+        public static IntMatrixTraversal of(int[][] a, int rowBegin, int rowEnd, int columnBegin, int columnEnd, int[]... widths) {
             return of(a, rowBegin, rowEnd, columnBegin, columnEnd, TraversalMode.NORMAL, widths);
         }
 
-        public static TwoDimensionIntArrayTraversal of(int[][] a, int rowBegin, int rowEnd, int columnBegin, int columnEnd, TraversalMode mode, int[]... widths) {
-            return new TwoDimensionIntArrayTraversal(a, rowBegin, rowEnd, columnBegin, columnEnd, mode, widths);
+        public static IntMatrixTraversal of(int[][] a, int rowBegin, int rowEnd, int columnBegin, int columnEnd, TraversalMode mode, int[]... widths) {
+            return new IntMatrixTraversal(a, rowBegin, rowEnd, columnBegin, columnEnd, mode, widths);
         }
 
         public TraversalMode getMode() {
@@ -533,18 +533,18 @@ public class Chapter4_2 {
         }
         @FunctionalInterface
         interface ElementGather {
-            String get(int[][] array, int i, int j);
+            Object get(int[][] array, int i, int j);
 
             static String getIndexSafe(int[][] array, int i, int j) {
                 try {
-                    return Integer.toString(array[i][j]);
+                    return String.valueOf(array[i][j]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     return "";
                 }
             }
             static String getIndexSafeTranspose(int[][] array, int i, int j) {
                 try {
-                    return Integer.toString(array[j][i]);
+                    return String.valueOf(array[j][i]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     return "";
                 }
