@@ -332,16 +332,33 @@ public class Chapter4_2 {
         private final int columnBegin;
         private final int columnEnd;
         private final TraversalMode mode;
-        private final int[] rowWidth;
-        private final int[] columnWidth;
+        private int[] rowWidth;
+        private int[] columnWidth;
 
         /**
          * @param array  the array for traversal
          * @param mode   矩阵的 traversal 方式: 正序，转置，逆序，逆序-转置，行-逆序，行-逆序-转置，列-逆序，列-逆序-转置
-         * @throws NullPointerException          if the specified `array` is null, or `array[0]` is null
+         * @throws NullPointerException          if the specified `array` is null
          */
         private IntMatrixTraversal(int[][] array, TraversalMode mode, int[]... widths) {
-            this(array, 0, array.length, 0, array[0].length, mode, widths);
+            //this(array, 0, array.length, 0, array[0].length, mode, widths);
+            if(array == null/* || array[0] == null*/) throw new NullPointerException("array can not be null");
+            this.array = array;
+            this.rowBegin = 0;
+            this.rowEnd = array.length;
+            this.columnBegin = 0;
+            //this.columnEnd = array[0].length;
+            this.mode = mode;
+
+            // 遍历 array, 寻找 the largest column length
+            int largest_column_length = 0;
+            for (int i=this.rowBegin; i < this.rowEnd; i++) {
+                if(largest_column_length < array[i].length)
+                    largest_column_length = array[i].length;
+            }
+            this.columnEnd = largest_column_length;
+
+            calWidth(widths);
         }
 
         /**
@@ -383,6 +400,10 @@ public class Chapter4_2 {
                 throw new IllegalArgumentException("the specified columnEnd [" + columnEnd + "] is large than the largest column length [" + largest_column_length + "]");
             this.columnEnd = columnEnd;
 
+            calWidth(widths);
+        }
+
+        private void calWidth(int[]... widths) {
             int rows = this.rowEnd - this.rowBegin;
             int columns = this.columnEnd - this.columnBegin;
 
