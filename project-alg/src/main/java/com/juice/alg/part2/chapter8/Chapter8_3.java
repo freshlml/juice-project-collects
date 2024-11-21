@@ -1,9 +1,11 @@
 package com.juice.alg.part2.chapter8;
 
 
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
 import com.juice.alg.part1.chapter4.Chapter4_2.IntMatrixTraversal;
 import com.juice.alg.part1.chapter4.Chapter4_2.IntMatrixTraversal.TraversalMode;
 import com.juice.alg.part1.chapter4.Chapter4_2.MatrixPrinter;
+import com.juice.alg.part2.chapter8.Chapter8_Practice.ArrayTraversal;
 
 public class Chapter8_3 {
 
@@ -90,8 +92,61 @@ public class Chapter8_3 {
         try {
             return ai[j] - min;
         } catch (IndexOutOfBoundsException e) {
-            return min;
+            return min;  //generally, min is zero
         }
+    }
+
+    /*
+     *给定一个 d 位数(d > 0)和正整数 r(r > 0). 令 p = ⌈d/r⌉. [-10^r + 1, 10^r)
+     *  d = 3, r = 2, p = 3/2 + 1 = 2, [-99, 100)
+     *  p=0  v =  115,  v' =  115 - ( 115/100) * 100 =  15
+     *       v = -115,  v' = -115 - (-155/100) * 100 = -15
+     *       v =   15,  v' =   15 - (  15/100) * 100 =  15
+     *
+     *  p=1  v =  115/100 =  1,  v' =  1 - ( 1/100) * 100 =  1
+     *       v = -115/100 = -1,  v' = -1 - (-1/100) * 100 = -1
+     *       v =   15/100 =  0,  v' =  0 - ( 0/100) * 100 =  0
+     */
+    public static void radix_sort(int[] a, int d, int r) {  //取 Ⅲ. 3) 存储方案
+        if(a == null || a.length == 0 || a.length == 1) return;
+        assert d > 0 && d <= 10; //because Integer.MAX_VALUE 的位宽为 10
+        assert r > 0 && r <= 9;  //Note: r <= 9, 否则 radix_counting_sort 中，array size overflow
+
+        int p = d%r == 0 ? d/r : d/r + 1;
+        int tr = Double.valueOf(Math.pow(10, r)).intValue();
+
+        for(int j=0; j < p; j++) {
+            radix_counting_sort(a, j, -tr + 1, tr);
+        }
+
+    }
+    static void radix_counting_sort(int[] a, int j, int min, int max) {
+
+        int[] c = new int[max - min];  //初始值为 0.
+        int mtl = Double.valueOf(Math.pow(max, j)).intValue();
+
+        for(int i=0; i<a.length; i++) {
+            int idx = indexPos(a[i], mtl, max, min);
+            c[idx] = c[idx] + 1;
+        }
+
+        for(int i=1; i<c.length; i++) {
+            c[i] = c[i] + c[i-1];
+        }
+
+        int[] b = new int[a.length];
+        for(int i=a.length-1; i>=0; i--) {   //from a.length-1 to 0，保证了计数排序是稳定的
+            int idx = indexPos(a[i], mtl, max, min);
+            b[ c[idx] - 1 ] = a[i];
+            c[idx] = c[idx] - 1;
+        }
+
+        //a = b;
+        System.arraycopy(b, 0, a, 0, a.length);
+    }
+    static int indexPos(int a, int mtl, int tr, int min) {
+        int v = a/mtl;
+        return (v - (v/tr) * tr) - min;
     }
 
     public static void main(String[] argv) {
@@ -103,10 +158,16 @@ public class Chapter8_3 {
 
         System.out.println("##########");
 
-        int[][] a2 = new int[][]{ {3,2,9}, {3,2,8}, {3,5,5}, {6,5,7}, {6,5,7}, {8,3,7} };
+        int[] a1 = new int[] {1, 329, 355, 657, 328, 837, 657, 10, -11116, -21116, -115, 115, 15, -15};
+        ArrayTraversal.of(a1).forEach(ArrayPrinter.of()::print);
+        System.out.println("----------");
+        radix_sort(a1, 10, 3);  //Integer.MAX_VALUE 位宽为 10
+        ArrayTraversal.of(a1).forEach(ArrayPrinter.of()::print);
+
+        System.out.println("##########");
+
+        int[][] a2 = new int[][] { {3,2,9}, {3,2,8}, {3,5,5}, {6,5,7}, {6,5,7}, {8,3,7} };
         radix_sort_r(a2, 2);
-
-
     }
 
     /**
