@@ -43,34 +43,32 @@ public class Chapter8_3 {
      *         0 0 0 0 0 0 0 1   --> 1
      *         0 0 0 0 0 0 1 5   --> 15
      *
-     *      2).使用二维数组存储。按低位到高位。不足 d 位的无需使用 0 填充。如果要表示正负数，则可约定最高位为符号位
+     *      2).使用二维数组存储。按低位到高位。不足 d 位的无需使用 0 填充。如果要表示正负数，只需将最高位表示成负数
      *         9 2 3             --> 329
      *         8 2 3 1 1 1 1 1   --> 11111328
      *         1                 --> 1
-     *         5 1               --> 15
+     *         5 -1              --> -15
      *
-     *      3).使用一维数组存储，节省了存储空间，只是数值范围变小了
+     *      3).使用一维数组存储，节省了存储空间，只是数值表示范围变小了
      *         329, 11111328, 15, -15, -15, -25
      *
      *   Ⅳ: 使用数组表示的 d 位数，每一个位的取值范围均为 [0, k)。则每一轮可使用计数排序。这样基数排序的运行时间为: Θ(d*(n+k))
      */
     public static void radix_sort(int[][] a, int d) {  //取 Ⅲ. 2) 存储方案
         if(a == null || a.length == 0 || a.length == 1) return;
-        //assert d <= a[0].length;
-        assert d > 0;
+        if(d <= 0) throw new IllegalArgumentException("the weight [" + d + "] can not be negative number");
 
         for(int j=0; j < d; j++) {
-            radix_counting_sort(a, j, 0, 10);
+            radix_counting_sort(a, j, 10);
         }
 
     }
-    static void radix_counting_sort(int[][] a, int j, int min, int max) { //a[0~a.length][j]数组中元素的取值范围为 [min, max)
-        //assert min < max
+    static void radix_counting_sort(int[][] a, int j, int radix) {  //假定 a[0~a.length][j] 数值范围 ∈ [-radix+1, radix)
+        int min = -radix + 1;
+        int[] c = new int[2*radix - 1];  //初始值为 0.
 
-        int[] c = new int[max - min];  //初始值为 0.
-
-        for(int i=0; i<a.length; i++) {
-            int idx = indexPos(min, a[i], j);
+        for(int[] ai : a) {
+            int idx = indexPos(ai, j, min);
             c[idx] = c[idx] + 1;
         }
 
@@ -80,7 +78,7 @@ public class Chapter8_3 {
 
         int[][] b = new int[a.length][];
         for(int i=a.length-1; i>=0; i--) {   //from a.length-1 to 0，保证了计数排序是稳定的
-            int idx = indexPos(min, a[i], j);
+            int idx = indexPos(a[i], j, min);
             b[ c[idx] - 1 ] = a[i];
             c[idx] = c[idx] - 1;
         }
@@ -88,11 +86,11 @@ public class Chapter8_3 {
         //a = b;
         System.arraycopy(b, 0, a, 0, a.length);
     }
-    static int indexPos(int min, int[] ai, int j) {
+    static int indexPos(int[] ai, int j, int min) {
         try {
             return ai[j] - min;
         } catch (IndexOutOfBoundsException e) {
-            return min;  //generally, min is zero
+            return -min;  //really: 0 - min
         }
     }
 
@@ -113,20 +111,20 @@ public class Chapter8_3 {
         assert r > 0 && r <= 9;  //Note: r <= 9, 否则 radix_counting_sort 中，array size overflow
 
         int p = d%r == 0 ? d/r : d/r + 1;
-        int tr = Double.valueOf(Math.pow(10, r)).intValue();
+        int radix = Double.valueOf(Math.pow(10, r)).intValue();
 
         for(int j=0; j < p; j++) {
-            radix_counting_sort(a, j, -tr + 1, tr);
+            radix_counting_sort(a, j, radix);
         }
 
     }
-    static void radix_counting_sort(int[] a, int j, int min, int max) {
-
-        int[] c = new int[max - min];  //初始值为 0.
-        int mtl = Double.valueOf(Math.pow(max, j)).intValue();
+    static void radix_counting_sort(int[] a, int j, int radix) {
+        int min = -radix + 1;
+        int[] c = new int[2 * radix - 1];  //初始值为 0.
+        int mtl = Double.valueOf(Math.pow(radix, j)).intValue();
 
         for(int i=0; i<a.length; i++) {
-            int idx = indexPos(a[i], mtl, max, min);
+            int idx = indexPos(a[i], mtl, radix, min);
             c[idx] = c[idx] + 1;
         }
 
@@ -136,7 +134,7 @@ public class Chapter8_3 {
 
         int[] b = new int[a.length];
         for(int i=a.length-1; i>=0; i--) {   //from a.length-1 to 0，保证了计数排序是稳定的
-            int idx = indexPos(a[i], mtl, max, min);
+            int idx = indexPos(a[i], mtl, radix, min);
             b[ c[idx] - 1 ] = a[i];
             c[idx] = c[idx] - 1;
         }
@@ -144,17 +142,18 @@ public class Chapter8_3 {
         //a = b;
         System.arraycopy(b, 0, a, 0, a.length);
     }
-    static int indexPos(int a, int mtl, int tr, int min) {
+    static int indexPos(int a, int mtl, int radix, int min) {
         int v = a/mtl;
-        return (v - (v/tr) * tr) - min;
+        return (v - (v/radix) * radix) - min;
     }
 
     public static void main(String[] argv) {
-        int[][] a = new int[][] { {1}, {9, 2, 3}, {5, 5, 3}, {7, 5, 6}, {8, 2, 3}, {7, 3, 8}, {7, 5, 6}, {0, 1}, {1, 0} };
-        IntMatrixTraversal.of(a, TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
+        int[][] a = new int[][] { {1}, {9, 2, 3}, {5, 5, 3}, {7, 5, 6}, {8, 2, 3}, {7, 3, 8}, {7, 5, 6}, {0, 1}, {1, 0}, {1, -1}, {9, 2, -3} };
+        int d = 3;
+        IntMatrixTraversal.of(a, 0, a.length, 0, d, TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
         System.out.println("----------");
-        radix_sort(a, 3);
-        IntMatrixTraversal.of(a, TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
+        radix_sort(a, d);
+        IntMatrixTraversal.of(a, 0, a.length, 0, d, TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
 
         System.out.println("##########");
 
@@ -182,7 +181,6 @@ public class Chapter8_3 {
     public static void radix_sort_r(int[][] a, int r) {  //取 Ⅲ. 1) 存储方案
         if(a == null || a.length == 0 || a.length == 1) return;
 
-        int n = a.length;
         int d = a[0].length; //safe
         //assert 0 < r <= d
         int p = d%r > 0 ? d/r+1 : d/r;
@@ -197,8 +195,8 @@ public class Chapter8_3 {
 
         int[] c = new int[end - begin];  //初始值为0
 
-        for(int i=0; i<a.length; i++) {
-            int idx = indexPos_r(a[i], t, r);
+        for (int[] ai : a) {
+            int idx = indexPos_r(ai, t, r);
             c[idx] = c[idx] + 1;
         }
 
