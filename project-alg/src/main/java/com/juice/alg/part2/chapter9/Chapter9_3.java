@@ -1,7 +1,7 @@
-package com.juice.alg.chapter2_9;
+package com.juice.alg.part2.chapter9;
 
 
-public class Chapter2_9_3 {
+public class Chapter9_3 {
 
     /**
      *第i个顺序统计量, 最坏情况运行时间是线性的

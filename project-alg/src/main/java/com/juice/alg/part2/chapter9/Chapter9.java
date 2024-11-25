@@ -1,8 +1,28 @@
-package com.juice.alg.chapter2_9;
+package com.juice.alg.part2.chapter9;
 
-public class Chapter2_9_1 {
+public class Chapter9 {
 
     /**
+     *chapter 9
+     *
+     *顺序统计量
+     *  n 个元素的序列中，第 i 个顺序统计量为该序列中第 i 小的元素。i = 1, 2, ..., n
+     *
+     *  在一个序列中，最小值为第 1 个顺序统计量。最大值为第 n 个顺序统计量
+     *
+     *  若序列中包含重复元素，则某个顺序统计量可能不是唯一的，即重复元素均可作为该顺序统计量
+     *
+     *中位数
+     *  当 n 为奇数时，中位数是唯一的: i = (n+1)/2, 其中 i 表示顺序统计量
+     *  当 n 为偶数时，下中位数为: i = n/2 = ⌊(n+1)/2⌋, 其中 i 表示顺序统计量
+     *              上中位数为: i = n/2 + 1 = ⌊(n+2)/2⌋, 其中 i 表示顺序统计量
+     */
+    public static void main(String[] argv) {
+        chapter9_1();
+    }
+    /**
+     *chapter 9.1
+     *
      *找最值
      * min(int[] A) {
      *     min = A[0]
@@ -58,6 +78,8 @@ public class Chapter2_9_1 {
      *  n为偶数: 1 + (n-2)/2 * 3 = 3n/2 - 2
      *
      */
+    static void chapter9_1() {}
+
 
     /*练习9.1-1
      *1: 除了min之外的最小为第二小

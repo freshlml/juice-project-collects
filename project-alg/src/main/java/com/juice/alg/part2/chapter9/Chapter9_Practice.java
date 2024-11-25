@@ -1,6 +1,6 @@
-package com.juice.alg.chapter2_9;
+package com.juice.alg.part2.chapter9;
 
-public class Chapter2_9_4 {
+public class Chapter9_Practice {
 
     //思考题9-1
     //a: 1.排序，2.遍历n-1 to n-i; 时间消耗 = O(n*lgn) + O(n-i)

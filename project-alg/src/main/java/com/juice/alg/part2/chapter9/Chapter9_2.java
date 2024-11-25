@@ -1,7 +1,7 @@
-package com.juice.alg.chapter2_9;
+package com.juice.alg.part2.chapter9;
 
 
-public class Chapter2_9_2 {
+public class Chapter9_2 {
 
     /**
      *第i个顺序统计量
