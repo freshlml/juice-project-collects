@@ -5,7 +5,7 @@ import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
 import com.juice.alg.part1.chapter4.Chapter4_2.IntMatrixTraversal;
 import com.juice.alg.part1.chapter4.Chapter4_2.IntMatrixTraversal.TraversalMode;
 import com.juice.alg.part1.chapter4.Chapter4_2.MatrixPrinter;
-import com.juice.alg.part2.chapter8.Chapter8_Practice.ArrayTraversal;
+import com.juice.alg.part2.chapter8.Chapter8_4.ArrayTraversal;
 
 public class Chapter8_3 {
 

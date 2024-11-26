@@ -1,13 +1,18 @@
 package com.juice.alg.part2.chapter8;
 
 
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
+import com.juice.alg.part1.chapter2.Chapter2_Practice2.IntArrayTraversal;
+
 public class Chapter8_Practice {
 
     //思考题8-2
     //  a: 计数排序
-    //  b: 左指针指向 1，右指针指向 0，exchange. or 计算 p = number of 0, <=p 填充0，>p 填充 1
+    //  b: 左指针指向 1，右指针指向 0，exchange
+    //  c: 插入排序
+    //  d: 需稳定且 O(n), 则上述可选 a
     //  e: O(n+k), 原址的计数排序, 不稳定
-    static void counting_sort_merge(int[] a, int[][] c, int begin) {
+    static void exchange(int[] a, int[][] c, int min) {
     /*
      *   2, 1, 2, 3, 2, 1, 1, 3         3, 6, 8 y
      *i= 0, 1, 2, 3, 4, 5, 6, 7         3, 6, 8 x
@@ -15,7 +20,7 @@ public class Chapter8_Practice {
         int n = a.length;
 
         for(int i=n-1; i>=0; ) {
-            int idx = indexPos(a[i], begin);
+            int idx = indexPos(min, a[i]);
             int x = c[1][idx] - 1;
             int y = c[0][idx] - 1;
 
@@ -33,10 +38,38 @@ public class Chapter8_Practice {
             }
         }
     }
-    static int indexPos(int ai, int begin) {
-        return ai - begin;
+    public static void counting_sort_exchange(int[] a, int min, int max) { //数组中元素的取值范围为 [min, max)
+        if(a == null) return;
+        if(a.length == 0 || a.length == 1) return ;
+
+        //assert min < max
+
+        int[][] c = new int[2][max - min];  //初始值为 0
+
+        for(int i=0; i<a.length; i++) {
+            int idx = indexPos(min, a[i]);
+            c[0][idx] = c[0][idx] + 1;
+            c[1][idx] = c[1][idx] + 1;
+        }
+
+        for(int i=1; i<c[0].length; i++) {
+            c[0][i] = c[0][i] + c[0][i-1];
+            c[1][i] = c[1][i] + c[1][i-1];
+        }
+
+        exchange(a, c, min);
+    }
+    static int indexPos(int min, int ai) {
+        return ai - min;
     }
 
+    public static void main(String[] argv) {
+        int[] a = new int[] {-100, 50, 1, 79, -9, -23, 6, -23, -23, 7, -100};
+        IntArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
+
+        counting_sort_exchange(a, -100, 80);
+        IntArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
+    }
 
     //思考题8-3
     //  a: Chapter8_3/radix_sort(int[] a, int d, int r)
@@ -58,8 +91,41 @@ public class Chapter8_Practice {
                     break;
      最坏情况运行时间：n + n-1 + n-2 + ... + 1 = n*(n+1) / 2
     */
-    //b: 决策树
-
+    //b:
+    /*
+     *红色、蓝色各 4 瓶水壶的决策树
+     *               [1:1]
+     *              =/
+     *            [2:2]
+     *          =/        \!=
+     *        [3:3]        [2:3]
+     *      =/    \!=     =/      \!=
+     *     [4:4]  [3:4]   [3:2]     [2:4]
+     *     /      /      =/   \!=     /
+     *   1-1    [4:3]  [4:4]  [3:4] [3:2]
+     *   2-2     /     /     /      =/  \!=
+     *   3-3    1-1   1-1   [4:2]  [4:3] [3:3]
+     *   4-4    2-2   2-3   /       /     /
+     *          3-4   3-2  1-1    1-1    [4:2]
+     *          4-3   4-4  2-3    2-4    /
+     *                     3-4    3-2   1-1
+     *                     4-2    4-3   2-4
+     *                                  3-3
+     *                                  4-2
+     *
+     *   1. 决策树的每一个内部节点表示两个水壶进行配对
+     *   2. 决策树模型可以表示在给定输入规模下，某一特定算法对所有水壶的配对操作
+     *   3. 算法的执行对应一条从树的根节点到叶节点的简单路径
+     *   4. 任何正确的算法，其决策树的所有叶节点必定包含所有配对方式(n 个水壶共 n! 种配对方式)
+     *
+     *设决策树的最大高度为 h，叶子节点数量为 l，输入序列有 n 个元素。有:
+     *  l >= n!   ①
+     *  l <= 2^h  ②         //高度为 h 的二叉树，叶节点数量不多于 2^h
+     *
+     *  根据 ①、② 可得: n! <= l <= 2^h
+     *  解得 h >= lg(n!) = Ω(n*lg(n))              //lg(n!) = Θ(n*lg(n))
+     *  即决策树的最大高度 h > Ω(n*lg(n))
+     */
     //c:
     /*
     1.B序列均匀随机
@@ -110,27 +176,28 @@ public class Chapter8_Practice {
     //  A[i] + A[i+1] + ... + A[i+k-1] <= A[i+1] + ... + A[i+k-1] + A[i+k]
     //  ===> A[i] <= A[i+k]
     //
-    //  a: A[i] <= A[i+1], 完全有序的
-    //  b: A[i] <= A[i+2]
+    //  a: k = 1: A[i] <= A[i+1], 完全有序的
+    //  b: k = 2: A[i] <= A[i+2]
     //     1   3
     //     2   4
     //     5   6
     //     7   8
     //     9  10
-    //  c: A[i] <= A[i+k]; i=1,2, ... ,n-k
+    //  c: A[i] <= A[i+k]; i=1, 2, ..., n-k
     /*d:
-                   1   2   3   ...   k
-        0*k+1     | | | | | |  ...  | |
-        1*k+1     | | | | | |  ...  | |
-        2*k+1     | | | | | |  ...  | |
+                     1   2   3   ...   k
+            1       | | | | | |  ...  | |
+        1 + k       | | | | | |  ...  | |
+        1 + 2k      | | | | | |  ...  | |
         ...                    ...
-        (i-1)*k+1 | | | | | |  ...  | |
-        i*k+1     | | | | | |  ...  | |
+        1 + (i-1)k  | | | | | |  ...  | |
+        1 + i*k     | | | | | |  ...  | |
 
         i = n/k; j = n%k
         T(n) = k*i*lgi = n*lg(n/k)
      */
     //e: k个有序链表合并, O(n*lgk)
+    //f: T(n) = n*lg(n/k) + n*lgk = n*lgn
 
 
     //思考题8-7 todo
