@@ -56,7 +56,7 @@ public class Chapter2 {
      *          ≈ C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n
      *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中所有语句执行一次的时间之和; C1=for; C2=for中除while之外的语句
      *
-     *Θ(n^2)  ,忽略低阶项后                                   注: 之前的写法: Ω = n^2
+     *Θ(n^2)  ,忽略低阶项后
      *
      */
 
@@ -98,7 +98,7 @@ public class Chapter2 {
      *     ≈ 2*C1*n + C2*n + (C3+C4)*n*log2(n) - C4*n
      *     ≈ (C3+C4)*n*log2(n) ,C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
      *
-     *Θ(n*log2(n))  ,忽略低阶项后                                 注: 之前的写法: Ω = n*log2(n)
+     *Θ(n*log2(n))  ,忽略低阶项后
      */
     public static void merge_sort(int[] a) {
         if(a == null) return;
