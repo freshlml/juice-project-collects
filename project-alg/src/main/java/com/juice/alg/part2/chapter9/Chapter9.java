@@ -31,7 +31,7 @@ public class Chapter9 {
      *           if min > A[i]:
      *               min = A[i]
      *   }
-     *   T(n) = Θ(1) * (n-1) = Θ(n)
+     *   最坏情况下: T(n) = Θ(1) * (n-1) = Θ(n)
      *
      *  ②
      *   minimum(int[] A, int begin, int end) {
@@ -59,7 +59,7 @@ public class Chapter9 {
      *        if max < A[i]:
      *           max = A[i]
      *
-     *    总比较次数: 2 * (n-1)
+     *    最坏情况下，总比较次数: 2 * (n-1)
      *
      *  ②
      *   A.length为奇数:
@@ -88,7 +88,7 @@ public class Chapter9 {
      *           if max < A[i]:
      *               max = A[i]
      *
-     *   总计较次数:                                                               //练习9.1-2
+     *   最坏情况下，总计较次数:                                                               //练习9.1-2
      *     A.length为奇数: 1 + (⌊n/2⌋ - 1) * 3 = ⌊n/2⌋ * 3 - 2
      *     A.length为偶数: ⌊n/2⌋ * 3
      */
@@ -111,7 +111,7 @@ public class Chapter9 {
      *      if min2 > A[i]:
      *          min2 = A[i]
      *
-     *比较次数: n-1 + n-2
+     *最坏情况下，比较次数: n-1 + n-2
      *
      *
      *2:
@@ -130,7 +130,7 @@ public class Chapter9 {
      *              min2 = min
      *              min = A[2]
      *
-     *比较次数: 1 + 2 * (n-2)
+     *最坏情况下，比较次数: 1 + 2 * (n-2)
      *
      *
      *3:
