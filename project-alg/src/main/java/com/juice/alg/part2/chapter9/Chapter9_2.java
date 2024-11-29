@@ -38,13 +38,13 @@ public class Chapter9_2 {
      *平均情况运行时间
      *  随机变量 X: 所有 partition 中`a[k] <= e` 比较操作的总次数   //等于所有 partition 循环次数的总和
      *
-     *  因为 partition 返回的下标和大于(或小于)该下标的元素不参与后续的递归，所以序列中 l 与 j 最多比较一次
+     *  因为 partition 返回的下标和大于(或小于)该下标的元素不参与后续的递归，所以序列中 l 与 j 最多比较一次。l 与 j 如果同时在死亡分区，他们一次也不会比较
      *
      *  X = Σ(l=0~n-2)Σ(j=l+1~n-1) Xlj,  Xlj 表示 l 与 j 比较次数 = 0
      *                                                          = 1
      *  Xlj = 1: <l, ..., j> 被划分在同一个非死亡分区，并且 l 或 j 是 <l, ..., j> 中选出的第一个主元
      *  P(Xlj = 1) = P(<l, ..., j> 被划分在非死亡分区) * P(l 或 j 是 <l, ..., j> 中选出的第一个主元)
-     *             = P(<l, ..., j> 区间包含所求顺序统计量) * 2/(j-l+1)              //假设输入序列均匀随机
+     *             = P(<l, ..., j> 区间包含所求顺序统计量) * 2/(j-l+1)                        //假设 n 个数的输入序列互异且均匀随机排列
      *             = (j-l+1)/n * 2/(j-l+1)
      *             = 2/n
      *
@@ -53,6 +53,9 @@ public class Chapter9_2 {
      *     = Σ(l=0~n-2)Σ(j=l+1~n-1) 2/n
      *     = n-1
      *     = Θ(n)
+     *
+     *  T(n) = c*Θ(n) + c*f(X)       //f(X) 表示 partition 被调用次数, f(X) <<< X
+     *       = Θ(n)
      */
     public static int select(int[] a, int begin, int end, int i) {
         //assert a != null;
@@ -172,7 +175,9 @@ public class Chapter9_2 {
      *
      *     return r
      * }
-     *画出递归树, T(n) = i + 2i + 4i + ... + 2^(x-1) * i + Θ(n) = i*(n-1) + Θ(n) = Θ(i*n)
+     *画出递归树, T(n) = ci * (1 + 2 + 4 + ... + 2^(x-1)) + Θ(1) * (1 + 2 + ... + 2^x)    //x=lgn
+     *               = (c/2)*i*n - ci + Θ(1) * (n-1)
+     *               = Θ(i*n)
      */
     static void others() {}
 
