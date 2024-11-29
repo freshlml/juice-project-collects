@@ -9,13 +9,13 @@ public class Chapter9_2 {
 
     /**
      *求第 i 个顺序统计量
-     *  基本思想(分治): 给定数组 a[p, ..., r)，运行 partition，得到下标 q，使得 a[p, ..., q) <= a[q] <= a[q+1,..,r)，则下标 q 为第 k=q-p+1 个顺序统计量
+     *  基本思想(分治): 给定数组 a[p, ..., r)，运行 partition，得到下标 q，使得 a[p, ..., q) <= a[q] < a[q+1,..,r)，则下标 q 为第 k=q-p+1 个顺序统计量
      *               比较 i 与 k。如果 i == k，则求得解。如果 i < k，则在 [p, q) 子数组上递归求 i。如果 i > k，则在 [q+1, r) 子数组上递归求 i-k
      *
      *  关于相等元素
      *    0  1  2  3  4
      *    5, 5, 7, 8, 9
-     *  如上序列，下标 0，下标 1 的值都是 5。不稳定的算法，将导致元素的原有排位次序改变，从而可能返回: 下标 0 或者下标 1 为第 1 个顺序统计量；标 0 或者下标 1 为第 2 个顺序统计量
+     *  如上序列，下标 0，下标 1 的值都是 5。不稳定的算法，将导致元素的原有排位次序改变，从而可能返回: 下标 0 或者下标 1 为第 1 个顺序统计量；下标 0 或者下标 1 为第 2 个顺序统计量
      */
     public static int select(int[] a, int i) {
         if(a == null || a.length == 0 || i <= 0 || i > a.length) return -1;
@@ -26,12 +26,12 @@ public class Chapter9_2 {
      *最坏情况运行时间
      *  当 partition 每次划分都只去掉一个元素时，是其最坏情况
      *  [n]
-     *  [n-1]                1,   n-1,  c*n
-     *  [n-2]                2,   n-2,  c*(n-1)
+     *  [n-1]                1,   n-1,  c*n + Θ(1)
+     *  [n-2]                2,   n-2,  c*(n-1) + Θ(1)
      *  ...
-     *  [1]                  x,   1,    c*2
+     *  [1]                  x,   1,    c*2 + Θ(1)
      *
-     *  T(n) = (c*n + c*(n-1) + ... + c*2) + Θ(1) = c*(n + n-1 + ... + 2) + Θ(1) = Θ(n^2)
+     *  T(n) = (c*n + c*(n-1) + ... + c*2) + x*Θ(1) + Θ(1) = c*(n + n-1 + ... + 2) + n*Θ(1) = Θ(n^2)
      *
      *平均情况运行时间
      *  随机变量 X: 所有 partition 中`a[k] <= e` 比较操作的总次数   //等于所有 partition 循环次数的总和
@@ -73,7 +73,7 @@ public class Chapter9_2 {
         return Chapter7_1.partition(a, begin, end);
     }
     //随机化. 期望运行时间: Θ(n)
-    static int random_partition(int a[], int begin, int end) {
+    static int random_partition(int[] a, int begin, int end) {
         //int r = RANDOM(begin, end);   //[begin, end) 下标之间等概率的产生一个下标值
         //exchange a[r], a[end-1];
         return partition(a, begin, end);
