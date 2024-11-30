@@ -18,7 +18,7 @@ public class Chapter7_1 {
      */
     public static int partition(int[] a, int p, int r) {  //规模为 n 的数组，运行时间为 Θ(n)
         //assert a!= null;
-        //assert p ∈ [0, a.length); assert r ∈ [0, a.length); assert p < r;
+        //assert p ∈ [0, a.length); assert r ∈ [0, a.length]; assert p < r;
         int pos = r - 1;
         int e = a[pos];
         int j = p - 1, k = p;
@@ -50,7 +50,7 @@ public class Chapter7_1 {
     }
     public static void quick_sort(int[] a, int begin, int end) {
         //assert a != null
-        //assert begin ∈ [0, a.length); assert end ∈ [0, a.length);
+        //assert begin ∈ [0, a.length); assert end ∈ [0, a.length];
         if((end - begin) <= 1) return;
 
         int q = partition(a, begin, end);

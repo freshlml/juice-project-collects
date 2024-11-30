@@ -59,7 +59,7 @@ public class Chapter9_2 {
      */
     public static int select(int[] a, int begin, int end, int i) {
         //assert a != null;
-        //assert begin ∈ [0, a.length); assert end ∈ [0, a.length);
+        //assert begin ∈ [0, a.length); assert end ∈ [0, a.length];
         if(end <= begin) return -1;
 
         int q = partition(a, begin, end);
@@ -85,9 +85,9 @@ public class Chapter9_2 {
     }
 
     public static void main(String[] argv) {
-        int[] a = new int[] {100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 1, 489, 500, 110, 343};
+        int[] a = new int[] {100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 23, 1, 489, 500, 110, 343};
 
-        int q = select(a, 2);  //select(a, 0, a.length, -1); select(a, 0, a.length, 100);
+        int q = select(a, 5);  //select(a, 0, a.length, -1); select(a, 0, a.length, 100);
         IntArrayTraversal.of(a).forEach(PositionArrayPrinter.of(q)::print);
         System.out.println("------select------------------------------------------------------------------");
 
