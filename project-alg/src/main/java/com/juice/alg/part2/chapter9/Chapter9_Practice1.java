@@ -20,14 +20,18 @@ public class Chapter9_Practice1 {
     //                            <= cn + 5c + Θ(n)
     //                            5c + Θ(n) > 0 恒成立，不能得出 T(n) <= cn
 
+
     //练习9.3-2
     //  ⌈n/4⌉ < n/4 + 1，当 n >= 140 时，n/4 + 1 <= 3n/10 -6 <= 3*(⌈⌈n/5⌉/2⌉ - 2)
+
 
     //练习9.3-3
     //  修改 partition，选择中位数作为划分主元
 
+
     //练习9.3-4
     //  求第 i 个顺序统计量时，同时找出 i-1 个顺序统计量？
+
 
     //练习9.3-5
     /*
@@ -39,6 +43,7 @@ public class Chapter9_Practice1 {
      else if 顺序统计量i在低区: 低区递归
      else: 高区递归
      */
+
 
     //练习9.3-6 "k 分位数"（区间有序）
     // [0, n/k) <= [n/k, 2n/k) <= ...
@@ -109,6 +114,7 @@ public class Chapter9_Practice1 {
 
      */
 
+
     //练习9.3-8
     /*
     int two_seq_median(int[] x, int[] y) {
@@ -164,6 +170,7 @@ public class Chapter9_Practice1 {
         return i<begin || i>=end;
     }
     */
+
 
     //练习9.3-9: 实际就是一个求中位数的问题
     //  当 n 为奇数时，求第 (n+1)/2 个顺序统计量
