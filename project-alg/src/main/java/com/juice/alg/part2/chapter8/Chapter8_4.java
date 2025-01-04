@@ -7,6 +7,7 @@ import sun.misc.Unsafe;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 public class Chapter8_4 {
 
@@ -102,12 +103,17 @@ public class Chapter8_4 {
         double[] result = bucket_sort(d, 10);
         ArrayTraversal.of(result).forEach(ArrayPrinter.of()::print);
 
-        System.out.println("---------------------------------------");
+        System.out.println("----one-----------------------------------");
 
         int[] a = new int[] {6, 5, 5, 2, 1, 3, 6, 7};
         int[] b = counting_sort_using_bucket(a, 0, 10);
         ArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
         ArrayTraversal.of(b).forEach(ArrayPrinter.of()::print);
+
+        System.out.println("----two-----------------------------------");
+        int[] h = {3, 6, 1, 2, 9, 2, 4, 7, 1};
+        ArrayTraversal.of(h, 5, 2).forEach(ArrayPrinter.of()::print);
+        ArrayTraversal.of(h, 2, 2, Chapter2_Practice2.IntArrayTraversal.TraversalMode.NORMAL, true).forEach(ArrayPrinter.of()::print);
 
     }
 
@@ -210,28 +216,36 @@ public class Chapter8_4 {
      */
     public static class ArrayTraversal<ARRAY_TYPE> {
         private final ARRAY_TYPE array;
+        private final int length;
         private final int begin;
         private final int end;
+        private final Chapter2_Practice2.IntArrayTraversal.TraversalMode mode;
+        private final boolean equalPolicy;
 
         /**
-         * Array traversal
+         * Traversal the specified array from 0 to the end of array.
+         *
          * @param array  the array for traversal
-         * @throws NullPointerException    if the specified array is null
+         * @throws NullPointerException          if the specified array is null
+         * @throws IllegalArgumentException      if the specified array is not an array-type
+         * @throws RuntimeException with a nested reflection-based exception
          */
         private ArrayTraversal(ARRAY_TYPE array) {
             this(array, 0, Array.getLength(array));
         }
 
         /**
-         * if `begin <= end`, traversal from `begin`   to `end-1` at range [begin, end)
-         * if `begin >  end`, traversal from `begin-1` to `end`   at range [end, begin)
-         * @param array  the array for traversal
-         * @param begin  the start position of traversal
-         * @param end    the end position of traversal
+         * Traversal the specified array.
+         *
+         * This constructor is equivalent to ArrayTraversal(array, begin, end, TraversalMode.NORMAL, false, false).
+         *
+         * @param array the array to traversal
+         * @param begin the start position of traversal, [0, array.length)
+         * @param end   the end position of traversal, [0, array.length]
          * @throws NullPointerException          if the specified array is null
          * @throws IllegalArgumentException      if the specified begin, end is negative
-         *                                    or if begin <= end and end > array.length
-         *                                    or if begin >  end and begin > array.length
+         *                                    or if begin >= array.length
+         *                                    or if end > array.length
          *                                    or if the specified array is not an array-type
          * @throws RuntimeException with a nested reflection-based exception
          */
@@ -240,33 +254,64 @@ public class Chapter8_4 {
         }
 
         /**
-         * if `begin <= end`, traversal from `begin`   to `end-1` at range [begin, end)
-         * if `begin >  end`, traversal from `begin-1` to `end`   at range [end, begin)
-         * @param array  the array for traversal
-         * @param begin  the start position of traversal
-         * @param end    the end position of traversal
+         * Traversal the specified array.
+         *
+         * This constructor is equivalent to ArrayTraversal(array, begin, end, TraversalMode.NORMAL, false, byUnsafe).
+         *
+         * @param array the array to traversal
+         * @param begin the start position of traversal, [0, array.length)
+         * @param end   the end position of traversal, [0, array.length]
          * @param byUnsafe true: by Unsafe api, false: by reflect api
          * @throws NullPointerException          if the specified array is null
          * @throws IllegalArgumentException      if the specified begin, end is negative
-         *                                    or if begin <= end and end > array.length
-         *                                    or if begin >  end and begin > array.length
+         *                                    or if begin >= array.length
+         *                                    or if end > array.length
          *                                    or if the specified array is not an array-type
          * @throws RuntimeException with a nested reflection-based exception
          */
         private ArrayTraversal(ARRAY_TYPE array, int begin, int end, boolean byUnsafe) {
+            this(array, begin, end, Chapter2_Practice2.IntArrayTraversal.TraversalMode.NORMAL, false, byUnsafe);
+        }
+
+        /**
+         * Traversal the specified array.
+         *
+         * If `begin < end`: traversal from `begin`(inclusive) to `end`(exclusive) and the specified mode define the order of traversal.
+         *
+         * If `begin == end`: traversal nothing when `equalPolicy==false`, otherwise traversal from `begin`(inclusive) to
+         * the end of array and 0(inclusive) to `end`(exclusive), with the specified `mode` define the order of traversal.
+         *
+         * If `begin > end`: traversal from `begin`(inclusive) to the end of array and 0(inclusive) to `end`(exclusive), with
+         * the specified `mode` define the order of traversal.
+         *
+         * @param array the array to traversal
+         * @param begin the start position of traversal, [0, array.length)
+         * @param end   the end position of traversal, [0, array.length]
+         * @param mode  traversal mode, `NORMAL`-正序输出, `REVERSE`-逆序输出, if `null`, default value is `NORMAL`
+         * @param equalPolicy 当 begin 和 end 相等时的处理策略
+         * @param byUnsafe true: by Unsafe api, false: by reflect api
+         * @throws NullPointerException          if the specified array is null
+         * @throws IllegalArgumentException      if the specified begin, end is negative
+         *                                    or if begin >= array.length
+         *                                    or if end > array.length
+         *                                    or if the specified array is not an array-type
+         * @throws RuntimeException with a nested reflection-based exception
+         */
+        public ArrayTraversal(ARRAY_TYPE array, int begin, int end,
+                              Chapter2_Practice2.IntArrayTraversal.TraversalMode mode, boolean equalPolicy, boolean byUnsafe) {
             if(array == null) throw new NullPointerException("array can not be null");
-            int length = Array.getLength(array);
+            this.length = Array.getLength(array);
 
             if(begin < 0 || end < 0)
                 throw new IllegalArgumentException("the specified begin or end is negative, begin = " + begin + ", end = " + end);
-            if(begin <= end && end > length)
-                throw new IllegalArgumentException("the specified end is large than array's length, end = " + end);
-            if(begin > end && begin > length)
-                throw new IllegalArgumentException("the specified begin is large than array's length, begin = " + begin);
+            if(begin >= length || end > length)
+                throw new IllegalArgumentException("the specified begin is large or equal than array's length or end is large than array's length, begin = " + begin + ", end = " + end);
 
             this.array = array;
             this.begin = begin;
             this.end = end;
+            this.mode = Optional.of(mode).orElse(Chapter2_Practice2.IntArrayTraversal.TraversalMode.NORMAL);
+            this.equalPolicy = equalPolicy;
 
             init(array, byUnsafe);
         }
@@ -279,19 +324,49 @@ public class Chapter8_4 {
             return new ArrayTraversal<>(array, begin, end);
         }
 
-        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array, int begin, int end, boolean byUnsafe) {
-            return new ArrayTraversal<>(array, begin, end, byUnsafe);
+        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array, int begin, int end,
+                                                                 Chapter2_Practice2.IntArrayTraversal.TraversalMode mode) {
+            return new ArrayTraversal<>(array, begin, end, mode, false, false);
+        }
+
+        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array, int begin, int end,
+                                                                 Chapter2_Practice2.IntArrayTraversal.TraversalMode mode, boolean equalPolicy) {
+            return new ArrayTraversal<>(array, begin, end, mode, equalPolicy, false);
+        }
+
+        public static <ARRAY_TYPE> ArrayTraversal<ARRAY_TYPE> of(ARRAY_TYPE array, int begin, int end,
+                                                                 Chapter2_Practice2.IntArrayTraversal.TraversalMode mode, boolean equalPolicy, boolean byUnsafe) {
+            return new ArrayTraversal<>(array, begin, end, mode, equalPolicy, byUnsafe);
+        }
+
+        private int increment(int index) {
+            return (index + 1) % length;
+        }
+
+        private int decrement(int index) {
+            //return Math.floorMod(index - 1, length);
+            return (index - 1 + length) % length;
         }
 
         public void forEach(Chapter2_Practice2.IntArrayTraversal.PerElement<Object> handler) {
-            if(begin <= end) {
-                for(int i = begin; i < end; i++) {
-                    handler.per(this.get(i), i, end - 1);
+            if(mode == Chapter2_Practice2.IntArrayTraversal.TraversalMode.NORMAL) {  //正序
+                int finish = end, limit = decrement(end);
+                if(end == length || (begin == end && equalPolicy)) finish = limit;
+
+                for(int i = begin; i != finish; i = increment(i)) {
+                    handler.per(this.get(i), i, limit);
                 }
-            } else {
-                for(int i = begin-1; i >= end; i--) {
-                    handler.per(this.get(i), i, end);
+
+                if(end == length || (begin == end && equalPolicy))
+                    handler.per(this.get(finish), finish, limit);
+            } else if(mode == Chapter2_Practice2.IntArrayTraversal.TraversalMode.REVERSE) { //逆序
+                int finish = begin, limit = begin;
+                if(begin == end && !equalPolicy) return;
+
+                for(int i = decrement(end); i != finish; i = decrement(i)) {
+                    handler.per(this.get(i), i, limit);
                 }
+                handler.per(this.get(finish), finish, limit);
             }
         }
 
