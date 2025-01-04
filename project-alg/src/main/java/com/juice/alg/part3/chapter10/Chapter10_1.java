@@ -1,10 +1,38 @@
 package com.juice.alg.part3.chapter10;
 
+import com.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
+import com.juice.alg.part2.chapter8.Chapter8_4.ArrayTraversal;
+
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Stream;
 
 public class Chapter10_1 {
+
+    public static void main(String[] argv) {
+        FixedArrayDeque<Integer> stack = new FixedArrayDeque<>();
+        stack.push(1);
+        stack.push(2);
+        ArrayTraversal.of(stack.elements, stack.head, stack.tail).forEach(ArrayPrinter.of()::print);
+
+        System.out.println("----stack-------------------------------------------");
+
+        FixedArrayDeque<Integer> queue = new FixedArrayDeque<>();
+        queue.add(null);
+        queue.add(3);
+        ArrayTraversal.of(queue.elements, queue.head, queue.tail).forEach(ArrayPrinter.of()::print);
+
+        System.out.println("----queue-------------------------------------------");
+
+        FixedArrayDeque<Integer> deque = new FixedArrayDeque<>();
+        deque.addFirst(4);
+        deque.addFirst(null);
+        deque.addFirst(5);
+        ArrayTraversal.of(deque.elements, deque.head, deque.tail).forEach(ArrayPrinter.of()::print);
+
+        System.out.println("----deque-------------------------------------------");
+
+    }
 
     /**
      * Fixed array Deque、Queue、Stack.
@@ -87,6 +115,10 @@ public class Chapter10_1 {
         @Override
         public boolean isEmpty() {
             return this.tail == this.head;
+        }
+
+        private boolean isFull() {
+            return increment(tail) == head;
         }
 
         /**
@@ -268,7 +300,7 @@ public class Chapter10_1 {
          */
         @Override
         public void addFirst(E e) {
-            if(increment(tail) == head) throw new IllegalStateException("has no more space");
+            if(isFull()) throw new IllegalStateException("has no more space");
             head = decrement(head);
             elements[head] = e;
         }
@@ -281,7 +313,7 @@ public class Chapter10_1 {
          */
         @Override
         public void addLast(E e) {
-            if(increment(tail) == head) throw new IllegalStateException("has no more space");
+            if(isFull()) throw new IllegalStateException("has no more space");
             elements[tail] = e;
             tail = increment(tail);
         }
@@ -294,7 +326,7 @@ public class Chapter10_1 {
          */
         @Override
         public boolean offerFirst(E e) {
-            if(increment(tail) == head) return false;
+            if(isFull()) return false;
             head = decrement(head);
             elements[head] = e;
             return true;
@@ -308,7 +340,7 @@ public class Chapter10_1 {
          */
         @Override
         public boolean offerLast(E e) {
-            if(increment(tail) == head) return false;
+            if(isFull()) return false;
             elements[tail] = e;
             tail = increment(tail);
             return true;
@@ -322,7 +354,7 @@ public class Chapter10_1 {
          */
         @Override
         public E removeFirst() {
-            if(head == tail) throw new NoSuchElementException("there is no elements");
+            if(isEmpty()) throw new NoSuchElementException("there is no elements");
             E e = elements[head];
             head = increment(head);
             return e;
@@ -336,7 +368,7 @@ public class Chapter10_1 {
          */
         @Override
         public E removeLast() {
-            if(head == tail) throw new NoSuchElementException("there is no elements");
+            if(isEmpty()) throw new NoSuchElementException("there is no elements");
             tail = decrement(tail);
             return elements[tail];
         }
@@ -348,7 +380,7 @@ public class Chapter10_1 {
          */
         @Override
         public E pollFirst() {
-            if(head == tail) return null;
+            if(isEmpty()) return null;
             E e = elements[head];
             head = increment(head);
             return e;
@@ -361,7 +393,7 @@ public class Chapter10_1 {
          */
         @Override
         public E pollLast() {
-            if(head == tail) return null;
+            if(isEmpty()) return null;
             tail = decrement(tail);
             return elements[tail];
         }
@@ -374,7 +406,7 @@ public class Chapter10_1 {
          */
         @Override
         public E getFirst() {
-            if(head == tail) throw new NoSuchElementException("there is no elements");
+            if(isEmpty()) throw new NoSuchElementException("there is no elements");
             return elements[head];
         }
 
@@ -386,7 +418,7 @@ public class Chapter10_1 {
          */
         @Override
         public E getLast() {
-            if(head == tail) throw new NoSuchElementException("there is no elements");
+            if(isEmpty()) throw new NoSuchElementException("there is no elements");
             return elements[decrement(tail)];
         }
 
@@ -397,7 +429,7 @@ public class Chapter10_1 {
          */
         @Override
         public E peekFirst() {
-            if(head == tail) return null;
+            if(isEmpty()) return null;
             return elements[head];
         }
 
@@ -408,7 +440,7 @@ public class Chapter10_1 {
          */
         @Override
         public E peekLast() {
-            if(head == tail) return null;
+            if(isEmpty()) return null;
             return elements[decrement(tail)];
         }
 
@@ -487,7 +519,7 @@ public class Chapter10_1 {
             }
             return false;
             /*
-            if(head == tail) return false;
+            if(isEmpty()) return false;
             int removeIdx = -1;
             int idx = tail;
             while(idx != head) {
