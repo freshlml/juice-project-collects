@@ -1,5 +1,7 @@
 package com.juice.alg.chapter3_10;
 
+import com.juice.alg.part3.chapter10.Chapter3_10_2;
+
 import java.util.NoSuchElementException;
 
 public class Chapter3_10_3 {
