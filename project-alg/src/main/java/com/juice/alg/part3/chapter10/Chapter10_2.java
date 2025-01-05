@@ -2,7 +2,7 @@ package com.juice.alg.part3.chapter10;
 
 import java.util.NoSuchElementException;
 
-public class Chapter3_10_2 {
+public class Chapter10_2 {
 
     //double linked list
     interface List {

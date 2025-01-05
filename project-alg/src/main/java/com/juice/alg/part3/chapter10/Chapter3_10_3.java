@@ -1,13 +1,11 @@
-package com.juice.alg.chapter3_10;
-
-import com.juice.alg.part3.chapter10.Chapter3_10_2;
+package com.juice.alg.part3.chapter10;
 
 import java.util.NoSuchElementException;
 
 public class Chapter3_10_3 {
 
     //固定大小数组表示的链表
-    static class FixedCapacityArrayList implements Chapter3_10_2.List {
+    static class FixedCapacityArrayList implements Chapter10_2.List {
         private final int[] element;
         private final int[] next;
         private final int[] prev;
