@@ -2,7 +2,7 @@ package com.juice.alg.part3.chapter10;
 
 import java.util.NoSuchElementException;
 
-public class Chapter3_10_3 {
+public class Chapter10_3 {
 
     //固定大小数组表示的链表
     static class FixedCapacityArrayList {
