@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 public class Chapter3_10_3 {
 
     //固定大小数组表示的链表
-    static class FixedCapacityArrayList implements Chapter10_2.List {
+    static class FixedCapacityArrayList {
         private final int[] element;
         private final int[] next;
         private final int[] prev;
@@ -46,7 +46,7 @@ public class Chapter3_10_3 {
             free = n;
         }
 
-        @Override
+
         public void addFirst(int e) {
             int newNode = allocate();
 
@@ -64,7 +64,7 @@ public class Chapter3_10_3 {
             this.size++;
         }
 
-        @Override
+
         public void addLast(int e) {
             int newNode = allocate();
 
@@ -82,7 +82,7 @@ public class Chapter3_10_3 {
             this.size++;
         }
 
-        @Override
+
         public int removeFirst() {
             if(this.head == -1) throw new NoSuchElementException();
 
@@ -103,7 +103,7 @@ public class Chapter3_10_3 {
             return v;
         }
 
-        @Override
+
         public int removeLast() {
             if(this.head == -1) throw new NoSuchElementException();
 
@@ -124,14 +124,14 @@ public class Chapter3_10_3 {
             return v;
         }
 
-        @Override
+
         public int getFirst() {
             if(this.head == -1) throw new NoSuchElementException();
 
             return this.element[this.head];
         }
 
-        @Override
+
         public int getLast() {
             if(this.tail == -1) throw new NoSuchElementException();
 
@@ -146,7 +146,7 @@ public class Chapter3_10_3 {
             return n;
         }
 
-        @Override
+
         public void add(int index, int e) {
             if(index < 0 || index > this.size) throw new IndexOutOfBoundsException();
 
@@ -173,7 +173,7 @@ public class Chapter3_10_3 {
 
         }
 
-        @Override
+
         public int remove(int index) {
             if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
@@ -200,7 +200,7 @@ public class Chapter3_10_3 {
             return v;
         }
 
-        @Override
+
         public int set(int index, int e) {
             if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
@@ -211,7 +211,7 @@ public class Chapter3_10_3 {
             return v;
         }
 
-        @Override
+
         public int get(int index) {
             if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
 
@@ -219,17 +219,17 @@ public class Chapter3_10_3 {
             return this.element[n];
         }
 
-        @Override
+
         public int size() {
             return this.size;
         }
 
-        @Override
+
         public boolean isEmpty() {
             return this.size == 0;
         }
 
-        @Override
+
         public boolean contains(int e) {
             int n = this.head;
             while(n != -1) {
