@@ -35,12 +35,13 @@ public class Chapter10_1 {
     }
 
     /**
-     * Fixed array Deque、Queue、Stack.
+     *Fixed array Deque、Queue、Stack.
      *  - special ordered as an double ended queue
      *  - allow duplicate elements
      *  - permit null elements
+     *
+     * @param <E> element type
      */
-    @SuppressWarnings("unused")
     public static class FixedArrayDeque<E> extends AbstractCollection<E>
                                            implements Deque<E>
     {
@@ -713,6 +714,7 @@ public class Chapter10_1 {
                 else if(prev == -2) throw new IllegalStateException("can not call remove method again");
 
                 removeAndShift(prev);
+                idx = decrement(idx);
                 prev = -2;
             }
         }
