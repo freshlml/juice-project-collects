@@ -1,348 +1,372 @@
 package com.juice.alg.part3.chapter10;
 
-import java.util.NoSuchElementException;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Chapter10_3 {
 
-    //固定大小数组表示的链表
-    static class FixedCapacityArrayList {
-        private final int[] element;
+    public static void main(String[] argv) {
+        FixedArrayLinkedList<Integer> list = new FixedArrayLinkedList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+
+        list.remove(1);
+
+        System.out.println(list);
+    }
+
+    /**
+     *Fixed capacity double linked sequence(list)
+     *  - special ordered as an double linked sequence
+     *  - allow duplicate elements
+     *  - permit null elements
+     *
+     * @param <E> element type
+     */
+    public static class FixedArrayLinkedList<E> {
+        private static final int DEFAULT_CAPACITY = 16;
+
+        private final E[] elements;
         private final int[] next;
         private final int[] prev;
-        private static final int DEFAULT_CAPACITY = 16;
+
         private int head = -1;
         private int tail = -1;
-        private int free = 0;
-        private int size;
+        private int size = 0;
 
-        public FixedCapacityArrayList() { this(DEFAULT_CAPACITY); }
+        private int free;
 
-        public FixedCapacityArrayList(int capacity) {
-            //assert 0 < capacity <= Integer.MAX_VALUE
+        /**
+         * Construct a double linked sequence with the size `DEFAULT_CAPACITY`.
+         */
+        public FixedArrayLinkedList() { this(DEFAULT_CAPACITY); }
 
-            element = new int[capacity];
+        /**
+         * Construct a double linked sequence with the specified capacity.
+         *
+         * @param capacity the capacity, at the range of (0, allowed max array size]
+         * @throws IllegalArgumentException if the specified capacity if out of the range of (0, allowed max array size]
+         */
+        public FixedArrayLinkedList(int capacity) {
+            //assert 0 < capacity <= the allowed max array size
+            @SuppressWarnings("unchecked")
+            E[] elms = (E[]) new Object[capacity];
+            this.elements = elms;
             prev = new int[capacity];
             next = new int[capacity];
+
+            for(int i=0; i < next.length - 1; i++) {
+                next[i] = i + 1;
+            }
             next[next.length - 1] = -1;
-            for(int i=next.length-2; i>=0; i--) {
-                next[i] = i+1;
+            free = 0;
+            Arrays.fill(prev, -1);
+        }
+
+        /**
+         * Returns the number of elements in this list.
+         *
+         * @return the number of elements in this list
+         */
+        public int size() {
+            return size;
+        }
+
+        /**
+         * Returns true if this list contains no elements.
+         *
+         * @return true if this list contains no elements
+         */
+        @SuppressWarnings("unused")
+        public boolean isEmpty() {
+            return size == 0;
+        }
+
+        /**
+         * Returns true if this list contains the specified element.
+         *
+         * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
+         *
+         * f the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         *
+         * @param o element whose presence in this list is to be tested
+         * @return true if this list contains the specified element
+         */
+        @SuppressWarnings("unused")
+        public boolean contains(Object o) {
+            int p = this.head;
+            while(p != -1 && !Objects.equals(o, elements[p])) {
+                p = next[p];
             }
-            for(int i=0; i<prev.length; i++) {
-                prev[i] = -2;
+            return p != -1;
+        }
+
+        /**
+         * Removes all of the elements from this list.
+         * The list will be empty after this method returns.
+         */
+        @SuppressWarnings("unused")
+        public void clear() {
+            Arrays.fill(elements, null);
+            for(int i=0; i < next.length - 1; i++) {
+                next[i] = i + 1;
             }
+            next[next.length - 1] = -1;
+            free = 0;
+            Arrays.fill(prev, -1);
+            head = tail = -1;
+            size = 0;
         }
 
         private int allocate() {
-            if(free == -1) throw new IndexOutOfBoundsException();
+            if(free == -1) throw new IllegalStateException("there is no more space for allocate");
 
-            int v = free;
+            int r = free;
             free = next[free];
-            return v;
+            return r;
         }
 
-        private void freed(int n) {
-            next[n] = free;
-            prev[n] = -2;
-            free = n;
+        private void freed(int idx) {
+            //assert idx != -1;
+            next[idx] = free;
+            prev[idx] = -1;
+            free = idx;
         }
 
+        //练习10.3-4
+        @SuppressWarnings("unused")
+        private void compact_freed(int idx) {
+            //assert idx != -1
+            int last = size;
 
-        public void addFirst(int e) {
-            int newNode = allocate();
-
-            this.element[newNode] = e;
-            this.next[newNode] = this.head;
-            this.prev[newNode] = -1;
-
-            if(this.head != -1) {
-                this.prev[this.head] = newNode;
+            if(idx != last) {
+                moveTo(last, idx);
+                freed(last);
             } else {
-                this.tail = newNode;
+                freed(idx);
             }
-            this.head = newNode;
-
-            this.size++;
         }
 
+        private void moveTo(int from, int to) {
+            elements[to] = elements[from];
+            prev[to] = prev[from];
+            next[to] = next[from];
 
-        public void addLast(int e) {
-            int newNode = allocate();
+            elements[from] = null;
+            prev[from] = next[from] = -1;
 
-            this.element[newNode] = e;
-            this.next[newNode] = -1;
-            this.prev[newNode] = this.tail;
-
-            if(tail != -1) {
-                this.next[this.tail] = newNode;
+            if(prev[to] != -1) {
+                next[prev[to]] = to;
             } else {
-                this.head = newNode;
+                head = to;
             }
-            this.tail = newNode;
-
-            this.size++;
-        }
-
-
-        public int removeFirst() {
-            if(this.head == -1) throw new NoSuchElementException();
-
-            int first = this.head;
-            int v = this.element[first];
-            int next = this.next[first];
-
-            if(next != -1) {
-                this.prev[next] = -1;
+            if(next[to] != -1) {
+                prev[next[to]] = to;
             } else {
-                this.tail = -1;
+                tail = to;
             }
-            this.head = next;
-
-            freed(first);
-
-            this.size--;
-            return v;
         }
 
-
-        public int removeLast() {
-            if(this.head == -1) throw new NoSuchElementException();
-
-            int last = this.tail;
-            int v = this.element[last];
-            int prev = this.prev[last];
-
-            if(prev != -1) {
-                this.next[prev] = -1;
-            } else {
-                this.head = -1;
-            }
-            this.tail = prev;
-
-            freed(last);
-
-            this.size--;
-            return v;
+        /**
+         * Appends the specified element to the end of this list, Returns true if this list changed as a result of the call.
+         *
+         * @param e element to be appended to this list
+         * @return true if this collection changed as a result of the call
+         * @throws IllegalStateException         if the element cannot be added at this time due to capacity restrictions
+         */
+        public boolean add(E e) {
+            insertAt(-1, e);
+            return true;
         }
 
+        private void insertAt(int p, E e) {
+            int added = allocate();
+            elements[added] = e;
+            next[added] = p;
 
-        public int getFirst() {
-            if(this.head == -1) throw new NoSuchElementException();
-
-            return this.element[this.head];
-        }
-
-
-        public int getLast() {
-            if(this.tail == -1) throw new NoSuchElementException();
-
-            return this.element[this.tail];
-        }
-
-        private int node(int index) {
-            int n = this.head;
-            for(int i=0; i<index; i++) {
-                n = this.next[n];
-            }
-            return n;
-        }
-
-
-        public void add(int index, int e) {
-            if(index < 0 || index > this.size) throw new IndexOutOfBoundsException();
-
-            if(index == this.size) {
-                addLast(e);
-            } else {
-                int n = node(index);
-
-                int newNode = allocate();
-                this.element[newNode] = e;
-                this.next[newNode] = n;
-                this.prev[newNode] = this.prev[n];
-
-                int prev = this.prev[n];
-                this.prev[n] = newNode;
-                if(prev != -1) {
-                    this.next[prev] = newNode;
+            if(p == -1) {
+                prev[added] = tail;
+                if(tail != -1) {
+                    next[tail] = added;
+                    tail = added;
                 } else {
-                    this.head = newNode;
+                    head = tail = added;
                 }
-
-                this.size++;
-            }
-
-        }
-
-
-        public int remove(int index) {
-            if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
-
-            int n = node(index);
-            int v = this.element[n];
-
-            int prev = this.prev[n];
-            int next = this.next[n];
-
-            if(prev != -1) {
-                this.next[prev] = next;
+            } else if(prev[p] == -1) {
+                prev[p] = added;
+                //prev[added] = -1;
+                head = added;
             } else {
-                this.head = next;
+                next[prev[p]] = added;
+                prev[added] = prev[p];
+                prev[p] = added;
             }
-            if(next != -1) {
-                this.prev[next] = prev;
+            size++;
+        }
+
+        /**
+         * Inserts the specified element at the specified position in this list.
+         * Shifts the element currently at that position (if any) and any subsequent elements to the right (adds one to their indices).
+         *
+         * @param index index at which the specified element is to be inserted
+         * @param e  the element to be inserted
+         * @throws IndexOutOfBoundsException     if the index is out of range (index < 0 || index > size())
+         * @throws IllegalStateException         if the element cannot be added at this time due to capacity restrictions
+         */
+        @SuppressWarnings("unused")
+        public void add(int index, E e) {
+            if(index < 0 || index > size())
+                throw new IndexOutOfBoundsException("index = " + index + " is out of bounds [" + 0 + ", " + size() + "]");
+
+            int p;
+            if(index == size()) {  //speed for addLast
+                p = -1;
             } else {
-                this.tail = prev;
+                p = elementAt(index);
             }
-
-            freed(n);
-
-            this.size--;
-            return v;
+            insertAt(p, e);
         }
 
-
-        public int set(int index, int e) {
-            if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
-
-            int n = node(index);
-            int v = this.element[n];
-            this.element[n] = e;
-
-            return v;
-        }
-
-
-        public int get(int index) {
-            if(index < 0 || index >= this.size) throw new IndexOutOfBoundsException();
-
-            int n = node(index);
-            return this.element[n];
-        }
-
-
-        public int size() {
-            return this.size;
-        }
-
-
-        public boolean isEmpty() {
-            return this.size == 0;
-        }
-
-
-        public boolean contains(int e) {
-            int n = this.head;
-            while(n != -1) {
-                if(element[n] == e) return true;
-                n = next[n];
+        private int elementAt(int index) {
+            //assert index >= 0;
+            int p = head;
+            for(int i = 0; i < index && p != -1; i++) {
+                p = next[p];
             }
+            return p;
+        }
 
+        /**
+         * Removes the first matched element from this list, If this list does not contains the element, it is unchanged and return false.
+         *
+         * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
+         *
+         * If the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         *
+         * @return true if this list contained the specified element
+         */
+        public boolean remove(Object o) {
+            for(int p=head; p != -1; ) {
+                if(Objects.equals(o, elements[p])) {
+                    removeAt(p);
+                    return true;
+                }
+                p = next[p];
+            }
             return false;
+        }
+
+        private void removeAt(int p) {
+            if(p == -1) return;
+
+            if(next[p] != -1) {
+                prev[next[p]] = prev[p];
+            } else {
+                tail = prev[p];
+            }
+
+            if(prev[p] != -1) {
+                next[prev[p]] = next[p];
+            } else {
+                head = next[p];
+            }
+            elements[p] = null;
+            prev[p] = next[p] = -1;
+            freed(p);
+            size--;
+        }
+
+        /**
+         * Removes the element at the specified position in this list.
+         *
+         * Shifts any subsequent elements to the left (subtracts one from their indices).
+         *
+         * @param index the index of the element to be removed
+         * @return the element previously at the specified position
+         * @throws IndexOutOfBoundsException      if the index is out of range (index < 0 || index >= size())
+         */
+        public E remove(int index) {
+            if(index < 0 || index >= size())
+                throw new IndexOutOfBoundsException("index = " + index + " is out of bounds [" + 0 + ", " + size() + ")");
+
+            int p = elementAt(index);
+            E rv = elements[p];
+            removeAt(p);
+            return rv;
+        }
+
+        /**
+         * Replaces the element at the specified position in this list with the specified element.
+         *
+         * @param index index of the element to replace
+         * @param e element to be stored at the specified position
+         * @return the element previously at the specified position
+         * @throws IndexOutOfBoundsException      if the index is out of range (index < 0 || index >= size())
+         */
+        @SuppressWarnings("unused")
+        public E set(int index, E e) {
+            if(index < 0 || index >= size())
+                throw new IndexOutOfBoundsException("index = " + index + " is out of bounds [" + 0 + ", " + size() + ")");
+
+            int p = elementAt(index);
+            E rv = elements[p];
+            updateAt(p, e);
+            return rv;
+        }
+
+        private void updateAt(int p, E e) {
+            if(p != -1) {
+                elements[p] = e;
+            }
+        }
+
+        /**
+         * Returns the element at the specified position in this list.
+         *
+         * @param index index of the element to return
+         * @return  the element at the specified position in this list
+         * @throws IndexOutOfBoundsException      if the index is out of range (index < 0 || index >= size())
+         */
+        @SuppressWarnings("unused")
+        public E get(int index) {
+            if(index < 0 || index >= size())
+                throw new IndexOutOfBoundsException("index = " + index + " is out of bounds [" + 0 + ", " + size() + ")");
+
+            return elements[elementAt(index)];
         }
 
         //练习10.3-5
         public void compactify() {
-
-            for(int i=this.size, j=this.free, free_prev = -1; i<this.element.length && j != -1; ) {
-                if(j >= this.size) {
-                    free_prev = j;
-                    j = this.next[j];
-                    continue;
+            for(int i = 0, p = head; i < size; i++) {
+                if(prev[i] == -1 && head != i) {  //free bucket
+                    int nt = next[i];
+                    moveTo(p, i);
+                    next[p] = nt;
+                    if(free == i) {
+                        free = p;
+                    }
+                    p = next[i];
                 }
-
-                if(isFree(i)) {
-                    i++;
-                    continue;
-                } else {
-                    int j_next = this.next[j];
-                    int i_next = this.next[i];
-                    int i_prev = this.prev[i];
-
-                    this.element[j] = this.element[i];
-                    this.next[j] = this.next[i];
-                    this.prev[j] = this.prev[i];
-                    if(i_prev != -1) {
-                        this.next[i_prev] = j;
-                    } else {
-                        this.head = j;
-                    }
-                    if(i_next != -1) {
-                        this.prev[i_next] = j;
-                    } else {
-                        this.tail = j;
-                    }
-
-                    this.next[i] = j_next;
-                    this.prev[i] = -2;
-                    if(free_prev != -1) {
-                        this.next[free_prev] = i;
-                    } else {
-                        this.free = i;
-                    }
-
-                    free_prev = i;
-                    j = j_next;
-                    i++;
-                }
-
             }
-
         }
 
-        private boolean isFree(int n) {
-            return this.prev[n] == -2;
-        }
-
-
-        //练习10.3-4
-        /*
-        private void compact_freed(int n) {
-            int size = this.size();
-            int al = n;
-
-            if(n != size-1) {
-                int prev = this.prev[size-1];
-                int next = this.next[size-1];
-
-                this.element[n] = this.element[size-1];
-                this.prev[n] = this.prev[size-1];
-                this.next[n] = this.next[size-1];
-
-                if(prev != -1) {
-                    this.next[prev] = n;
-                } else {
-                    this.head = n;
-                }
-                if(next != -1) {
-                    this.prev[next] = n;
-                } else {
-                    this.tail = n;
-                }
-
-                al = size-1;
-            }
-
-            next[al] = free;
-            prev[al] = -2;
-            free = al;
-        }
-         */
         //思考题10-3
         /*
         public boolean compact_contains(int e) {
             int size = this.size();
             int i = this.head;
-            while(i != -1 && this.element[i] < e) {
+            while(i != -1 && this.elements[i] < e) {
                 int j = RANDOM(0, size-1);
 
-                if this.element[i] < this.element[j] && this.element[j] <= e:
+                if this.elements[i] < this.elements[j] && this.elements[j] <= e:
                     i = j;
-                    if this.element[i] == e:
+                    if this.elements[i] == e:
                         return true;
 
                 i = this.next[i];
             }
-            if(this.element[i] > e): return false;
+            if(this.elements[i] > e): return false;
             else return true;
 
         }

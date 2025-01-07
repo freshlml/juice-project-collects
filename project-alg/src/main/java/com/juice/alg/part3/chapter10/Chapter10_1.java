@@ -50,7 +50,7 @@ public class Chapter10_1 {
         private int head = 0, tail = 0;
 
         /**
-         * Construct a `FixedArrayDeque` with DEFAULT_CAPACITY.
+         * Construct a `FixedArrayDeque` with the size `DEFAULT_CAPACITY`.
          */
         @SuppressWarnings("unused")
         public FixedArrayDeque() {

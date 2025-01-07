@@ -196,7 +196,7 @@ public class Chapter10_2 {
 
         /**
          * Removes all of the elements from this list.
-         * The collection will be empty after this method returns.
+         * The list will be empty after this method returns.
          */
         @Override
         public void clear() {
@@ -326,6 +326,7 @@ public class Chapter10_2 {
             } else {
                 head = node.next;
             }
+            node.v = null;
             node.prev = node.next = null;
             size--;
         }
@@ -335,7 +336,7 @@ public class Chapter10_2 {
          *
          * Shifts any subsequent elements to the left (subtracts one from their indices).
          *
-         * @param index he index of the element to be removed
+         * @param index the index of the element to be removed
          * @return the element previously at the specified position
          * @throws IndexOutOfBoundsException      if the index is out of range (index < 0 || index >= size())
          */
@@ -345,8 +346,9 @@ public class Chapter10_2 {
                 throw new IndexOutOfBoundsException("index = " + index + " is out of bounds [" + 0 + ", " + size() + ")");
 
             Node<E> node = elementAt(index);
+            E rv = node.v;
             removeAt(node);
-            return node.v;
+            return rv;
         }
 
         /**
@@ -363,8 +365,9 @@ public class Chapter10_2 {
                 throw new IndexOutOfBoundsException("index = " + index + " is out of bounds [" + 0 + ", " + size() + ")");
 
             Node<E> node = elementAt(index);
+            E rv = node.v;
             updateAt(node, e);
-            return node.v;
+            return rv;
         }
 
         private void updateAt(Node<E> node, E e) {

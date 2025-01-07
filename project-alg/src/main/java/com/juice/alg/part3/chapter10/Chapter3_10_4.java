@@ -1,4 +1,4 @@
-package com.juice.alg.chapter3_10;
+package com.juice.alg.part3.chapter10;
 
 import com.juice.alg.tr.BSTree;
 
