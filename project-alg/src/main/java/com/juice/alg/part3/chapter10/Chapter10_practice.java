@@ -1,6 +1,6 @@
 package com.juice.alg.part3.chapter10;
 
-public class Chapter3_10_5 {
+public class Chapter10_practice {
 
     //思考题10-2
     /*a: O(n)
