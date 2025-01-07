@@ -95,5 +95,25 @@ public class Chapter3_10_5 {
      */
 
 
+    //思考题10-3
+    /*
+    public boolean compact_contains(int e) {
+        int size = this.size();
+        int i = this.head;
+        while(i != -1 && this.elements[i] < e) {
+            int j = RANDOM(0, size-1);
+
+            if this.elements[i] < this.elements[j] && this.elements[j] <= e:
+                i = j;
+                if this.elements[i] == e:
+                    return true;
+
+            i = this.next[i];
+        }
+        if(this.elements[i] > e): return false;
+        else return true;
+
+    }
+     */
 
 }
