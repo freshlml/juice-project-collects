@@ -338,16 +338,29 @@ public class Chapter10_3 {
 
         //练习10.3-5
         public void compactify() {
-            for(int i = 0, p = head; i < size; i++) {
-                if(prev[i] == -1 && head != i) {  //free bucket
-                    int nt = next[i];
-                    moveTo(p, i);
-                    next[p] = nt;
-                    if(free == i) {
-                        free = p;
-                    }
-                    p = next[i];
+            for(int p = head, q = free, prev_q = -1; p != -1 && q != -1; ) {
+                if (q >= size) {
+                    prev_q = q;
+                    q = next[q];
+                    continue;
                 }
+                if (p < size) {
+                    p = next[p];
+                    continue;
+                }
+
+                int nt = next[q];
+                moveTo(p, q);
+                next[p] = nt;
+                if (free == q) {
+                    free = p;
+                } else {
+                    next[prev_q] = p;
+                }
+
+                int ex = p;
+                p = q;
+                q = ex;
             }
         }
 
