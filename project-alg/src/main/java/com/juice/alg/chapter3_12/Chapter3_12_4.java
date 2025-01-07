@@ -1,11 +1,10 @@
 package com.juice.alg.chapter3_12;
 
-import com.juice.alg.part3.chapter10.Chapter3_10_4;
 
 public class Chapter3_12_4 {
 
     /**
-     *二叉搜索树的高度h(n个数的序列，依次调用{@link Chapter3_10_4.BinaryTree#put(int)}形成的树的高度)
+     *二叉搜索树的高度h(n个数的序列，依次调用{ Chapter10_4.BinaryTree#put(int)}形成的树的高度)
      * 最坏情况
      *    h = n-1
      *    如有序的序列

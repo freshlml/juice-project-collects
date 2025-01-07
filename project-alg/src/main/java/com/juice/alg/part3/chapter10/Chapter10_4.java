@@ -2,7 +2,7 @@ package com.juice.alg.part3.chapter10;
 
 import com.juice.alg.tr.BSTree;
 
-public class Chapter3_10_4 {
+public class Chapter10_4 {
 
     public static void main(String argv[]) {
 
