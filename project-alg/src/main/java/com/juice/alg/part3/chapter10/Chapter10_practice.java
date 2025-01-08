@@ -3,18 +3,14 @@ package com.juice.alg.part3.chapter10;
 public class Chapter10_practice {
 
     //思考题10-2
-    /*a: O(n)
-    static class Node {
+    //a: insert: Θ(n). minimum: Θ(1). extract-min: Θ(1). union: Θ(n).
+    /*
+    class Node {
         int item;
         Node prev;
         Node next;
-        public Node(Node prev, int item, Node next) {
-            this.item = item;
-            this.prev = prev;
-            this.next = next;
-        }
     }
-    void union(heap) {
+    void union(heap) {  //合并两个有序链表
         Node t = this.head;
         Node heap_t = heap.head;
 
@@ -44,11 +40,11 @@ public class Chapter10_practice {
                 heap_t = heap_t.next;
             }
         }
-
     }
-     */
-    /*c: O(n + C*lgN)
-    union(left, right) {
+    */
+
+    /*c:
+    union(left, right) { //O(n + C*lgN)
 
         Node newNode = new Node(null, min(left.head.key, right.head.key), null)
 
@@ -92,10 +88,10 @@ public class Chapter10_practice {
 
 
     }
-     */
+    */
 
 
-    //思考题10-3
+    //思考题10-3, todo
     /*
     public boolean compact_contains(int e) {
         int size = this.size();
@@ -112,8 +108,7 @@ public class Chapter10_practice {
         }
         if(this.elements[i] > e): return false;
         else return true;
-
     }
-     */
+    */
 
 }
