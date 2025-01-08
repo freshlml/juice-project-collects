@@ -1,9 +1,9 @@
-package com.juice.alg.chapter3_12;
+package com.juice.alg.part3.chapter12;
 
 
 import com.juice.alg.tr.BSTree;
 
-public class Chapter3_12_1 {
+public class Chapter12 {
 
     public static void main(String[] argv) {
 
