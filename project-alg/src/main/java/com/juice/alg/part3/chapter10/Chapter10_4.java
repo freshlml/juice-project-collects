@@ -25,40 +25,57 @@ public class Chapter10_4 {
 
     }
 
-    //左孩子右兄弟
+    //练习10.4-2
+    /*void L_T_R(Node t) {
+        if(t == null) return;
+        L_T_R(t.left);
+        print(t);
+        L_T_R(t.right);
+    }*/
+
+    //练习10-4-3
+    /*<E> void L_T_R_stack(Node<E> t) {
+        if(t == null) return;
+        FixedArrayDeque<E> stack = new FixedArrayDeque<>();
+        stack.push(L_T_R_firstKey(t));
+        while(!stack.isEmpty()) {
+            print(t = stack.pop());
+            if(t.right == null) {
+                stack.push(L_T_R_firstKey(t.right));
+            } else {
+                Node<E> pt = t;
+                while(pt != null && pt.right == t) {
+                    t = pt;
+                    pt = t.parent;
+                }
+                if(pt != null)
+                    stack.push(pt);
+            }
+        }
+    }*/
+
+    //练习10.4-4
     /*
     class Node {
         int key;
         Node parent;
         Node left_child;
         Node right_sibling;
-
-        public Node(int key, Node parent) {
-            this.key = key;
-            this.parent = parent;
-        }
     }
 
-    //广度优先遍历
-    Node t = root;
-    while(t != null) {
-        sb = t;
-        while(sb != null) {
-            print(sb.key);
-            sb = sb.right_sibling;
+    void breadth_first(Node t) {
+        while(t != null) {
+            Node s = t;
+            while(s != null) {
+                print(s);
+                s = s.right_sibling;
+            }
+            t = t.left_child;
         }
-
-        t = t.left_child;
     }
+    */
 
-    T_L_R(Node root):
-        if root == null: return
-
-        print(root.key)
-        T_L_R(root.left_child)
-        T_L_R(root.right_sibling)
-
-    //练习10.4-6: left_child, right_sibling，最后一个sibling的right_sibling指向parent
-     */
+    //练习10.4-6
+    //  保留 left_child, right_sibling 指针, 最右孩子的 right_sibling 指向 parent.
 
 }
