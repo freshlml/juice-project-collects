@@ -1,4 +1,4 @@
-package com.juice.alg.chapter3_13;
+package com.juice.alg.part3.chapter13;
 
 
 import com.juice.alg.tr.AVLHTree;

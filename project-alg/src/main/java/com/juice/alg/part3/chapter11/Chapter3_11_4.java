@@ -1,4 +1,4 @@
-package com.juice.alg.chapter3_11;
+package com.juice.alg.part3.chapter11;
 
 public class Chapter3_11_4 {
 
