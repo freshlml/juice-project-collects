@@ -5,7 +5,9 @@ import java.util.NoSuchElementException;
 public class Chapter3_11_2 {
 
     /**
-     *散列表
+     *散列表(hash table)
+     *  将元素通过 "映射函数" 映射到 "桶" 之中。
+     *
      * table(桶):  0   1   2   3   4   5 ... m-1
      *            | | | | | | | | | | | |   |  |
      *
