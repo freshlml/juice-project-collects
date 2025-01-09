@@ -1,6 +1,7 @@
 package com.juice.alg.part3.chapter11;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Chapter11_1 {
 
@@ -33,34 +34,35 @@ public class Chapter11_1 {
         }
 
         /**
-         *
+         * 写入指定元素，如果发生碰撞，直接链接起来
          * @param key 关键字。[from, to)
          * @param v 值
          * @throws ArrayIndexOutOfBoundsException 如果关键字 key 不属于全域 U
          */
         public void insert(int key, V v) {
-            Node<V> node = element(key);
-            if(node != null) {
-                node.count++;
-            } else {
-                Node<V> added = new Node<>(key, v);
-                int idx = mapping(key);
-                table[idx] = added;
-            }
+            Node<V> added = new Node<>(key, v);
+            int idx = mapping(key);
+            Node<V> e = table[idx];
+            table[idx] = added;
+            added.next = e;
             size++;
         }
 
         /**
          *
          * @param key 关键字。[from, to)
+         * @param v value
          * @return 关键字对应的值
          * @throws ArrayIndexOutOfBoundsException 如果关键字 key 不属于全域 U
          * @throws NoSuchElementException 如果直接寻址表中不包含关键字 key
          */
-        public V search(int key) {
-            Node<V> node = element(key);
-            if(node == null) throw new NoSuchElementException("直接寻址表中不包含关键字 key = " + key);
-            return node.v;
+        public V search(int key, V v) {
+            Node<V> e = element(key);
+            while(e != null && !Objects.equals(e.v, v)) {
+                e = e.next;
+            }
+            if(e == null) throw new NoSuchElementException("直接寻址表中不包含关键字 key = " + key);
+            return e.v;
         }
 
         //ArrayIndexOutOfBoundsException 如果关键字 key 不属于全域 U
@@ -75,23 +77,31 @@ public class Chapter11_1 {
          * @throws ArrayIndexOutOfBoundsException 如果关键字 key 不属于全域 U
          * @throws NoSuchElementException 如果直接寻址表中不包含关键字 key
          */
-        public V delete(int key) {
-            Node<V> node = element(key);
-            if(node == null) throw new NoSuchElementException("直接寻址表中不包含关键字 key = " + key);
-
-            table[mapping(key)] = null;
+        public V delete(int key, V v) {
+            int idx = mapping(key);
+            Node<V> e = table[idx], pe = null;
+            while(e != null && !Objects.equals(e.v, v)) {
+                pe = e;
+                e = e.next;
+            }
+            if(e == null) throw new NoSuchElementException("直接寻址表中不包含关键字 key = " + key);
+            if(pe == null) {
+                table[idx] = e.next;
+            } else {
+                pe.next = e.next;
+            }
             size--;
-            return node.v;
+            return e.v;
         }
 
 
         //练习11.1-1
         //  最坏情况下: T(n) = Θ(n)
-        public V max() {
+        public int maxKey() {
             Node<V> max = findMax(from, to);
             if(max == null) throw new NoSuchElementException("没有最大值");
 
-            return max.v;
+            return max.key;
         }
 
         private Node<V> findMax(int p, int q) {
@@ -119,7 +129,7 @@ public class Chapter11_1 {
         static class Node<V> {
             int key;   //关键字∈全域 U. 也可以是其他类型, 但需要额外的一层转换, 使之属于全域 U.
             V v;
-            int count = 1; //碰撞时相等关键字的计数
+            Node<V> next;
 
             public Node(int key, V v) {
                 this.key = key;
