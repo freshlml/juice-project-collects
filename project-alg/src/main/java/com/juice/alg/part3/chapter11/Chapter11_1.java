@@ -2,7 +2,7 @@ package com.juice.alg.part3.chapter11;
 
 import java.util.NoSuchElementException;
 
-public class Chapter3_11_1 {
+public class Chapter11_1 {
 
     /**
      *直接寻址表
