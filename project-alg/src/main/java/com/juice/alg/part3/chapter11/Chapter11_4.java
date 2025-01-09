@@ -1,6 +1,6 @@
 package com.juice.alg.part3.chapter11;
 
-public class Chapter3_11_4 {
+public class Chapter11_4 {
 
     //开放寻址法
     /*
