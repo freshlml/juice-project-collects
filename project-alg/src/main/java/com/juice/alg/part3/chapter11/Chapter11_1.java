@@ -34,18 +34,38 @@ public class Chapter11_1 {
         }
 
         /**
-         * 写入指定元素，如果发生碰撞，直接链接起来
+         *
          * @param key 关键字。[from, to)
          * @param v 值
          * @throws ArrayIndexOutOfBoundsException 如果关键字 key 不属于全域 U
          */
         public void insert(int key, V v) {
+            insertVal(key, v, false);
+        }
+
+        private void insertVal(int key, V v, boolean writeIfAbsent) {
             Node<V> added = new Node<>(key, v);
             int idx = mapping(key);
-            Node<V> e = table[idx];
-            table[idx] = added;
-            added.next = e;
+            Node<V> e = table[idx], pe = null;
+            while(e != null && !Objects.equals(e.v, v)) {
+                pe = e;
+                e = e.next;
+            }
+            if(e == null) {
+                if(pe == null) {
+                    table[idx] = added;
+                } else {
+                    pe.next = added;
+                }
+            } else if(!writeIfAbsent) {
+                e.v = v;
+                return;
+            }
             size++;
+        }
+
+        public void insertIfAbsent(int key, V v) {
+            insertVal(key, v, true);
         }
 
         /**
