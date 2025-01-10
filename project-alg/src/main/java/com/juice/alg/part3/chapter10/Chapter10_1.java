@@ -268,7 +268,7 @@ public class Chapter10_1 {
          */
         @Override
         public void clear() {
-            this.elements = null;
+            //this.elements = null;
             this.head = this.tail = 0;
         }
 
