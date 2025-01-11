@@ -114,6 +114,22 @@ public class Chapter11_1 {
             return e.v;
         }
 
+        //将关键字映射到数组下标
+        private int mapping(int key) {
+            return key - this.from;
+        }
+
+        static class Node<V> {
+            int key;   //关键字∈全域 U. 也可以是其他类型, 但需要额外的一层转换, 如 Object.hashCode().
+            V v;
+            Node<V> next;
+
+            public Node(int key, V v) {
+                this.key = key;
+                this.v = v;
+            }
+        }
+
 
         //练习11.1-1
         //  最坏情况下: T(n) = Θ(n)
@@ -138,22 +154,6 @@ public class Chapter11_1 {
                 return current;
             } else {
                 return findMax(p, mid);
-            }
-        }
-
-        //将关键字映射到数组下标
-        private int mapping(int key) {
-            return key - this.from;
-        }
-
-        static class Node<V> {
-            int key;   //关键字∈全域 U. 也可以是其他类型, 但需要额外的一层转换, 如 Object.hashCode().
-            V v;
-            Node<V> next;
-
-            public Node(int key, V v) {
-                this.key = key;
-                this.v = v;
             }
         }
     }

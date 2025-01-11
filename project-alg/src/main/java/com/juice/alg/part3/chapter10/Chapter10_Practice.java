@@ -1,6 +1,6 @@
 package com.juice.alg.part3.chapter10;
 
-public class Chapter10_practice {
+public class Chapter10_Practice {
 
     //思考题10-2
     //a: insert: Θ(n). minimum: Θ(1). extract-min: Θ(1). union: Θ(n).
