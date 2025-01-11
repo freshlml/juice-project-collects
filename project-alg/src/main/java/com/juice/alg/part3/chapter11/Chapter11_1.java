@@ -147,7 +147,7 @@ public class Chapter11_1 {
         }
 
         static class Node<V> {
-            int key;   //关键字∈全域 U. 也可以是其他类型, 但需要额外的一层转换, 使之属于全域 U.
+            int key;   //关键字∈全域 U. 也可以是其他类型, 但需要额外的一层转换, 如 Object.hashCode().
             V v;
             Node<V> next;
 
