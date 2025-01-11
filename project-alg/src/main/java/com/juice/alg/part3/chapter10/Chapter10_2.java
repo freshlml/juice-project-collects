@@ -554,17 +554,17 @@ public class Chapter10_2 {
 
         @Override
         public Spliterator<E> spliterator() {
-            return null;
+            return null;  //todo
         }
 
         @Override
         public Stream<E> stream() {
-            return null;
+            return null;  //todo
         }
 
         @Override
         public Stream<E> parallelStream() {
-            return null;
+            return null;  //todo
         }
 
         static class Node<E> {
