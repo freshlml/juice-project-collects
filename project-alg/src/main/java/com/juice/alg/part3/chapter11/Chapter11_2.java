@@ -21,8 +21,8 @@ public class Chapter11_2 {
      *  4. hash 冲突（碰撞）
      *     链指针法、开放寻址法等
      */
-    static class HashTable<K, V> extends AbstractMap<K, V>
-                                 implements Map<K, V>
+    public static class HashTable<K, V> extends AbstractMap<K, V>
+                                        implements Map<K, V>
     {
         /*
          *散列表
@@ -146,7 +146,9 @@ public class Chapter11_2 {
         @Override
         public V get(Object key) {
             Node<K, V> node = entry(key);
-            return node != null ? node.value : null;
+            return node != null
+                    ? node.value //may null
+                    : null;
         }
 
         /**
@@ -257,6 +259,26 @@ public class Chapter11_2 {
         public void clear() {
             Arrays.fill(table, null);
             size = 0;
+        }
+
+
+        /**
+         * Return the value to which the specified key is mapped(may null), or defaultValue if this map contains no mapping for this key.
+         *
+         * This map allow null key, so check equality by `key==null ? e==null : key.equals(e)`.
+         *
+         * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         *
+         * @param key the key whose associated value is to be returned
+         * @param defaultValue the default mapping of the key
+         * @return the value(may null) to which the specified key is mapped, or defaultValue if this map contains no mapping for the key
+         */
+        @Override
+        public V getOrDefault(Object key, V defaultValue) {
+            Node<K, V> node = entry(key);
+            return node != null
+                    ? node.value  //may null
+                    : defaultValue;
         }
 
         /**
@@ -581,27 +603,33 @@ public class Chapter11_2 {
 
 
     /*
-     * 链接法散列的分析
-     *    最坏情况运行时间:
-     *      O(n) 当n个元素都散列到同一个槽
+     *链指针法散列的分析
+     *  最坏情况运行时间: 当 n 个元素散列到同一个槽时
+     *    T(n) = Θ(n)
      *
-     *    平均情况运行时间:
-     *      假设: hash函数对n个元素中每一个元素等可能的选择m个槽中的任意一个槽，且与其他元素被散列到什么位置无关(独立)
-     *           记为 P(i) = 1/m, i=1, 2, ..., n
+     *  平均情况运行时间:
+     *    假设: hash 函数对 n 个元素中每一个元素等可能的选择 m 个槽中的任意一个槽，且与其他元素被散列到什么位置无关（简单均匀散列）
+     *    P(第 i 个元素散列到任意一个槽) = 1/m. i = 1, 2, ..., n
      *
-     *      随机变量n(j): 表示table中下标为j的链表元素个数, j=0, 1, ..., m-1
-     *      n(j)   0   1   2    ...    n
+     *    随机变量Xj: 表示 table 中下标为 j 的链表元素个数, j=0, 1, ..., m-1
+     *      Xj   0   1   2    ...    n
      *      P
      *
-     *      P(0) = C(0, n) * (m-1)^n / m^n     = C(0, n) * (1-1/m)^n * (1/m)^0
-     *      P(1) = C(1, n) * (m-1)^(n-1) / m^n = C(1, n) * (1-1/m)^(n-1) * (1/m)^1
-     *      P(2) = C(2, n) * (m-1)^(n-2) / m^n = C(2, n) * (1-1/m)^(n-2) * (1/m)^2
+     *      P(Xj = 0) = C(0, n) * (1/m)^0 * (1-1/m)^n
+     *      P(Xj = 1) = C(1, n) * (1/m)^1 * (1-1/m)^(n-1)
+     *      P(Xj = 2) = C(2, n) * (1/m)^2 * (1-1/m)^(n-2)
      *      ...
-     *      P(n) = C(n, n) * (m-1)^(n-n) / m^n = C(n, n) * (1-1/m)^(n-n) * (1/m)^n
+     *      P(Xj = n) = C(n, n) * (1/m)^n * (1-1/m)^(n-n)
      *
-     *      二项分布, E[n(j)] = n/m = load factor
+     *      二项分布, E[Xj] = n/m（load factor）
      *
-     *      O(1 + n/m)
+     *      T(n) = Θ(n/m)
      */
+
+    
+    //练习11.2-3
+    //  只需在插入元素时保证链表有序即可。好处是对插入、删除、修改、查找有一些性能上的提高。
+    //  坏处是需要 key 拥有相比大小的能力。
+    //  (注: 在 Java 中。一个对象拥有 equals 方法，用于判断对象的相等性关系。而不具备天生的大小关系。Java 中需要对象实现 Comparable 接口来表示对象的 natural-order)
 
 }
