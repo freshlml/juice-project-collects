@@ -131,8 +131,7 @@ public class Chapter11_2 {
 
         /**
          * Return the value to which the specified key is mapped, or
-         * return null if this map contains no mapping for the specified key, or
-         * the specified key mapping to a `null` value).
+         * return null if this map contains no mapping for the specified key, or the specified key mapping to a `null` value).
          *
          * This map allow null key, so check equality by `key==null ? e==null : key.equals(e)`.
          *
@@ -141,7 +140,7 @@ public class Chapter11_2 {
          * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
          *
          * @param key the key whose associated value is to be returned
-         * @return the value(may null) to which the specified key is mapped, or null
+         * @return the value to which the specified key is mapped, or null
          */
         @Override
         public V get(Object key) {
@@ -164,7 +163,7 @@ public class Chapter11_2 {
          *
          * @param key key with which the specified value is to be associated
          * @param value value to be associated with the specified key
-         * @return the previous value associated with key(may null), or null
+         * @return the previous value associated with key, or null
          */
         public V put(K key, V value) {
             return putVal(key, value, false);
@@ -210,7 +209,7 @@ public class Chapter11_2 {
          * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
          *
          * @param key key whose mapping is to be removed from the map
-         * @return the previous value(may null) associated with key, or null if there was no mapping for key
+         * @return the previous value associated with key, or null if there was no mapping for key
          */
         @Override
         public V remove(Object key) {
@@ -271,7 +270,7 @@ public class Chapter11_2 {
          *
          * @param key the key whose associated value is to be returned
          * @param defaultValue the default mapping of the key
-         * @return the value(may null) to which the specified key is mapped, or defaultValue if this map contains no mapping for the key
+         * @return the value to which the specified key is mapped, or defaultValue if this map contains no mapping for the key
          */
         @Override
         public V getOrDefault(Object key, V defaultValue) {
@@ -374,9 +373,10 @@ public class Chapter11_2 {
 
         private void resize() {
             int oldSize = this.table.length; //this.table.length != 0
-            int newSize = oldSize * 2;
+            int newSize = oldSize * 2;  //increment by double
 
-            if(newSize < 0 || newSize > MAXIMUM_CAPACITY) {
+            if(newSize < 0 ||                       //if overflow
+               newSize > MAXIMUM_CAPACITY) {
                 newSize = MAXIMUM_CAPACITY;
             }
 
