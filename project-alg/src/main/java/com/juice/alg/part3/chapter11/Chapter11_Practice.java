@@ -2,7 +2,7 @@ package com.juice.alg.part3.chapter11;
 
 public class Chapter11_Practice {
 
-    //思考题7-2
+    //思考题11-2
     /* n个槽的散列表，插入n个元素
      * 假设: hash函数对n个元素中每一个元素等可能的选择n个槽中的任意一个槽，且与其他元素被散列到什么位置无关(独立)
      *      记为 P(i) = 1/n, i=1, 2, ..., n
