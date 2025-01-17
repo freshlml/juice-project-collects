@@ -49,8 +49,8 @@ public class Chapter11_4 {
      *           <= (n/m)^(i-1)
      *            = α^(i-1)
      *
-     *  EX = Σ(i=1~m) i*P(X=i)
-     *     = Σ(i=2~m) P(X>=i)                         //C.25
+     *  EX = Σ(i=1~m) i*P(X=i)                                   //C.25
+     *     = Σ(i=2~m) P(X>=i)
      *    <= Σ(i=2~m) α^(i-1)
      *     = Σ(i=1~m) α^i
      *     = α + α^2 + ... + α^m
@@ -240,4 +240,35 @@ public class Chapter11_4 {
         }
     }
 
+    //练习11.4-4
+    /*
+    1、公式化简
+       probe(key, i) = (h(key) + i*h'(key)) mod m. i = 0, 1, ..., m-1
+
+       probe(key, i+1) = ( h(key) + (i+1)*h'(key) ) mod m
+                       = [ probe(key, i) + h'(key) mod m ] mod m
+
+       即 next = [ prev + h'(key) mod m ] mod m
+    2、证明: 如果 h'(key) 与 m 互素，则探查序列不出现重复值
+
+       证明: 对任意 i∈[0, m-1], 有 probe(key, i); 对任意 k∈(0, m-1], 有 probe(key, i+k), 只需证明 probe(key, i) != probe(key, i+k)
+
+       probe(key, i) = ( h(key) + i*h'(key) ) mod m = X, 0 <= X <= m-1
+
+       probe(key, i+k) = ( h(key) + (i+k)*h'(key) ) mod m = [ X + k*h'(key) mod m ] mod m
+
+       即，只需 k*h'(key) mod m != 0 即可。若 h'(key) 与 m 互质，则可使此条件满足
+     3、一些推导
+       probe(key, 0) = h(key) mod m
+
+       probe(key, m) = ( h(key) + m*h'(key) ) mod m
+                     = ( h(key) mod m + m*h'(key) mod m ) mod m
+                     = ( probe(key, 0) + m*h'(key) mod m ) mod m
+                     = probe(key, 0)
+
+       即，probe(key, m) == probe(key, 0), probe(key, m+1) == probe(key, 1), ...
+    */
+
+    //练习11.4-5 todo
+    
 }
