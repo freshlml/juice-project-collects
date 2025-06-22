@@ -25,7 +25,11 @@ public class Chapter1 {
      *  F'(n) = 8 - 64/(n*ln2)
      *  当 n = 8/ln2 时 F'(n) = 0 ==> n <= 11 时, F(n) 单调递减，n > 11 时, F(n) 单调递增
      *
-     *  F(n) < 0 ==> 8*n < 64*lgN ==> n <= 43
+     *  F(2) < 0
+     *  ...
+     *  F(43) < 0                                 //找到临界值
+     *  f(44) > 0
+     *  得到，当 n <= 43 时，8*n^2 优于 64*n*lgN
      *
      */
     public static void main(String[] argv) {
