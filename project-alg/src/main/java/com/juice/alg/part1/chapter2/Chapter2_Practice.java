@@ -44,7 +44,7 @@ public class Chapter2_Practice {
 
 
     //练习题 2.2-1: 用Θ记号表示 n^3/1000 - 100*n^2 - 100*n + 3
-    //  Θ = n^3
+    //  Θ(n^3)
 
     /**
      * 练习题 2.2-2: 选择排序 {@link Chapter2#selection_sort(int[])}
@@ -53,6 +53,7 @@ public class Chapter2_Practice {
     //练习题 2.3-4
     //T(n) = T(n-1) + D(n) + C(n)
     //     = T(n-1) + Θ(1) + Θ(n)
+
 
     public static void main(String[] argv) {
         int[] a = {100, 200, 200, 300, 301, 400, 400, 500, 600};
@@ -74,7 +75,7 @@ public class Chapter2_Practice {
     }
 
 
-    //练习题 2.3-5: 二分查找法, Θ(log2(n))  注：之前的写法 Ω=log2(n)
+    //练习题 2.3-5: 二分查找法, Θ(lg(n))
     public static int binary_search(int[] a, int key) {
         if (a == null) return -1;
         if (a.length == 0) return -1;
@@ -101,7 +102,7 @@ public class Chapter2_Practice {
     }
 
     //练习2.3-6
-    //1.递增序列找到第一个(逆序来看)<=的
+    //1.递增序列找到第一个(反向来看)<=的
     public static int binary_search_af(int[] a, int key) {
         if (a == null) return -1;
         if (a.length == 0) return -1;
@@ -168,25 +169,31 @@ public class Chapter2_Practice {
     }
 
     //练习 2.3-7
-    //  1. 两重循环: n个元素，任取两个元素: C(2,n)=n*(n-1)/2，Θ(n^2)
-    //  2. 先排序，再查找(类二分查找):
-    //     for(int i = 1; i < a.length; i++) {
-    //         int ret = find(a, 0, a.length, i, key);
-    //         if(ret != -1) return ret;
-    //     }
-    //              i
-    //     口 ... 口 口 口 ... 口
-    //     int find(int[] a, int begin, int end, int i, int key) {
-    //         if(end - begin <= 1) return -1;
-    //         int prevSum = a[i] + a[i-1];
-    //         if(prevSum == key) {
-    //             return i-1;
-    //         } else if(prevSum < key) {
-    //             return find(a, begin + i, end, (end - begin - i)/2, key);
-    //         } else {
-    //             return find(a, begin, i, (i - begin)/2, key);
-    //         }
-    //     }
+    // 1. 两重循环: n个元素，任取两个元素: C(2,n)=n*(n-1)/2，Θ(n^2)
+    /* 2. 先排序，再查找(类二分查找):
+         for(int i = 1; i < a.length; i++) {
+             int ret = find(a, 0, a.length, i, key);
+             if(ret != -1) return ret;
+         }
+                  i
+         口 ... 口 口 口 ... 口
+         int find(int[] a, int begin, int end, int i, int key) {
+             if(end - begin <= 1) return -1;
+             int prevSum = a[i] + a[i-1];
+             if(prevSum == key) {
+                 return i-1;
+             } else if(prevSum < key) {
+                 return find(a, begin + i, end, (end - begin - i)/2, key);  // ×
+             } else {
+                 return find(a, begin, i, (i - begin)/2, key);
+             }
+         }
+     */
+    // 3. 先排序，在查找
+    //    for(int i = 0; i < a.length - 1; i++) {
+    //       int ret = binary_search(a, i + 1, a.length, key - a[i]);
+    //       if(ret != -1) return ret;
+    //    }
 
 
     public static class PositionArrayPrinter<E> extends ArrayPrinter<E> {
@@ -209,10 +216,6 @@ public class Chapter2_Practice {
             if(count <= position) {
                 String s = String.valueOf(t);
                 weight += s.length();  //may overflow
-                /*if(count >= length) {
-                    tag = false;
-                    weight = 0;
-                }*/
             }
 
             if(count == position + 1) {
@@ -242,6 +245,7 @@ public class Chapter2_Practice {
                 }
                 tag = false;
             }
+            //weight = 0;
         }
 
         static <E> PositionArrayPrinter<E> of(int length, int position) {

@@ -129,7 +129,7 @@ public class Chapter2_Practice2 {
 
 
     //思考题 2-4
-    //b. {1,2,3,...,n}的递减数列最多，共(n-1)*n/2个逆序对
+    //b. {1,2,3,...,n}的递减数列有最多的逆序对，共(n-1)*n/2个逆序对
     public static int merge_reverse_pair(int[] a) {
         if(a == null) return 0;
         if(a.length == 0 || a.length == 1) return 0;
@@ -286,6 +286,7 @@ public class Chapter2_Practice2 {
 
                 if(end == array.length || (begin == end && equalPolicy))
                     handler.per(array[finish], finish, limit);
+
             } else if(mode == TraversalMode.REVERSE) { //逆序
                 int finish = begin, limit = begin;
                 if(begin == end && !equalPolicy) return;
