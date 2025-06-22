@@ -51,13 +51,13 @@ public class Chapter2 {
      * T(n) = C1*n + C2*(n-1) + C3*ΣPi + C4*(ΣPi - 1)   , i=1 to n-1
      * 其中ΣPi'max = 1 + 2 + 3 + ... + (n-1) = n*(n-1)/2
      *    ΣPi'min = 1 + 1 + 1 + ... + 1 = n-1
+     *
      * T(n)'max = C1*n + C2*(n-1) + C3*[n*(n-1)/2] + C4*[n*(n-1)/2 - 1]
      *          = C1*n + C2*n - C2 + (C3+C4)/2*n^2 - (C3+C4)/2*n - C4
-     *          ≈ C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n
-     *          ≈ (C3+C4)/2*n^2 ,C3=while循环执行时间; C4=while中所有语句执行一次的时间之和; C1=for; C2=for中除while之外的语句
+     *          = C1*n + C2*n + (C3+C4)/2*n^2 - (C3+C4)/2*n - C2 - C4
+     *          ≈ n^2              //忽略低阶项和常数倍数
      *
-     *Θ(n^2)  ,忽略低阶项后
-     *
+     * 注: C3=while循环执行时间; C4=while中所有语句执行一次的时间之和; C1=for; C2=for中除while之外的语句
      */
 
 
@@ -82,6 +82,12 @@ public class Chapter2 {
     }
 
 
+    public static void merge_sort(int[] a) {
+        if(a == null) return;
+        if(a.length == 0 || a.length == 1) return;
+
+        merge_sort(a, 0, a.length);
+    }
     /**
      *merge_sort运行时间分析 (递归树)
      *                        [n]
@@ -91,26 +97,20 @@ public class Chapter2 {
      *  ...
      *  [1],[1],...[1]                                              第 x 次分解, n/2^x   2^(x-1) 次 merge
      *
-     *  n/2^x = 1 ==> 2^x = n ==>  x = log2(n)
+     *  n/2^x = 1 ==> 2^x = n ==>  x = lg(n)
      *
      *T(n) = C1*(2^0 + 2^1 +...+ 2^x) + [ 2^(x-1) * [C2+C3*2^1+C4*(2^1-1))] + 2^(x-2) * [C2+C3*2^2+C4*(2^2-1)] +...+ 2^0 * [C2+C3*2^x+C4*(2^x-1)] ]
      *     = 2*C1*n - C1 + C2*n - C2 + (C3+C4)*x*2^x - C4*n
-     *     ≈ 2*C1*n + C2*n + (C3+C4)*n*log2(n) - C4*n
-     *     ≈ (C3+C4)*n*log2(n) ,C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
+     *     = 2*C1*n + C2*n + (C3+C4)*n*lg(n) - C4*n - C1 - C2
+     *     ≈ n*lg(n)           //忽略低阶项和常数倍数
      *
-     *Θ(n*log2(n))  ,忽略低阶项后
+     *注: C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
      */
-    public static void merge_sort(int[] a) {
-        if(a == null) return;
-        if(a.length == 0 || a.length == 1) return;
-
-        merge_sort(a, 0, a.length);
-    }
     public static void merge_sort(int[] a, int begin, int end) {
         int n = end - begin;
         if(n == 1) return;
 
-        int mi = begin + n/2;
+        int mi = begin + n/2;   // ⌊n÷2⌋
         merge_sort(a, begin, mi);
         merge_sort(a, mi, end);
 
@@ -150,6 +150,7 @@ public class Chapter2 {
 
         /*int[] left = new int[q-p];
         System.arraycopy(a, p, left, 0, left.length);
+
         int[] right = new int[r-q];
         System.arraycopy(a, q, right, 0, right.length);
 
