@@ -12,7 +12,7 @@ public class Chapter4_1 {
      *最大子数组: 所有连续子数组中和最大的子数组
      *  1. 连续子数组的数量
      *     n + (n-1) + ... + 1 = n*(n+1)/2
-     *  2. 暴力解法
+     *  2. 穷举解法
      *     遍历每一个连续子数组，利用先前计算的子数组和计算当前子数组的和，Θ(n^2)
      *  3. 分治法
      *     1). left_gap、right_gap 的和必定 < 0
@@ -24,7 +24,7 @@ public class Chapter4_1 {
      *     T(n) = 2*T(n/2) + Θ(n)
      *     解得 T(n) = Θ(n*lgn)
      */
-    //暴力法
+    //穷举法
     public static SubArrayNode<Integer> blMaxSubArray(int[] a) {
         if(a == null || a.length == 0) return new SubArrayNode<>();
 

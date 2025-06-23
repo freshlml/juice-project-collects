@@ -4,7 +4,7 @@ package com.juice.alg.part1.chapter4;
 public class Chapter4_2 {
     /**
      *矩阵乘法
-     *  1.暴力法
+     *  1.穷举法
      *    3层循环，Θ(n^3)
      *  2.分治法
      *    分解: 一横一竖，分成四个
@@ -15,7 +15,7 @@ public class Chapter4_2 {
      *      A * B = A1*B1 + A2*B4, A1*B2 + A2*B3
      *              A4*B1 + A3*B4, A4*B2 + A3*B3
      */
-    //暴力法
+    //穷举法
     public static int[][] blMatrixMulti(int[][] a, int[][] b) {
         if(a == null || b == null) return null;
         int m, n, l;
@@ -44,7 +44,7 @@ public class Chapter4_2 {
         ...
                 [1]                 第x次分解,n/2^x        8^(x-1)次merge, 8^(x-1) * [n/2^(x-1)]^2
 
-      n/2^x = 1 ==> 2^x = n ==> x=log2(n)
+      n/2^x = 1 ==> 2^x = n ==> x=lg(n)
       merge总和: 1*n^2 + 8*(n/2)^2 + ... + 8^(x-1) * [n/2^(x-1)]^2
               = (n-1) * n^2
      */
@@ -183,6 +183,7 @@ public class Chapter4_2 {
         int[][] fzc = fzMatrixMulti(a, b);
         IntMatrixTraversal.of(fzc).forEach(MatrixPrinter.of()::print);
         System.out.println("#############################################");
+
 
         int[][] c = {{109, 2, 3}, {4, 555, 6}, {7, 8}};
         IntMatrixTraversal.of(c).forEach(MatrixPrinter.of()::print);
