@@ -80,7 +80,7 @@ public class Chapter5_Practice3 {
      *      break
      *    tag[i] = 1
      *    for t in tag:
-     *      if t == 0 break
+     *      if t == 0 continue
      *    else break
      *  if found: return A[i]
      *
@@ -149,7 +149,7 @@ public class Chapter5_Practice3 {
      *
      *  P(A[i] = x) = k/n
      *    最坏情况: n-k+1
-     *    最坏情况: k/n
+     *    平均情况: k/n
      *
      *  P(A[i] = x) = 0
      *    最坏情况: n

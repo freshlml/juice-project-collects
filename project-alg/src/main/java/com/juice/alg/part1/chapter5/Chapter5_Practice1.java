@@ -47,18 +47,18 @@ public class Chapter5_Practice1 {
         boolean out = false;
         /*
          *随机变量X: 外层循环执行次数
-         *      X    1     2                 3                    ...
-         *      P    1     (n-1)/n * 1/n     [(n-1)/n]^2 * 1/n    ...
+         *      X    1     2                           3                    ...
+         *      P    1     (2^m-n)/(2^m) * n/(2^m)     [(2^m-n)/(2^m)]^2 * n/(2^m)    ...
          *
          * X ~ 几何分布
-         * EX = 1/n
+         * EX = (2^m)/n
          */
         while(!out) {
             int[] a = new int[m];
-            for(int i=0; i < m; i++) {  //2^(m-1) < n < 2^m  ==> lgn <= m < lgn +1
+            for(int i=0; i < m; i++) {  //2^(m-1) < n <= 2^m  ==> lgn <= m < lgn + 1
                 a[i] = RANDOM_0_1();
             }
-            if(!contains(invalids, a)) {   // 1/n 的概率 out
+            if(!contains(invalids, a)) {   // n/(2^m) 的概率 out
                 result = calBinary(a);
                 out = true;
             }
@@ -289,7 +289,7 @@ public class Chapter5_Practice1 {
         *      P     1     [1 - 2p(1-p)] * 2p(1-p)     [1 - 2p(1-p)]^2 * 2p(1-p)      ...
         *
         * X ~ 几何分布
-        * EX = 2p(1-p)
+        * EX = 1/[2p(1-p)]
         */
        while(true) {
            int first = BIASED_RANDOM();
