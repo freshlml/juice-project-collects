@@ -26,6 +26,7 @@ public class Chapter6 {
      *  2.下标计算法
      *      1).每一层的最左节点的下标: i(x) = i(x-1) + 2^(x-2)   x 表示层数，x = 2, ..., h+1
      *      2).叶子节点的下标: ⌊(n/2)⌋, floor(n/2) + 1, ..., n-1                                               //练习6.1-7
+     *         设第一个叶子节点的下标为 x, left(x) = 2x + 1, 2x + 1 = n + 1 (n 为偶数) 或者 2x + 1 = n (n 为奇数) ==> x = ⌊(n/2)⌋
      *      3).下标 i 的节点，parent(i) = ⌊(i+1)/2⌋ - 1; left_child(i) = 2*i + 1; right_child(i) = 2*i + 2
      *
      *  3.A.length: 堆中元素个数(数组大小)。heap_size: 堆大小，heap_size <= A.length
@@ -74,7 +75,7 @@ public class Chapter6 {
                    ...
                   [1]                       第x次分解 n/2^x
             ===>    x = lg(n)
-        树高 h，最多递归到叶子节点，即最多递归 h 次，T(n) = lg(n) * Θ(1) = Θ(lg(n))
+        树高 h，最多递归到叶子节点，即最多递归 h 次，T(n) = C * lg(n) * Θ(1) = Θ(lg(n))
          */
         private void max_heapify(int i, int heap_size) {
             //assert heap_size <= this.a.length : IndexOutOfRangeError
@@ -82,10 +83,10 @@ public class Chapter6 {
             int ri = 2*i + 2;
 
             int max = i;
-            if(li < heap_size && /*li < this.a.length &&*/ this.a[i] < this.a[li]) {
+            if(li < heap_size && /*li < this.a.length &&*/ this.a[max] < this.a[li]) {
                 max = li;
             }
-            if(li < heap_size && /*ri < this.a.length &&*/ this.a[max] < this.a[ri]) {
+            if(ri < heap_size && /*ri < this.a.length &&*/ this.a[max] < this.a[ri]) {
                 max = ri;
             }
 
@@ -133,11 +134,11 @@ public class Chapter6 {
                   ...
                     n       C1+max_heapify(0, n)
 
-                 max_heapify(0, i) = C2*log2(i)   ; C2为max_heapify执行依次时间之和
+                 max_heapify(0, i) = C2*lg(i)   ; C2为max_heapify执行依次时间之和
 
-         最坏情况运行时间: C1*(n-1) + C2*[log2(2) + log2(3) + ... + log2(n)]
+         最坏情况运行时间: C1*(n-1) + C2*[lg(2) + lg(3) + ... + lg(n)]
                       = C1*(n-1) + C2*[n*ln(n)/ln2 - (n+2ln2-2)/ln2]
-                      ≈ C*n*lnn
+                      = Θ(n*lnn)
          */
         public void heap_sort() {  //原址
 
