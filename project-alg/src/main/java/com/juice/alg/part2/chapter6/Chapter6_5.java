@@ -56,7 +56,7 @@ public class Chapter6_5 {
             int ri = 2*i + 2;
 
             int max = i;
-            if(li < heap_size && /*li < this.queue.size() &&*/ this.queue.get(i).lt(this.queue.get(li))) {
+            if(li < heap_size && /*li < this.queue.size() &&*/ this.queue.get(max).lt(this.queue.get(li))) {
                 max = li;
             }
             if(ri < heap_size && /*ri < this.queue.size() &&*/ this.queue.get(max).lt(this.queue.get(ri))) {
@@ -72,10 +72,11 @@ public class Chapter6_5 {
         }
 
         public void increase(Node<Integer> node, int added) {
+
             for(int i=0; i<this.queue.size(); i++) {
                 Node<Integer> e;
-                if((e=this.queue.get(i)).equals(node)) {
 
+                if((e=this.queue.get(i)).equals(node)) {
                     int old_weight = e.weight;
                     int new_weight = old_weight + added;
                     e.weight = new_weight;
@@ -159,16 +160,20 @@ public class Chapter6_5 {
         MaxPriorityQueue maxPriorityQueue = new MaxPriorityQueue();
 
         maxPriorityQueue.insert(Node.build(16, 16));
+
         Node<Integer> node14 = Node.build(14, 14);
         maxPriorityQueue.insert(node14);
+
         maxPriorityQueue.insert(Node.build(10, 10));
         maxPriorityQueue.insert(Node.build(1, 1));
         maxPriorityQueue.insert(Node.build(4, 4));
         maxPriorityQueue.insert(Node.build(8, 8));
         maxPriorityQueue.insert(Node.build(2, 2));
         maxPriorityQueue.insert(Node.build(7, 7));
+
         Node<Integer> node9 = Node.build(9, 9);
         maxPriorityQueue.insert(node9);
+
         maxPriorityQueue.insert(Node.build(3, 3));
 
         System.out.println(maxPriorityQueue);
@@ -182,13 +187,13 @@ public class Chapter6_5 {
 
         System.out.println(maxPriorityQueue);
         maxPriorityQueue.increase(node9, 6);
-        System.out.println("increase node9 6");
+        System.out.println("increase node9: 6");
         System.out.println(maxPriorityQueue);
         System.out.println("#########################################################################");
 
         System.out.println(maxPriorityQueue);
         maxPriorityQueue.increase(node14, -12);
-        System.out.println("increase node14 -12");
+        System.out.println("increase node14: -12");
         System.out.println(maxPriorityQueue);
 
     }

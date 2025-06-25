@@ -119,6 +119,7 @@ public class Chapter6_Practice1 {
                     int old_weight = e.increaseWeight(added);
                     int new_weight = e.weight;
 
+                    //从集合角度理解 if-else-if
                     if(max && old_weight < new_weight) {
                         heapify(i);
                     } else if(max && old_weight > new_weight) {
@@ -288,14 +289,17 @@ public class Chapter6_Practice1 {
 
     public static void main(String[] argv) {
         MinPriorityQueue<Integer> minPriorityQueue = new MinPriorityQueue<>();
+
         minPriorityQueue.insert(Chapter6_5.Node.build(16, 16));
         minPriorityQueue.insert(Chapter6_5.Node.build(14, 14));
         minPriorityQueue.insert(Chapter6_5.Node.build(10, 10));
         minPriorityQueue.insert(Chapter6_5.Node.build(1, 1));
         minPriorityQueue.insert(Chapter6_5.Node.build(4, 4));
         minPriorityQueue.insert(Chapter6_5.Node.build(8, 8));
+
         Chapter6_5.Node<Integer> node2 = Chapter6_5.Node.build(2, 2);
         minPriorityQueue.insert(node2);
+
         minPriorityQueue.insert(Chapter6_5.Node.build(7, 7));
         minPriorityQueue.insert(Chapter6_5.Node.build(9, 9));
         minPriorityQueue.insert(Chapter6_5.Node.build(3, 3));
@@ -311,7 +315,7 @@ public class Chapter6_Practice1 {
 
         System.out.println(minPriorityQueue);
         minPriorityQueue.increase(node2, 100);
-        System.out.println("increase node2 100");
+        System.out.println("increase node2: 100");
         System.out.println(minPriorityQueue);
         System.out.println("#########################################################################");
 
