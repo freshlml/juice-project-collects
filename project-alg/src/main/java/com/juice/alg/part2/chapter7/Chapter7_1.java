@@ -21,25 +21,25 @@ public class Chapter7_1 {
         //assert p ∈ [0, a.length); assert r ∈ [0, a.length]; assert p < r;
         int pos = r - 1;
         int e = a[pos];
-        int j = p - 1, k = p;
+        int q = p - 1, k = p;
 
         while(k < pos) {
             if(a[k] <= e) {
-                j++;
+                q++;
 
-                int ex = a[j];
-                a[j] = a[k];
+                int ex = a[q];
+                a[q] = a[k];
                 a[k] = ex;
             }
             k++;
         }
 
-        if(++j < pos) {
-            int ex = a[j];
-            a[j] = e;
+        if(++q < pos) {
+            int ex = a[q];
+            a[q] = e;
             a[pos] = ex;
         }
-        return j;
+        return q;
     }
     //快速排序
     public static void quick_sort(int[] a) {

@@ -39,10 +39,10 @@ public class Chapter7 {
      *  ...
      *  [1] ...                                            y, n/(10/9)^y     c*(n-y+1)  < c*n
      *
-     *  n/10^x = 1, x = log10(n) < log2(n)
-     *  n/(10/9)^y = 1, y = log10/9(n)  <  C*log2(n); C >= 7
+     *  n/10^x = 1, x = log10(n) < lg(n)
+     *  n/(10/9)^y = 1, y = log10/9(n)  <  C*lg(n); C >= 7
      *
-     *  解递归式得 T(n) = O(n*lg(n))
+     *  解得 T(n) = O(n*lg(n))
      */
     static void chapter7_2() {}
     /*
@@ -86,8 +86,8 @@ public class Chapter7 {
      *     = Σ(i=0~n-2)Σ(k=1~n-i-1) [2/(k+1)]
      *
      *     Ⅰ：EY < Σ(i=0~n)Σ(k=1~n) 2/k
-     *           < O(n*lgn)
-     *     Ⅱ：EY >                                            //练习7.4-4, todo
+     *           < n*lgn
+     *     Ⅱ：EY > n*lgn                                      //练习7.4-4, todo
      *  得, 平均情况下的运行时间: Θ(n*lgn)
      *
      *注1: 为什么 Y 可分解成 Σ(i=0~n-2)Σ(j=i+1~n-1)？

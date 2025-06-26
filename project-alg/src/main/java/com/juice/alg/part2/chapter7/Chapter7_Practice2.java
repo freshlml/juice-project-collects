@@ -72,7 +72,7 @@ public class Chapter7_Practice2 {
         return q;
     }
     //找出第一个位置 q, 使得 ∀i < q, a[i] <= a[q]
-    //                   ∀j < q, a[q] <= a[j]
+    //                   ∀j > q, a[q] <= a[j]
     //  给定数组 a，q 可以有多个、一个、或者没有(情况居多)
     static int findFirstOrNull(int[] a) {
         if (a == null || a.length == 0) return -1;
