@@ -37,24 +37,23 @@ public class Chapter8_3 {
      *
      *   Ⅲ: n 个 d 位数的存储方式
      *
-     *      1).使用二维数组存储。按高位到低位。不足 d 位的使用 0 填充（造成空间浪费）。如果要表示正负数，则可约定最高位为符号位
-     *         0 0 0 0 0 3 2 9   --> 329
-     *         1 1 1 1 1 3 2 8   --> 11111328
-     *         0 0 0 0 0 0 0 1   --> 1
-     *         0 0 0 0 0 0 1 5   --> 15
+     *      1).使用二维数组存储。按高位到低位。不足 d 位的使用 0 填充（造成空间浪费）。表示负数的方法: 将所有位添加负号或者设定最高位为符号位
+     *         0 0 0 0 0 3 2 9   -->       329
+     *         1 1 1 1 1 3 2 8   -->  11111328
+     *         0 0 0 0 0 0 0 1   -->         1
+     *         0 0 0 0 0 0 1 5   -->        15
      *
-     *      2).使用二维数组存储。按低位到高位。不足 d 位的无需使用 0 填充。如果要表示正负数，只需将最高位表示成负数
-     *         9 2 3             --> 329
-     *         8 2 3 1 1 1 1 1   --> 11111328
-     *         1                 --> 1
-     *         5 -1              --> -15
+     *      2).使用二维数组存储。按低位到高位。不足 d 位的无需使用 0 填充。表示负数的方法: 将所有位添加负号
+     *         9  2 3            -->       329
+     *         8  2 3 1 1 1 1 1  -->  11111328
+     *         1                 -->         1
+     *        -5 -1              -->       -15
      *
      *      3).使用一维数组存储，节省了存储空间，只是数值表示范围变小了
      *         329, 11111328, 15, -15, -15, -25
      *
-     *   Ⅳ: 使用数组表示的 d 位数，每一个位的取值范围均为 [0, k)。则每一轮可使用计数排序。这样基数排序的运行时间为: Θ(d*(n+k))
      */
-    public static void radix_sort(int[][] a, int d) {  //取 Ⅲ. 2) 存储方案
+    public static void radix_sort(int[][] a, int d) {  //取 Ⅲ/2) 存储方案
         if(a == null || a.length == 0 || a.length == 1) return;
         if(d <= 0) throw new IllegalArgumentException("the weight [" + d + "] can not be negative number");
 
@@ -63,6 +62,10 @@ public class Chapter8_3 {
         }
 
     }
+    /*
+     *运行时间 T(n) = C * d * (n + 2*radix)
+     *            = Θ(d*(n+radix))
+     */
     static void radix_counting_sort(int[][] a, int j, int radix) {  //假定 a[0~a.length][j] 数值范围 ∈ [-radix+1, radix)
         int min = -radix + 1;
         int[] c = new int[2*radix - 1];  //初始值为 0.
@@ -104,14 +107,23 @@ public class Chapter8_3 {
      *  p=1  v =  115/100 =  1,  v' =  1 - ( 1/100) * 100 =  1
      *       v = -115/100 = -1,  v' = -1 - (-1/100) * 100 = -1
      *       v =   15/100 =  0,  v' =  0 - ( 0/100) * 100 =  0
+     *
+     *运行时间
+     *   T(n) = C * ⌈d/r⌉ * (n + k^r), 其中 0 <= r <= d, k = 2、8、10、16 ...
+     *        = Θ(d/r * (n + k^r))
+     *
+     *   令 f(r) = d/r * (n + k^r)
+     *
+     *     1. r <= d < log k (n) 时，f(r) < d/r * 2n。则取 r = d 时，得到最优解: f(r) < 2*n
+     *     2. log k (n) <= r <= d 时，当 r = log k (n) 时得到最优解 f(r) = [d/log k (n)] * (n + n) = [d/log k (n)] * 2n
      */
-    public static void radix_sort(int[] a, int d, int r) {  //取 Ⅲ. 3) 存储方案
+    public static void radix_sort(int[] a, int d, int r) {  //取 Ⅲ/3) 存储方案
         if(a == null || a.length == 0 || a.length == 1) return;
         assert d > 0 && d <= 10; //because Integer.MAX_VALUE 的位宽为 10
         assert r > 0 && r <= 9;  //Note: r <= 9, 否则 radix_counting_sort 中，array size overflow
 
         int p = d%r == 0 ? d/r : d/r + 1;
-        int radix = Double.valueOf(Math.pow(10, r)).intValue();
+        int radix = Double.valueOf(Math.pow(10, r)).intValue();  // 假设数组 a 中每一个整数是十进制格式，如 r = 2, radix = 10^2 = 100，即 100 进制
 
         for(int j=0; j < p; j++) {
             radix_counting_sort(a, j, radix);
@@ -148,7 +160,7 @@ public class Chapter8_3 {
     }
 
     public static void main(String[] argv) {
-        int[][] a = new int[][] { {1}, {9, 2, 3}, {5, 5, 3}, {7, 5, 6}, {8, 2, 3}, {7, 3, 8}, {7, 5, 6}, {0, 1}, {1, 0}, {1, -1}, {9, 2, -3} };
+        int[][] a = new int[][] { {1}, {9, 2, 3}, {5, 5, 3}, {7, 5, 6}, {8, 2, 3}, {7, 3, 8}, {7, 5, 6}, {0, 1}, {1, 0}, {-1, -1}, {-2, -1}, {-9, -2, -3} };
         int d = 3;
         IntMatrixTraversal.of(a, 0, a.length, 0, d, TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
         System.out.println("----------");
@@ -166,19 +178,10 @@ public class Chapter8_3 {
         System.out.println("##########");
 
         int[][] a2 = new int[][] { {3,2,9}, {3,2,8}, {3,5,5}, {6,5,7}, {6,5,7}, {8,3,7} };
-        radix_sort_r(a2, 2);
+        radix_sort_r(a2, 1);
     }
 
-    /**
-     *给定一个 d 位数和正整数 r <= d. 令 p = ⌈d/r⌉
-     *
-     *使用 p 作为比较次数，每次比较 r 位，则运行时间为:
-     *  f(r) = p * (n + k^r) = d/r * (n + k^r)
-     *
-     *  1. r <= d < log k (n) 时，f(r) < d/r * 2n。则取 r = d 时，得到最优解: f(r) < 2*n
-     *  2. log k (n) <= r <= d 时，当 r = log k (n) 时得到最优解 f(r) = d*2n/log k (n)
-     */
-    public static void radix_sort_r(int[][] a, int r) {  //取 Ⅲ. 1) 存储方案
+    public static void radix_sort_r(int[][] a, int r) {  //取 Ⅲ/1) 存储方案
         if(a == null || a.length == 0 || a.length == 1) return;
 
         int d = a[0].length; //safe
@@ -223,14 +226,17 @@ public class Chapter8_3 {
 
 
     //练习8.3-2: 插入排序、归并排序、堆排序是稳定的。快速排序不稳定
-    //  1. 对快速排序: 元素交换操作时，遍历序列判断使用当前值或者替代之交换。额外时间开销: Θ(n)。额外空间开销: Θ(1)
+    //  1. 对快速排序: 元素交换操作时，遍历序列判断使用当前值或者替代值交换。额外时间开销: Θ(n)。额外空间开销: Θ(1)
     //  2. 给每一个值记录原始下标，排完序后，对连续的相等区间，根据原始下标排序
 
-    //练习8.3-4: 3*[n + d(n)]
-    //  n 个 [0, n^3) 区间的整数。d = log10(n^3) = 3*log10(n)，k = 10。
-    //  有 Θ(d*(n+k)) = Θ(3*log10(n)*(n+10)) = Θ(n * log10(n))
+    //练习8.3-4: n 个 [0, n^3) 区间的整数, k = 2、8、10、16 ...
+    //  1. n^3 这个数的位宽: 找大于等于 n^3 的 最近的 k 的 r 次方这个数，则，n^3 的位宽 d = r，即
+    //     n^3 <= k ^ r ==> r >= ⌈log k (n^3)⌉ ==> d = r'min = ⌈log k n^3⌉
     //
-    //  根据 radix_sort_r(...):
-    //  当 r = log10(n), f(r) = d*2n/log10(n) = Θ(n)
+    //  2. T(n) = C * ⌈d/r⌉ * (n + k^r), 其中 0 <= r <= d, d = ⌈log k n^3⌉
+    //          = Θ(d/r * (n + k^r))
+    //
+    //     根据 radix_sort(int[] a, int d, int r)，当 r = log k (n) 时得到最优解: [d/log k (n)] * 2n = Θ(n)
+
 
 }
