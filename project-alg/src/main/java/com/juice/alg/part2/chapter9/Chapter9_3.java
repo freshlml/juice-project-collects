@@ -19,7 +19,7 @@ public class Chapter9_3 {
      *
      *    3. 对第 2 步找出的 ⌈n/5⌉ 个中位数，递归调用 select 以找出它们的中位数，记为 x（如果 ⌈n/5⌉ 为偶数，取其下中位数）
      *
-     *    4. 以第 3 步返回的 x 为主元对输入数组 a[p, ..., r) 进行划分，得到划分下标 q，k = q-p+1
+     *    4. 以第 3 步返回的 x 为主元对输入数组 a[p, ..., r) 进行划分，得到划分下标 q，令 k = q-p+1
      *
      *    5. 如果 i == k，则求得解。如果 i < k，则在 [p, q) 子数组上递归求 i。如果 i > k，则在 [q+1, r) 子数组上递归求 i-k
      *
@@ -99,7 +99,7 @@ public class Chapter9_3 {
         int n = end - begin;
 
         int z = n%5 == 0 ? n/5 : n/5 + 1;
-        int[] result = new int[z];  //z may be 0
+        int[] result = new int[z];  //z may be zero
 
         for(int i=0; i < z; i++) {
             int s = begin + 5*i;

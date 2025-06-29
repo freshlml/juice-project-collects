@@ -22,7 +22,7 @@ public class Chapter9_Practice1 {
 
 
     //练习9.3-2
-    //  ⌈n/4⌉ < n/4 + 1，当 n >= 140 时，n/4 + 1 <= 3n/10 -6 <= 3*(⌈⌈n/5⌉/2⌉ - 2)
+    //  ⌈n/4⌉ < n/4 + 1，当 n >= 140 时，n/4 + 1 <= 3n/10 - 6 <= 3*(⌈⌈n/5⌉/2⌉ - 2)
 
 
     //练习9.3-3
@@ -36,24 +36,27 @@ public class Chapter9_Practice1 {
     //练习9.3-5
     /*
      median_value = CAL_MEDIAN_VALUE(...)
-     median_q = median_value对应的下标
-     按median_q划分，即二分
+     median_q = median_value 对应的下标
+     按 median_q 划分
 
-     if 当前划分 == 顺序统计量i: 返回
+     if 当前划分 == 顺序统计量 i: 返回
      else if 顺序统计量i在低区: 低区递归
      else: 高区递归
+
+     运行时间递归式: T(n) = T(n/2) + Θ(n)
+     解递归式得 T(n) = Θ(n)
      */
 
 
     //练习9.3-6 "k 分位数"（区间有序）
-    // [0, n/k) <= [n/k, 2n/k) <= ...
+    // [0, n/k) <= [n/k, n/k * 2) <= [n/k * 2, n/k * 3) <= ... <= [n/k * (k-1), length)
     /*
      multi_select(int[] A, int k) {
         if A==null || A.length==0 || A.length==1: return empty list
         assert 0 < k <= A.length
 
-        result = new list
-        multi_select(A, 0, A.length, k ,result)
+        result = create a newly list
+        multi_select(A, 0, A.length, k, result)
 
         return result
      }
@@ -63,7 +66,7 @@ public class Chapter9_Practice1 {
          int n = end - begin;
 
          int md = k/2;
-         int x = select(A, begin, end, md * n/k);
+         int x = select(A, begin, end, n/k * md);
          result.add(md-1, x);
 
          int x_q = 0;
@@ -73,7 +76,8 @@ public class Chapter9_Practice1 {
                 break;
             }
          }
-         int q = partition(A, begin, end, x_q);
+         //int q = partition(A, begin, end, x_q);
+         int q = x_q;
 
          multi_select(A, begin, q, md, result);
          multi_select(A, q + 1, end, k%2==0 ? md : md+1, result);
@@ -88,7 +92,7 @@ public class Chapter9_Practice1 {
         int value;
     }
     multi_select_k(int[] A, int begin, int end, int k):
-        int n = end-begin;
+        int n = end - begin;
         assert k <= n;
 
         int x = select(A, begin, end, (n+1)/2); //求中位数
@@ -98,18 +102,17 @@ public class Chapter9_Practice1 {
             distance = | A[i]-x |;
             distances[i] = new Node {distance, A[i]};
 
-        int q_v = select(distances, 0, distances.length, k+1);
+        Node x = select(distances, 0, distances.length, k+1);
 
         int x_q = 0;
         for(int l=end-1; l>=begin; l++) {
-           if(A[l] == q_v) {
+           if(distances[l].value == x.value) {
                x_q = l;
                break;
            }
         }
-        int q = partition(A, begin, end, x_q)
 
-        for j from 0 to k:
+        for j from 0 to k or (x_q - 1):
             print(distances[j].value)
 
      */
@@ -118,7 +121,7 @@ public class Chapter9_Practice1 {
     //练习9.3-8
     /*
     int two_seq_median(int[] x, int[] y) {
-        return two_seq_median(x, 0, x.length, y, 0, y.length);    //there is need for x.length == y.length
+        return two_seq_median(x, 0, x.length, y, 0, y.length);    //there is needed for x.length == y.length
     }
     int two_seq_median(int[] x, int x_begin, int x_end, int[] y, int y_begin, int y_end) {
         int x_n = x_end - x_begin;

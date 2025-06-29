@@ -34,7 +34,7 @@ public class Chapter9 {
      *           if min > A[i]:
      *               min = A[i]
      *   }
-     *   最坏情况下: T(n) = Θ(1) * (n-1) = Θ(n)
+     *   运行时间 T(n) = Θ(1) * (n-1) = Θ(n)
      *
      *  ②
      *   minimum(int[] A, int begin, int end) {
@@ -139,14 +139,14 @@ public class Chapter9 {
      *3:
      *  minimum_1_2(int[] A, int begin, int end) {
      *      n = end - begin
-     *      if n == 1: return int[2] {A[begin], MAX}
+     *      if n == 1: return int[] {A[begin]}
      *
      *      left = minimum_1_2(A, begin, begin + n/2)
      *      right = minimum_1_2(A, begin + n/2, end)
      *
      *      r = int[2]
      *      for(i=0, j=0, l=0; l<2; l++) {
-     *          if(left[i] <= right[j]) {
+     *          if(j >= right.length || (i < left.length && left[i] <= right[j])) {
      *              r[l] = left[i]
      *              i++
      *          } else {
