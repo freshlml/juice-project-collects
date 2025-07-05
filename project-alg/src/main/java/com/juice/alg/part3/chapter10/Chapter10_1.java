@@ -46,7 +46,7 @@ public class Chapter10_1 {
                                            implements Deque<E>
     {
         private static final int DEFAULT_CAPACITY = 16;
-        private E[] elements;
+        private final E[] elements;
         private int head = 0, tail = 0;
 
         /**
@@ -61,7 +61,7 @@ public class Chapter10_1 {
          * Construct a `FixedArrayDeque` with the specified capacity.
          *
          * @param capacity the capacity, at the range of (0, allowed max array size]
-         * @throws IllegalArgumentException if the specified capacity if out of the range of (0, allowed max array size]
+         * @throws IllegalArgumentException if the specified capacity is out of the range of (0, allowed max array size]
          */
         public FixedArrayDeque(int capacity) {
             assert capacity > 0;
@@ -97,7 +97,7 @@ public class Chapter10_1 {
 
         /**
          * Returns the number of elements in this collection.
-         * The returned value is not greater than the allowed max array size.
+         * The returned value is not greater than and equal to the allowed max array size.
          *
          * @return the number of elements in this collection
          */
@@ -224,7 +224,7 @@ public class Chapter10_1 {
          * @param c collection containing elements to be added to this collection
          * @return  true if this collection changed as a result of the call
          * @throws NullPointerException    if the specified collection is null
-         * @throws IllegalStateException   if not all the elements can be added at this time due to capacity restrictions
+         * @throws IllegalStateException   if some elements cannot be added at this time due to capacity restrictions
          */
         @Override
         public boolean addAll(Collection<? extends E> c) {
@@ -303,7 +303,7 @@ public class Chapter10_1 {
         public void addFirst(E e) {
             if(isFull()) throw new IllegalStateException("has no more space");
             head = decrement(head);
-            elements[head] = e;
+            elements[head] = e;      //no ArrayStoreException
         }
 
         /**
@@ -384,7 +384,7 @@ public class Chapter10_1 {
             if(isEmpty()) return null;
             E e = elements[head];
             head = increment(head);
-            return e;
+            return e;  //may null
         }
 
         /**
@@ -396,7 +396,7 @@ public class Chapter10_1 {
         public E pollLast() {
             if(isEmpty()) return null;
             tail = decrement(tail);
-            return elements[tail];
+            return elements[tail];  //may null
         }
 
         /**
@@ -431,7 +431,7 @@ public class Chapter10_1 {
         @Override
         public E peekFirst() {
             if(isEmpty()) return null;
-            return elements[head];
+            return elements[head];  //may null
         }
 
         /**
@@ -442,7 +442,7 @@ public class Chapter10_1 {
         @Override
         public E peekLast() {
             if(isEmpty()) return null;
-            return elements[decrement(tail)];
+            return elements[decrement(tail)];  //may null
         }
 
         /**
