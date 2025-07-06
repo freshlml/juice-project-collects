@@ -48,6 +48,7 @@ public class Chapter10_2 {
 
         /**
          * Returns the number of elements in this list.
+         *
          * @return the number of elements in this list
          */
         @Override
@@ -136,6 +137,7 @@ public class Chapter10_2 {
 
         /**
          * Returns true if this list contains all of the elements in the specified collection.
+         *
          * If the element'type in the specified collection is incompatible with this list, return `false` rather than throw `ClassCastException`.
          *
          * @param c collection to be checked for containment in this list
@@ -398,7 +400,7 @@ public class Chapter10_2 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         * If the specified element is incompatible with this list, return `-1` rather than throw `ClassCastException`.
          *
          * @param o element to search for
          * @return  the index of the first occurrence of the specified element in this list, or -1 if not contains
@@ -422,7 +424,7 @@ public class Chapter10_2 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         * If the specified element is incompatible with this list, return `-1` rather than throw `ClassCastException`.
          *
          * @param o element to search for
          * @return  the index of the last occurrence of the specified element in this list, or -1 if not contains

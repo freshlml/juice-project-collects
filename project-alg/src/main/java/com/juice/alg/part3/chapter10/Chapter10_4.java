@@ -1,6 +1,5 @@
 package com.juice.alg.part3.chapter10;
 
-import com.juice.alg.part3.chapter12.Chapter12;
 
 public class Chapter10_4 {
 
@@ -10,11 +9,11 @@ public class Chapter10_4 {
      *  如果 x 没有左孩子, 则 x.left = null。如果 x 没有右孩子, 则 x.right = null。
      *  使用 root 指向二叉树的根节点，如果 root = null, 则该树为空。
      *
-     *  二叉搜索树是一个按照 "左小右大" 的规则组织起来的一个二叉树 {@link Chapter12}
+     *  二叉搜索树是一个按照 "左小右大" 的规则组织起来的一个二叉树
      *
      *分支无限制的有根树
-     *  使用 "左孩子右兄弟" 表示: 每个节点有一个父节点指针 p, left_child 指向该节点最左边的孩子节点,
-     *  right_sibling 指向该节点右侧相邻的兄弟节点。
+     *  使用 "左孩子右兄弟" 表示: 每个节点有一个父节点指针 p, left_child 指向该节点最左边的孩子节点, right_sibling 指向该节点右侧相邻的兄弟节点。
+     *
      *  如果 x 没有孩子节点, x.left_child = null。如果 x 是其父节点的最右孩子, 则 x.right_sibling = null。
      *
      *树的其他表示方法
@@ -40,10 +39,10 @@ public class Chapter10_4 {
         stack.push(L_T_R_firstKey(t));
         while(!stack.isEmpty()) {
             print(t = stack.pop());
-            if(t.right == null) {
+            if(t.right != null) {
                 stack.push(L_T_R_firstKey(t.right));
             } else {
-                Node<E> pt = t;
+                Node<E> pt = t.parent;
                 while(pt != null && pt.right == t) {
                     t = pt;
                     pt = t.parent;
@@ -74,6 +73,31 @@ public class Chapter10_4 {
         }
     }
     */
+
+    //练习10.4-5
+    /*private static void L_T_R1(Node root) {
+        BSTree.Node t = firstKey_L_T_R(root);
+
+        while(t != null) {
+            System.out.print(t);
+
+            if(t.right != null) {
+                t = firstKey_L_T_R(t.right);
+            } else {
+                BSTree.Node pt = t.parent; //回溯
+                BSTree.Node ch = t;
+
+                while(pt != null && pt.right == ch) {
+                    ch = pt;
+                    pt = ch.parent;
+                }
+                t = pt;
+
+            }
+
+        }
+
+    }*/
 
     //练习10.4-6
     //  保留 left_child, right_sibling 指针, 最右孩子的 right_sibling 指向 parent.

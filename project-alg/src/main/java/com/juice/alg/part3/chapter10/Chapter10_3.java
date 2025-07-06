@@ -146,7 +146,7 @@ public class Chapter10_3 {
         @SuppressWarnings("unused")
         private void compact_freed(int idx) {
             //assert idx != -1
-            int last = size;
+            int last = size - 1;
 
             if(idx != last) {
                 moveTo(last, idx);
@@ -157,6 +157,7 @@ public class Chapter10_3 {
         }
 
         private void moveTo(int from, int to) {
+            //assert from != to
             elements[to] = elements[from];
             prev[to] = prev[from];
             next[to] = next[from];
