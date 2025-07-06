@@ -12,32 +12,6 @@ public class Chapter8_Practice {
     //  c: 插入排序
     //  d: 需稳定且 O(n), 则上述可选 a
     //  e: O(n+k), 原址的计数排序, 不稳定
-    static void exchange(int[] a, int[][] c, int min) {
-    /*
-     *   2, 1, 2, 3, 2, 1, 1, 3         3, 6, 8 y
-     *i= 0, 1, 2, 3, 4, 5, 6, 7         3, 6, 8 x
-     */
-        int n = a.length;
-
-        for(int i=n-1; i>=0; ) {
-            int idx = indexPos(min, a[i]);
-            int x = c[1][idx] - 1;
-            int y = c[0][idx] - 1;
-
-            if(i == x) {
-                c[1][idx] = x;
-                i--;
-            } else if(i > x && i <= y) {
-                i--;
-            } else { //i < x (×) or i > y
-                int ex = a[x];
-                a[x] = a[i];
-                a[i] = ex;
-
-                c[1][idx] = x;
-            }
-        }
-    }
     public static void counting_sort_exchange(int[] a, int min, int max) { //数组中元素的取值范围为 [min, max)
         if(a == null) return;
         if(a.length == 0 || a.length == 1) return ;
@@ -59,6 +33,32 @@ public class Chapter8_Practice {
 
         exchange(a, c, min);
     }
+    static void exchange(int[] a, int[][] c, int min) {
+        /*
+         *   2, 1, 2, 3, 2, 1, 1, 3         3, 6, 8  y
+         *i= 0, 1, 2, 3, 4, 5, 6, 7         3, 6, 8  x
+         */
+        int n = a.length;
+
+        for(int i=n-1; i>=0; ) {
+            int idx = indexPos(min, a[i]);
+            int x = c[1][idx] - 1;
+            int y = c[0][idx] - 1;
+
+            if(i == x) {
+                c[1][idx] = x;
+                i--;
+            } else if(i > x && i <= y) {
+                i--;
+            } else { //i < x (×) or i > y
+                int ex = a[x];
+                a[x] = a[i];
+                a[i] = ex;
+
+                c[1][idx] = x;
+            }
+        }
+    }
     static int indexPos(int min, int ai) {
         return ai - min;
     }
@@ -74,9 +74,9 @@ public class Chapter8_Practice {
     //思考题8-3
     //  a: Chapter8_3/radix_sort(int[] a, int d, int r)
     //  b: 1). 使用二维数组存储。按低位到高位。空位的值为字符的最小码点值
-    //       a a       --> a
+    //       a a       -->  aa
     //       b a a     --> aab
-    //       b b       --> b
+    //       b b       -->  bb
     //     2). 使用一维数组存储。每次截取若干位进行比较
     //       aa, aab, bb
 
@@ -88,8 +88,8 @@ public class Chapter8_Practice {
             for j from i to n on B:
                 if A[i] == B[j]:
                     swap B[i], B[j]
-                    break;
-     最坏情况运行时间：n + n-1 + n-2 + ... + 1 = n*(n+1) / 2
+                    break
+     最坏情况比较次数：n + n-1 + n-2 + ... + 1 = n*(n+1) / 2
     */
     //b:
     /*
@@ -113,7 +113,7 @@ public class Chapter8_Practice {
      *                                  3-3
      *                                  4-2
      *
-     *   1. 决策树的每一个内部节点表示两个水壶进行配对
+     *   1. 决策树的每一个内部节点表示两个水壶进行比较
      *   2. 决策树模型可以表示在给定输入规模下，某一特定算法对所有水壶的配对操作
      *   3. 算法的执行对应一条从树的根节点到叶节点的简单路径
      *   4. 任何正确的算法，其决策树的所有叶节点必定包含所有配对方式(n 个水壶共 n! 种配对方式)
@@ -128,35 +128,35 @@ public class Chapter8_Practice {
      */
     //c:
     /*
-    1.B序列均匀随机
+    1. B 序列作均匀随机选择
        for i from 1 to n on A:
             for j from i to n on B:
                 r = RANDOM(j, n)
                 swap B[j], B[r]
                 if A[i] == B[j]:
                     swap B[i], B[j]
-                    break;
+                    break
         随机变量 X：完成配对的总比较次数; Xi: 找到与 A[i] 相等的 B[j] 所花费的比较次数
         X = X1 + X2 + X3 + ... + Xn
 
-        X1   1   2   3   4 ...   n
-        P   1/n 1/n 1/n 1/n ... 1/n
+        X1  1       2       3    ...    n-1        n
+        P   1/n     1/n     1/n  ...    1/n        1/n         // 首轮 B 序列 n 个数均匀随机
 
-        X2   1   2   3   4 ...   n-1
-        P   1/n 1/n 1/n 1/n ... 1/n
+        X2  1       2       3       ... n-1
+        P   1/(n-1) 1/(n-1) 1/(n-1) ... 1/(n-1)                // 次轮 B 序列剩余 n-1 个数均匀随机
 
         EX = n*(n+3)/4
 
-     2.A 序列均匀随机，同时 B 序列均匀随机
+     2. A 序列作均匀随机选择，同时 B 序列作均匀随机选择
        for i from 1 to n on A:
-            q = RANDOM(i, n);
+            q = RANDOM(i, n)
             swap A[i], B[q]
             for j from i to n on B:
                 r = RANDOM(j, n)
                 swap B[j], B[r]
                 if A[i] == B[j]:
                     swap B[i], B[j]
-                    break;
+                    break
 
         随机变量 X：完成配对的总比较次数
         X = Σ(i=1~n)Σ(j=i~n) Xij; Xij: A[i], B[j] 的比较次数  = 0
@@ -193,10 +193,10 @@ public class Chapter8_Practice {
         1 + (i-1)k  | | | | | |  ...  | |
         1 + i*k     | | | | | |  ...  | |
 
-        i = n/k; j = n%k
-        T(n) = k*i*lgi = n*lg(n/k)
+        (i + 1)*k = n ==> i + 1 = n/k
+        T(n) = k * [(i+1)*lg(i+1)] = n*lg(n/k)
      */
-    //e: k个有序链表合并, O(n*lgk)
+    //e: k 个有序链表合并, O(n*lgk)                                  //@link Chapter6_Practice1/练习6.5-9
     //f: T(n) = n*lg(n/k) + n*lgk = n*lgn
 
 
