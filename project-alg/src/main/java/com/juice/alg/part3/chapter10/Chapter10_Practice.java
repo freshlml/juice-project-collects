@@ -5,12 +5,9 @@ public class Chapter10_Practice {
     //思考题10-2
     //a: insert: Θ(n). minimum: Θ(1). extract-min: Θ(1). union: Θ(n).
     /*
-    class Node {
-        int item;
-        Node prev;
-        Node next;
-    }
-    void union(heap) {  //合并两个有序链表
+    class Node { int item; Node prev; Node next; }
+
+    void union(heap) {               //合并两个有序链表
         Node t = this.head;
         Node heap_t = heap.head;
 
@@ -42,51 +39,60 @@ public class Chapter10_Practice {
         }
     }
     */
+    //b: insert: Θ(n*lgn). minimum: Θ(1). extract-min: Θ(n*lgn). union: O(n*lgn)？.
+    /*    0    1    2    3    4    5    6    7    8    9
+     *   [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]
+     *
+     *extract-min:
+     *            0                        1
+     *       1         2              2           3
+     *    3     4   5     6        4     5      6    7
+     *  7   8  9                 8   9
+     *
+     * 当移除下标 0 处节点后，原奇数下标节点的父节点保持不变，原偶数下标节点的父节点发生变化
+     */
+    //c:
+    /*
+    union(left, right) { // O(n*lgn)？
 
-    /*c:
-    union(left, right) { //O(n + C*lgN)
+        Node newNode = new Node(null, min(left.key, right.key), null)
 
-        Node newNode = new Node(null, min(left.head.key, right.head.key), null)
-
-        if(left.head.key < right.head.key) {
-            left.head.key = left.tail.key
-            unlink left.tail
-            heapify
-        } else if(a.head.key > b.head.key) {
-            b.head.key = b.tail.key
-            unlink b.tail
-            heapify
+        if(left.key <= right.key) {
+            left.extract-min();
+        } else {
+            right.extract-min();
         }
-
-        调整left, right的元素个数，使得最终left.length == right.length or left.length = right.length + 1
 
         newNode.next = left;
         left.prev = newNode;
 
-        layer = 2;
-        while(layer < total layer) { //total layer = lgN
+        while(true) {
             left_first = left;
-            left_end = current layer的最后一个元素
+            left_end = current layer 的最后一个元素
             next_left = left_end.next;
 
             right_first = right;
-            right_end = current layer的最后一个元素
+            right_end = current layer 的最后一个元素
             next_right = right_end.next;
 
             left_end.next = right_first;
             right_first.prev = left_end;
 
-            right_end.next = next_left;
-            next_left.prev = right_end;
+            if next_left == null:
+                tag = left'tail
+                break;
+            else:
+                right_end.next = next_left;
+                next_left.prev = right_end;
+                if next_right == null:
+                    tag = right'tail
+                    break;
 
             left = next_left;
             right = next_right;
         }
 
-        for last layer:
-            move some from right to left if necessary
-
-
+        todo 处理 newNode 链的最后一个节点到 tag 处节点
     }
     */
 
