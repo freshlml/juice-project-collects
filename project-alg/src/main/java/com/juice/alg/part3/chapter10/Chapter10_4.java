@@ -21,37 +21,136 @@ public class Chapter10_4 {
      *  - ...
      */
     public static void main(String[] argv) {
+        Node root = Node.random();
 
+        L_T_R0(root);
+        System.out.println("\n--------L_T_R0----------------------------------------------");
+
+        L_T_R1(root);
+        System.out.println("\n--------L_T_R1----------------------------------------------");
+
+        L_T_R2(root);
+        System.out.println("\n--------L_T_R2----------------------------------------------");
     }
 
     //练习10.4-2
-    /*void L_T_R(Node t) {
-        if(t == null) return;
-        L_T_R(t.left);
-        print(t);
-        L_T_R(t.right);
-    }*/
+    static void L_T_R0(Node node) {
+        if(node == null) return;
+
+        L_T_R0(node.left);
+        System.out.print(node.key);
+        System.out.print(" ");
+        L_T_R0(node.right);
+    }
 
     //练习10-4-3
-    /*<E> void L_T_R_stack(Node<E> t) {
-        if(t == null) return;
-        FixedArrayDeque<E> stack = new FixedArrayDeque<>();
-        stack.push(L_T_R_firstKey(t));
+    static void L_T_R2(Node node) {
+        if(node == null) return;
+
+        Chapter10_1.FixedArrayDeque<Node> stack = new Chapter10_1.FixedArrayDeque<>();
+        push_L_T_R(stack, node);
         while(!stack.isEmpty()) {
-            print(t = stack.pop());
+            Node t = stack.pop();
+            System.out.print(t.key);
+            System.out.print(" ");
+
             if(t.right != null) {
-                stack.push(L_T_R_firstKey(t.right));
+                push_L_T_R(stack, t.right);
+            }
+        }
+
+    }
+
+    //练习10.4-5
+    static void L_T_R1(Node node) {
+        if(node == null) return;
+
+        Node t = firstKey_L_T_R(node);
+        while(t != null) {
+            System.out.print(t.key);
+            System.out.print(" ");
+
+            if(t.right != null) {
+                t = firstKey_L_T_R(t.right);
             } else {
-                Node<E> pt = t.parent;
+                Node pt = t.parent;
                 while(pt != null && pt.right == t) {
                     t = pt;
                     pt = t.parent;
                 }
-                if(pt != null)
-                    stack.push(pt);
+                t = pt;
             }
+
         }
-    }*/
+    }
+
+    static Node firstKey_L_T_R(Node node) {
+        //assert node != null
+        while(node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
+
+    static void push_L_T_R(Chapter10_1.FixedArrayDeque<Node> stack, Node node) {
+        //assert node != null
+
+        stack.push(node);
+        while(node.left != null) {
+            node = node.left;
+            stack.push(node);
+        }
+    }
+
+    static class Node {
+        int key;
+        Node parent, left, right;
+
+        public Node(int key, Node parent) {
+            this.key = key;
+            this.parent = parent;
+        }
+
+        static Node random() {
+            Node node1 = new Node(1, null);
+
+            Node node2 = new Node(2, node1);
+            Node node3 = new Node(3, node1);
+            node1.left = node2;
+            node1.right = node3;
+
+            Node node4 = new Node(4, node2);
+            Node node5 = new Node(5, node2);
+            node2.left = node4;
+            node2.right = node5;
+
+            Node node6 = new Node(6, node3);
+            Node node7 = new Node(7, node3);
+            node3.left = node6;
+            node3.right = node7;
+
+            Node node8 = new Node(8, node4);
+            Node node9 = new Node(9, node4);
+            node4.left = node8;
+            node4.right = node9;
+
+            Node node10 = new Node(10, node6);
+            Node node11 = new Node(11, node6);
+            node6.left = node10;
+            node6.right = node11;
+
+            Node node12 = new Node(12, node9);
+            Node node13 = new Node(13, node9);
+            node9.left = node12;
+            node9.right = node13;
+
+            node10.right = new Node(14, node10);
+
+            node13.left = new Node(15, node13);
+
+            return node1;
+        }
+    }
 
     //练习10.4-4
     /*
@@ -73,31 +172,6 @@ public class Chapter10_4 {
         }
     }
     */
-
-    //练习10.4-5
-    /*private static void L_T_R1(Node root) {
-        BSTree.Node t = firstKey_L_T_R(root);
-
-        while(t != null) {
-            System.out.print(t);
-
-            if(t.right != null) {
-                t = firstKey_L_T_R(t.right);
-            } else {
-                BSTree.Node pt = t.parent; //回溯
-                BSTree.Node ch = t;
-
-                while(pt != null && pt.right == ch) {
-                    ch = pt;
-                    pt = ch.parent;
-                }
-                t = pt;
-
-            }
-
-        }
-
-    }*/
 
     //练习10.4-6
     //  保留 left_child, right_sibling 指针, 最右孩子的 right_sibling 指向 parent.
