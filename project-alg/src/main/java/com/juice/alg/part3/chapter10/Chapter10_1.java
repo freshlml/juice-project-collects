@@ -125,7 +125,7 @@ public class Chapter10_1 {
         /**
          * Returns true if this collection contains the specified element.
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
-         * If the specified element is incompatible with this collection, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this collection, return `false` rather than throw `ClassCastException`.
          *
          * @param o the specified element, may null
          * @return true if this collection contains the specified element
@@ -280,7 +280,7 @@ public class Chapter10_1 {
          *
          * This method is equivalent to `removeFirstOccurrence(Object)`.
          *
-         * If the specified element is incompatible with this collection, then no `ClassCastException` is thrown and
+         * If the type of the specified element is incompatible with this collection, then no `ClassCastException` is thrown and
          * this method will return false to indicate that the specified element is not within in this collection.
          *
          * @param o element to be removed from this collection, may null
@@ -451,7 +451,7 @@ public class Chapter10_1 {
          *
          * This deque allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this collection, then no `ClassCastException` is thrown and
+         * If the type of the specified element is incompatible with this collection, then no `ClassCastException` is thrown and
          * this method will return false to indicate that the specified element is not within in this collection.
          *
          * @param o element to be removed from this deque, may null
@@ -498,7 +498,7 @@ public class Chapter10_1 {
          *
          * This deque allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this collection, then no `ClassCastException` is thrown and
+         * If the type of the specified element is incompatible with this collection, then no `ClassCastException` is thrown and
          * this method will return false to indicate that the specified element is not within in this collection.
          *
          * @param o element to be removed from this deque, may null

@@ -61,7 +61,7 @@ public class Chapter10_2 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
          *
          * @param o element whose presence in this list is to be tested
          * @return true if this list contains the specified element
@@ -298,7 +298,7 @@ public class Chapter10_2 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
          *
          * @return true if this list contained the specified element
          */
@@ -400,7 +400,7 @@ public class Chapter10_2 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `-1` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this list, return `-1` rather than throw `ClassCastException`.
          *
          * @param o element to search for
          * @return  the index of the first occurrence of the specified element in this list, or -1 if not contains
@@ -424,7 +424,7 @@ public class Chapter10_2 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `-1` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this list, return `-1` rather than throw `ClassCastException`.
          *
          * @param o element to search for
          * @return  the index of the last occurrence of the specified element in this list, or -1 if not contains
