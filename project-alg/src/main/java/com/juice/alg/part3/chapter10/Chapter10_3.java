@@ -96,7 +96,7 @@ public class Chapter10_3 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * f the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
          *
          * @param o element whose presence in this list is to be tested
          * @return true if this list contains the specified element
@@ -149,14 +149,12 @@ public class Chapter10_3 {
             int last = size - 1;
 
             if(idx != last) {
-                moveTo(last, idx);
-                freed(last);
-            } else {
-                freed(idx);
+                move(last, idx);
             }
+            freed(last);
         }
 
-        private void moveTo(int from, int to) {
+        private void move(int from, int to) {
             //assert from != to
             elements[to] = elements[from];
             prev[to] = prev[from];
@@ -251,7 +249,7 @@ public class Chapter10_3 {
          *
          * This collection allow null element, so check equality by `o==null ? e==null : o.equals(e)`.
          *
-         * If the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified element is incompatible with this list, return `false` rather than throw `ClassCastException`.
          *
          * @return true if this list contained the specified element
          */
@@ -359,7 +357,7 @@ public class Chapter10_3 {
                 }
 
                 int nt = next[q];
-                moveTo(p, q);
+                move(p, q);
                 next[p] = nt;
                 if (free == q) {
                     free = p;
