@@ -15,12 +15,13 @@ public class Chapter11_2 {
      *     m: 桶大小，等于 table.length
      *     load factor = n/m
      *
-     *  3. hash 函数（散列函数）
-     *     使用 hash 散列函数，将元素映射到桶下标（0 ~ m-1）。{@link Chapter11_3}
+     *  3. 散列函数
+     *     使用散列函数，将元素映射到桶下标（0 ~ m-1） {@link Chapter11_3}
      *
      *  4. hash 冲突（碰撞）
-     *     链指针法、开放寻址法等
+     *     链指针法 {@link HashTable}、开放寻址法 {@link Chapter11_4} ...
      */
+    @SuppressWarnings("unused")
     public static class HashTable<K, V> extends AbstractMap<K, V>
                                         implements Map<K, V>
     {
@@ -33,30 +34,48 @@ public class Chapter11_2 {
 
         static final int DEFAULT_CAPACITY = 16;
         static final int MAXIMUM_CAPACITY = 1 << 30;
-        private final float loadFactor = 0.75f;
+        static final float DEFAULT_LOAD_FACTOR = 0.75f;
+
+        private float loadFactor;
 
         private Node<K, V>[] table;
         private int size;
 
         /**
-         * Constructor a hash table with the capacity `DEFAULT_CAPACITY`.
+         * Constructor a hash table with `DEFAULT_CAPACITY` and `DEFAULT_LOAD_FACTOR`.
          */
         public HashTable() {
-            this(DEFAULT_CAPACITY);
+            this(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR);
         }
 
         /**
-         * Constructor a hash table with the specified capacity.
+         * Constructor a hash table with the specified capacity and `DEFAULT_LOAD_FACTOR`.
          *
          * @param capacity the specified capacity
          * @throws IllegalArgumentException if the specified capacity is negative or is larger than `MAXIMUM_CAPACITY`
          */
-        @SuppressWarnings("unchecked")
         public HashTable(int capacity) {
+            this(capacity, DEFAULT_LOAD_FACTOR);
+        }
+
+        /**
+         * Constructor a hash table with the specified capacity and the specified load factor.
+         *
+         * @param capacity the specified capacity
+         * @param loadFactor the specified load factor
+         * @throws IllegalArgumentException  if the specified capacity is negative or is larger than `MAXIMUM_CAPACITY`
+         *                                   or the load factor is non-positive
+         */
+        @SuppressWarnings("unchecked")
+        public HashTable(int capacity, float loadFactor) {
             if(capacity < 0 || capacity > MAXIMUM_CAPACITY)
                 throw new IllegalArgumentException("the capacity must not be negative and must less or equal than " + MAXIMUM_CAPACITY);
 
+            if (loadFactor <= 0 || Float.isNaN(loadFactor))
+                throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
+
             table = new Node[capacity];
+            this.loadFactor = loadFactor;
         }
 
         /**
@@ -65,7 +84,6 @@ public class Chapter11_2 {
          * @param map the specified collection
          * @throws NullPointerException     if the specified map is null
          */
-        @SuppressWarnings("unused")
         public HashTable(Map<? extends K, ? extends V> map) {
             putAll(map);
         }
@@ -95,7 +113,7 @@ public class Chapter11_2 {
          *
          * This map allow null key, so check equality by `key==null ? e==null : key.equals(e)`.
          *
-         * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
          *
          * @param key key whose presence in this map is to be tested
          * @return true if this map contains a mapping for the specified key
@@ -119,7 +137,7 @@ public class Chapter11_2 {
          *
          * This map allow null value, so check equality by `value==null ? e==null : value.equals(e)`.
          *
-         * If the specified value is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified value is incompatible with this map, return `false` rather than throw `ClassCastException`.
          *
          * @param value value whose presence in this map is to be tested
          * @return true if this map maps one or more keys to the specified value
@@ -137,7 +155,7 @@ public class Chapter11_2 {
          *
          * This map allow null value, so return null can not indicate that there is no mapping for the specified key.
          *
-         * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the specified key is incompatible with this map, return `null` rather than throw `ClassCastException`.
          *
          * @param key the key whose associated value is to be returned
          * @return the value to which the specified key is mapped, or null
@@ -159,11 +177,12 @@ public class Chapter11_2 {
          *
          * This map allow null key, so check equality by `key==null ? e==null : key.equals(e)`.
          *
-         * If the specified key and value is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified key and value is incompatible with this map, return `null` rather than throw `ClassCastException`.
          *
          * @param key key with which the specified value is to be associated
          * @param value value to be associated with the specified key
-         * @return the previous value associated with key, or null
+         * @return the previous value associated with key,
+         *         or null if there was no mapping for the key or map to null value
          */
         public V put(K key, V value) {
             return putVal(key, value, false);
@@ -206,7 +225,7 @@ public class Chapter11_2 {
          *
          * This map allow null key, so check equality by `key==null ? e==null : key.equals(e)`.
          *
-         * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified key is incompatible with this map, return `null` rather than throw `ClassCastException`.
          *
          * @param key key whose mapping is to be removed from the map
          * @return the previous value associated with key, or null if there was no mapping for key
@@ -266,7 +285,7 @@ public class Chapter11_2 {
          *
          * This map allow null key, so check equality by `key==null ? e==null : key.equals(e)`.
          *
-         * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified key is incompatible with this map, return the defaultValue rather than throw `ClassCastException`.
          *
          * @param key the key whose associated value is to be returned
          * @param defaultValue the default mapping of the key
@@ -304,11 +323,11 @@ public class Chapter11_2 {
         /**
          * Removes the entry for the specified key only if it is currently mapped to the specified value.
          *
-         * If the specified key and value is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified key and value is incompatible with this map, return `false` rather than throw `ClassCastException`.
          *
          * @param key key with which the specified value is associated
          * @param value value expected to be associated with the specified key
-         * @return true if the value was removed
+         * @return  true if has mapping and value 比较相等
          */
         @Override
         public boolean remove(Object key, Object value) {
@@ -319,7 +338,7 @@ public class Chapter11_2 {
         /**
          * Replaces the entry for the specified key only if it is currently mapped to the specified value.
          *
-         * If the specified key and value is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type the specified key and value is incompatible with this map, return `false` rather than throw `ClassCastException`.
          *
          * @param key key with which the specified value is associated
          * @param oldValue value expected to be associated with the specified key
@@ -347,19 +366,26 @@ public class Chapter11_2 {
         /**
          * Replaces the entry for the specified key only if it is currently mapped to some value.
          *
-         * If the specified key is incompatible with this map, return `false` rather than throw `ClassCastException`.
+         * If the type of the specified key is incompatible with this map, return `null` rather than throw `ClassCastException`.
          *
          * @param key key with which the specified value is associated
          * @param value value to be associated with the specified key
-         * @return the previous value associated with the specified key, or null if there was no mapping for the key
-         *         (A null return can also indicate that the map previously associated null with the key)
+         * @return the previous value associated with the specified key,
+         *         or null if there was no mapping for the key or the map previously associated null with the key
          */
         @Override
         public V replace(K key, V value) {
-            Node<K, V> replaced = replaceNode(key, null, value, false);
-            return replaced != null
-                    ? replaced.value //may null
-                    : null;
+            int idx = mapping(hash(key), table.length);
+            Node<K, V> e = table[idx];
+            while(e != null && !Objects.equals(key, e.key)) {
+                e = e.next;
+            }
+            if(e != null) {
+                V oldV = e.value;
+                e.value = value;
+                return oldV;  //may null
+            }
+            return null;
         }
 
         private static int hash(Object key) {
@@ -446,6 +472,8 @@ public class Chapter11_2 {
             }
         }
 
+        Set<K> keySet;
+
         /**
          * 返回 this map 中 keys 的 set view.
          *
@@ -459,7 +487,66 @@ public class Chapter11_2 {
          */
         @Override
         public Set<K> keySet() {
-            return super.keySet();
+            //return super.keySet();
+            Set<K> ks = keySet;
+            if(ks == null) {
+                ks = new AbstractSet<K>() {
+                    @Override
+                    public Iterator<K> iterator() {
+                        return new KeyIterator();
+                    }
+
+                    @Override
+                    public Spliterator<K> spliterator() {
+                        return null;  //todo
+                    }
+
+                    @Override
+                    public int size() {
+                        return HashTable.this.size;
+                    }
+
+                    @Override
+                    public boolean isEmpty() {
+                        return HashTable.this.isEmpty();
+                    }
+
+                    @Override
+                    public boolean contains(Object k) {
+                        return HashTable.this.containsKey(k);
+                    }
+
+                    @Override
+                    public boolean remove(Object k) {
+                        return HashTable.this.remove(k) != null;
+                    }
+
+                    @Override
+                    public void clear() {
+                        HashTable.this.clear();
+                    }
+                };
+            }
+            return ks;
+        }
+
+        private class KeyIterator implements Iterator<K> {
+            private final EntryIterator it = new EntryIterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public K next() {
+                return it.next().getKey();
+            }
+
+            @Override
+            public void remove() {
+                it.remove();
+            }
         }
 
         /**
@@ -608,7 +695,7 @@ public class Chapter11_2 {
      *    T(n) = Θ(n)
      *
      *  平均情况运行时间:
-     *    假设: hash 函数对 n 个元素中每一个元素等可能的选择 m 个槽中的任意一个槽，且与其他元素被散列到什么位置无关（简单均匀散列）
+     *    假设: 散列函数对 n 个元素中每一个元素等可能的选择 m 个槽中的任意一个槽，且与其他元素被散列到什么位置无关（简单均匀散列）
      *    P(第 i 个元素散列到任意一个槽) = 1/m. i = 1, 2, ..., n
      *
      *    随机变量Xj: 表示 table 中下标为 j 的链表元素个数, j=0, 1, ..., m-1
@@ -621,7 +708,7 @@ public class Chapter11_2 {
      *      ...
      *      P(Xj = n) = C(n, n) * (1/m)^n * (1-1/m)^(n-n)
      *
-     *      二项分布, E[Xj] = n/m（load factor）
+     *      Xj 满足二项分布, E[Xj] = n/m（load factor）
      *
      *      T(n) = Θ(n/m)
      */
