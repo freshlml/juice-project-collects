@@ -33,29 +33,54 @@ public class Chapter11_3 {
      *  乘法散列函数的计算:
      *  Ⅰ: 根据公式计算（要用到浮点数运算），`⌊m * (key*A mod 1)⌋` = `⌊m * (key*A - ⌊key*A⌋)⌋`
      *  Ⅱ: 等价转换，使得只需进行整数运算和位运算
-     *      key ∈ [0, 2^w), 其中 w 表示整数的位宽，如一个 int 型整数有 32 位
+     *      key ∈ [0, 2^w), 其中 w 表示整数的位宽减一，如一个 int 型整数有 32 位，w = 32 - 1 = 31
      *      令 A = s/2^w, 其中 s ∈ (0, 2^w), 则 A ∈ (0, 1)
      *      令 m = 2^p, p ∈ [0, w)
      *
-     *      key * s = key * (A * 2^w) = r1 * 2^w + r0   // A 的值不宜过小，要保证 A * 2^w >= 1, 同时要保证 A * 2^w ∈ Z，即 A ∈ (0, 1) = [0.0.....1, 0.1.....1]
-     *                                                                                                                               |<=w位|    |<=w位|
-     *      可以证明 r0 的 p 个最高有效位等于 `⌊2^p * (key*A - ⌊key*A⌋)⌋` 的运算结果:
+     *      key * s = key * (A * 2^w) = r1 * 2^(w+1) + r0   // A 的值不宜过小，要保证 A * 2^w >= 1, 同时要保证 A * 2^w ∈ Z，即 A ∈ [0.0.....1, 0.1.....1]
+     *                                                                                                                          |<=w位|    |<=w位|
+     *      可以证明 r0 部分去掉最高位后的 p 个最高有效位等于 `⌊2^p * (key*A - ⌊key*A⌋)⌋` 的运算结果:
      *                          |- a -|- b -|
-     *        令 key * A = a.b = -----.-----            // key * A 的结果要不丢失精度的保存，则需要有 2*w 个有效位的浮点数类型
+     *        令 key * A = a.b = -----.-----                // key * A 的结果要不丢失精度的保存，则需要有 2*w 个有效位的浮点数类型
      *                          |<=w位|<=w位|
      *
      *        ⌊2^p * (key*A - ⌊key*A⌋)⌋ = ⌊2^p * 0.b⌋ = b 部分的 p 个最高有效位
      *
      *                                                                   |- a-|- b -|
-     *        key * s = key * (A * 2^w) = (key * A) * 2^w = a.b * 2^w = ~-----.-----~.
-     *                     <左右两式没有精度丢失，故此等号成立>               |- r1 -|- r0 -|
+     *        key * s = key * (A * 2^w) = (key * A) * 2^w = a.b * 2^w = ~-----|-----~.
+     *                     <左右两式没有精度丢失，故此等号成立>               |- r1-|- r0 -|
      *
      *全域散列法
      *  todo
      *
      */
     public static void main(String[] argv) {
+        //验证乘法散列法 "等价转换" 的例子
+        int w = 31;
+        int key = 0b0010_1111_1011_0010_0010_1011_1111_0011;
+        System.out.println(Integer.toHexString(key));  // key = 2f_b2_2b_f3 = 0010_1111 1011_0010 0010_1011 1111_0011
 
+        float A = 0x0.2dec1P0f;                        // A = 0.0010_1101_1110_1100_0001
+        double l1 = (double) key * A;
+        System.out.println(Long.toHexString(Double.doubleToLongBits(l1))); // l1 = key * A = 41_a1_1c_99_ea_bb_86_60
+                                                       //                            = 1 0001 0000 1100 1001 1001 1110 101.0 1011 1011 1000 0110 0110 0000
+                                                       // l1 * 2^w = (key * A) * 2^w = 1 0001 0000 1100 1001 1001 1110 101|0 1011 1011 1000 0110 0110 0000 0000 00
+                                                       //                            = 100 0100_0011 0010_0110 0111_1010 1|010_1110 1110_0001 1001_1000 0000_0000
+        long l2 = (long) (l1 * Math.pow(2, w));
+        System.out.println(Long.toHexString(l2));      // l2 = l1 * 2^w = (key * A) * 2^w  = 4_47_26_7a_ae_e1_98_00 = l3
+
+        int s = (int) (A * Math.pow(2, w));
+        System.out.println(Integer.toHexString(s));    // s = 16_f6_08_00 = 0001_0110 1111_0110 0000_1000 0000_0000
+
+        long l3 = (long) key * (long) s;
+        System.out.println(Long.toHexString(l3));      // l3 = key * s = key * (A * 2^w) = 4_47_26_7a_ae_e1_98_00
+                                                       //              = 0000_0100 0100_0111 0010_0110 0111_1010 1|010_1110 1110_0001 1001_1000 0000_0000
+        int p = 5;
+        int l4 = (int) ((l3 & 0x00_00_00_00_7f_ff_ff_ff) >>> (w-p));
+        System.out.println(Integer.toHexString(l4));   // l4 = b = 1011
+
+        int l5 = (int) ((l1 - (int)l1) * Math.pow(2, p));
+        System.out.println(Integer.toHexString(l5));   // l5 = b = 1011 = l4
     }
 
     //练习11.3-1
