@@ -8,13 +8,16 @@ public class Chapter11_4 {
      *一、开放寻址法
      *  当遇到冲突时，在散列表中"探查"，直到找到一个空槽来放置待插入的元素
      *
-     *  对每一个关键字 key，使用开放寻址法探查 m 次，得到探查序列 <probe(key, 0), probe(key, 1), ..., probe(key, m-1)>
-     *  是 <0, 1, ..., m-1> 的一个排列
+     *  对任意关键字 key，使用开放寻址法探查 m 次，可得其探查序列 <probe(key, 0), probe(key, 1), ..., probe(key, m-1)>，probe(key, i) ∈ [0, m), i = 0, 1, ..., m-1
+     *
+     *  长度为 m 的散列表，共 m! 种探查序列（假设探查序列不存在重复值），即 <0, 1, ..., m-1> 的全排列
      *
      *1、线性探查
      *  probe(key, i) = (h(key) + i) mod m. i = 0, 1, ..., m-1
      *
-     *  对每一个关键字 key，每一个槽位都可以被探查到，即探查序列不存在重复值。在探查过程中，当遇到空槽或者探查回到起点(探查了 m 次)时，即结束探查
+     *  对任意关键字 key，每一个槽位都可以被探查到，即探查序列不存在重复值
+     *
+     *  在探查过程中，当遇到空槽或者探查回到起点(探查了 m 次)时，即结束探查
      *
      *  共 m 种探查序列。不同 key 的探查序列重合度很高
      *
@@ -22,6 +25,7 @@ public class Chapter11_4 {
      *  probe(key, i) = (h(key) + c1*i + c2*i^2) mod m. i = 0, 1, ..., m-1
      *
      *  对关键字 key，可能存在槽位无法被探查到，即探查序列出现重复值（通过合理选择 c1, c2, m 可以让探查序列不出现重复值）
+     *
      *  在探查过程中，当遇到空槽或者最多探查 m 次时，即结束探查（注意: 1. 二次探查，不一定会回到起点; 2. 因为可能出现重复值，所以第 m + 1 和以后的探查还可能探查出非空的槽）
      *
      *  共 m 种探查序列。不同 key 的探查序列重合度降低了（相对于线性探查）
@@ -37,34 +41,37 @@ public class Chapter11_4 {
      *
      *
      *二、开放寻址法分析
-     *  随机变量 X: 一次不成功查找的探查次数
+     *  随机变量 X: 一次不成功查找（即要查找的 key 不存在于散列表）的探查次数     //循环执行次数等于探查次数。循环有两个出口: 成功查找、不成功查找(null)
      *  X   1  2  3  4 ... m
      *  P
      *
-     *  事件 Ai 为第 i 次探查时，探查到的是一个已被占用的槽
+     *  事件 Ai 为第 i 次探查时，探查到的是一个已被占用的槽，P(Ai) = n/m
      *
-     *  P(X >= i) = P(A1 ∩ A2 ... Ai-1)                                                     //条件概率。练习C.2-5
+     *  因为要查找的 key 不存在于散列表中，故而 X >= i 等价于 A1 ∩ A2 ... Ai-1
+     *
+     *  P(X >= i) = P(A1 ∩ A2 ... Ai-1)                                                // 01_高中数学-2_概率/概率/练习题C.2-5
      *            = P(A1) * P(A2|A1) * P(A3|A1∩A2) * ... * P(Ai-1|A1∩A2∩...∩Ai-2)
      *            = n/m * (n-1)/(m-1) * (n-2)/(m-2) * ... * (n-i+2)/(m-i+2)
      *           <= (n/m)^(i-1)
-     *            = α^(i-1)
+     *            = α^(i-1)                     //α = n/m
      *
-     *  EX = Σ(i=1~m) i*P(X=i)                                   //C.25
+     *  EX = Σ(i=1~m) i*P(X=i)                  // 01_高中数学-2_概率/随机变量/数学期望
      *     = Σ(i=2~m) P(X>=i)
      *    <= Σ(i=2~m) α^(i-1)
-     *     = Σ(i=1~m) α^i
-     *     = α + α^2 + ... + α^m
-     *     = (1-α^m) / (1-α)
+     *     = Σ(i=1~m-1) α^i
+     *     = α + α^2 + ... + α^(m-1)
+     *     = α(1-α^(m-1)) / (1-α)
      *     < 1/(1-α)
      *
      *  故，一次不成功查找的平均探查次数不多于 1/(1-α)
      *
-     *  同理可得，插入一个元素的平均探查次数不多于 1/(1-α)
+     *  求一次成功查找的平均探查次数:
+     *    如果 key 是第 i+1 个被插入的关键字，则对 key 的一次查找中，探查的次数不多于 1/(1-i/m)      // 注: 成功查找的探查次数小于等于不成功查找的探查次数
+     *    现，对散列表中所有 n 个关键字求平均，得到一次成功查找的平均探查次数:                       //todo why?
+     *       1/n * Σ(i=0~n-1) 1/(1-i/m) = 1/n * Σ(i=0~n-1) m/(m-i) = 1/α * ln(1/(1-α))
      *
-     *  查找关键字 key 的探查序列和插入关键字 key 的探查序列是相同的。如果 key 是第 i+1 个被插入的关键字，则对 key 的一次查找中，探查的次数不多于 1/(1-i/m) = m/(m-i)
-     *  对散列表中所有 n 个关键字求平均，得到一次成功查找的平均探查次数:
-     *    1/n * Σ(i=0~n-1) m/(m-i) = ...   todo
      */
+    @SuppressWarnings("unused")
     static class LinearProbingTable<K, V> {
 
         /*
@@ -93,10 +100,10 @@ public class Chapter11_4 {
 
         /**
          * Return the value to which the specified key is mapped, or
-         * return null if this map contains no mapping for the specified key, or the specified key mapping to a `null` value).
+         * return null if this map contains no mapping for the specified key, (or the specified key mapping to a `null` value).
          *
          * @param key the key whose associated value is to be returned
-         * @return the value to which the specified key is mapped, or null
+         * @return the value to which the specified key is mapped, or null if there was no mapping for key or the specified key mapping to a null value
          */
         public V get(K key) {
             Node<K, V> node = entry(key);
@@ -130,7 +137,7 @@ public class Chapter11_4 {
          *
          * @param key key with which the specified value is to be associated
          * @param value value to be associated with the specified key
-         * @return the previous value associated with key, or null
+         * @return the previous value associated with key, or null if there was no mapping for key or the specified key mapping to a null value
          */
         public V put(K key, V value) {
             int hash = hash(key);
@@ -142,7 +149,24 @@ public class Chapter11_4 {
                 int idx = probe(from, m, i);
                 Node<K, V> e = table[idx];
 
-                if (e == null || e.status == Node.DELETED) {
+                if (e == null) {
+                    table[idx] = added;
+                    break;
+                } else if(e.status == Node.DELETED) {
+                    for(int j=i+1; j<m; j++) {
+                        int jdx = probe(from, m, j);
+                        Node<K, V> je = table[jdx];
+
+                        if(je == null) {
+                            //table[idx] = added;
+                            break;
+                        } else if(je.status != Node.DELETED && Objects.equals(key, je.key)) {
+                            V oldV = je.value;
+                            je.value = value;
+                            return oldV;  //may null
+                        }
+                    }
+
                     table[idx] = added;
                     break;
                 } else if(Objects.equals(key, e.key)) {
@@ -165,9 +189,16 @@ public class Chapter11_4 {
          * Return the previous value or null if there was no mapping for key or the specified key mapping to a null value.
          *
          * @param key key whose mapping is to be removed from the map
-         * @return the previous value associated with key, or null if there was no mapping for key
+         * @return the previous value associated with key, or null if there was no mapping for key or the specified key mapping to a null value
          */
         public V remove(K key) {
+            /*
+             *一. 开放寻址法，删除某个 entry 时，表中其他 entry 需要重新寻址: 其他 entry 当前位置所属探查序列位置的前置探查序列位置存在空槽时，其他 entry 需要改变位置
+             *    线性探查，从删除的 entry 的位置开始，到下一个空槽之间的所有 entry 依次检测
+             *    其他探查，通常需要检测表中所有 entry
+             *
+             *二. 删除优化: 将删除的 entry 置 DELETED 标记，并不将 entry 从槽中移除，即当前槽不为空而是由一个死结点占据
+             */
             Node<K, V> removing = entry(key);
             V r = null;
             if(removing != null) {
