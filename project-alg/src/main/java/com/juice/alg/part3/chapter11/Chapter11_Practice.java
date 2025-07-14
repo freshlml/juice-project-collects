@@ -2,15 +2,59 @@ package com.juice.alg.part3.chapter11;
 
 public class Chapter11_Practice {
 
+    //Chapter 11.5 完全散列 todo
+
+
+    //思考题11-1
+    /*a:
+    Xi: 第 i 次插入的探查次数. i = 1, 2, ..., m
+    Xi  1  2  3 ... i
+    P
+
+    Aj: 第 j 次探查，探查到的是一个非空的槽
+
+    P(Xi > k)  = P(A1 ∩ A2 ... Ak-1 ∩ Ak)
+               = P(A1) * P(A2|A1) * P(A3|A1∩A2) * ... * P(Ak|A1∩A2∩...∩Ai-2∩Ai-1)
+               = n/m * (n-1)/(m-1) * (n-2)/(m-2) * ... * (n-k+1)/(m-k+1)
+              <= (n/m)^k                                                            // n/m <= 1/2
+              <= (1/2)^k
+     */
+
+    /*b:
+    根据 a)，P(Xi > 2lgn) <= (1/2)^(2lgn) = 1/(n^2)
+    */
+
+    /*c:
+    X = MAX(Xi), i=1, 2, ..., n     //X: n 次插入中所需探查次数的最大值
+
+    P(X > 2lgn) = P(MAX(Xi) > 2lgn) <= Σ(i=1~n) P(Xi > 2lgn) = 1/n
+    */
+
+    /*d:
+    Y: 最长探查序列的长度
+    A: 探查次数为 i 次
+    B: 探查次数 <= i 次
+
+    P(B) = 1 - O(1/2^i)
+    P(A) = n/m * (n-1)/(m-1) * (n-2)/(m-2) * ... * (n-i+2)/(m-i+2) * (m-n)/(m-i+1)
+        <= (n/m)^(i-1) * (m-n)/(m-i+1)
+        <= 1/2^(i-1)
+
+    P(Y=i) = C(1, n) P(A)[P(B)]^(n-1)
+
+    EY = todo
+    */
+
+
     //思考题11-2
-    /* n个槽的散列表，插入n个元素
-     * 假设: hash函数对n个元素中每一个元素等可能的选择n个槽中的任意一个槽，且与其他元素被散列到什么位置无关(独立)
+    /* n 个槽的散列表，插入 n 个元素
+     * 假设: 散列函数对 n 个元素中每一个元素等可能的选择 n 个槽中的任意一个槽，且与其他元素被散列到什么位置无关(独立)
      *      记为 P(i) = 1/n, i=1, 2, ..., n
      * a:
-     *   随机变量n(j): 编号为j的槽中链接元素的个数
+     *   随机变量 n(j): 编号为j的槽中链接元素的个数
      *   Q(n(j) = k) = C(k, n) * (1-1/n)^(n-k) * (1/n)^k
      *
-     * 随机变量M: 各槽中所含关键字数的最大值
+     * 随机变量 M: 各槽中所含关键字数的最大值
      * M   0   1    2    ...    n
      * P
      * P(0) = 0
@@ -26,68 +70,41 @@ public class Chapter11_Practice {
      */
 
 
-    //全域散列法，数论? todo
-    //11.5，思考题11-4, todo
-
-    //开放寻址法
+    //思考题11-3
     /*
-    线性探查
-      1. h(key, i) = ( hash(key) + i ) mod m , i = 0, 1, ..., m-1
-        1.1: next = ( prev + 1 ) mod m
-      2. 共m种探查序列, 每一种探查序列都不重复的遍历整个桶下标
-      3. 探查序列重合度高，画图示例
+    二次探查: probe(key, i) = (h(key) + c1*i + c2*i^2) mod m. i = 0, 1, ..., m-1，通过合理选择 c1, c2, m 可以让探查序列不出现重复值
 
-    二次探查
-      1. h(key, i) = ( hash(key) + c1*i + c2*i^2 ) mod m , i = 0, 1, ..., m-1
-        1.1: next = ( prev + (2*c2*i+c1+c2) mod m ) mod m
-      2. 共m种探查序列, 如何选择c1, c2？使得探查序列充分利用m个位置
-        思考题11-3: 令 next = ( prev + i mod m ) mod m ,c1=-1/2, c2=1/2
-                   只需m=2^n, 即可让 探查序列不重复的遍历整个桶下标，证明如下
-                   0  1    2      ...  k           ...   m-1
-                   p  p+1  p+1+2  ...  p+1+2+...+k ...   p+1+2+...+(m-1)
-                   只需证明, 对所有 k=1, 2, ..., m-1, p+1+2+...+k != all prev
-                                                                  all prev + m
-                                                                  all prev + 2m
-                                                                  ...
-                   即，对所有 k=1, 2, ..., m-1，k != m, 2m, ...
-                                             (k-1)+k != m, 2m, ...
-                                             1+...+(k-1) != m, 2m, ...
-                   例如m=5
-                      k=4                       k=3                  k=2             k=1
-                      4 != m                    3 != m               2 != m          1 != m
-                      3 + 4 != m                2 + 3 != m           1 + 2 != m
-                      2 + 3 + 4 != m            1 + 2 + 3 != m
-                      1 + 2 + 3 + 4 != m
-                   ===> m 可取 2^n
+      1. probe(key, i) = ( h(key) + c1*i + c2*i^2 ) mod m,   i = 0, 1, ..., m-1
+        1.1: next = ( prev + (2*c2*i + c1 + c2) mod m ) mod m
+
+      2. 共 m 种探查序列, 如何选择 c1, c2？使得探查序列充分利用 m 个位置
+           令 c1 = -1/2, c2 = 1/2，则 next = ( prev + i mod m ) mod m
+
+           只需 m = 2^n, 即可让探查序列不重复的遍历整个桶下标，证明如下
+           0  1      2          ...  k               ...   m-1
+           p  p + 1  (p+1) + 2  ...  (p+1+2+...) + k ...   (p+1+2+...) + (m-1)
+
+           只需证明, 对任意 k = 1, 2, ..., m-1, p+1+2+...+k != all prev
+                                                            all prev + m
+                                                            all prev + 2m
+                                                            ...
+           即，对所有 k = 1, 2, ..., m-1， k != m, 2m, ...
+                                        (k-1) + k != m, 2m, ...
+                                        ...
+                                        1 + ... + k != m, 2m, ...
+
+           例如 m = 5
+              k=4                       k=3                  k=2             k=1
+              4 != m                    3 != m               2 != m          1 != m
+              3 + 4 != m                2 + 3 != m           1 + 2 != m
+              2 + 3 + 4 != m            1 + 2 + 3 != m
+              1 + 2 + 3 + 4 != m
+           ===> m 可取 2^n
+
       3. 降低了探查序列的重合度，如果起点相同，探查序列相同
-
-    双重散列探查
-      1. h(key, i) = ( hash1(key) + i*hash2(key) ) mod m , i = 0, 1, ..., m-1
-        1.1:  h(key, i+1) = ( hash1(key) + (i+1)*hash2(key) ) mod m
-                          = [ h(key, i) + hash2(key) mod m ] mod m
-              即 next = [ prev + hash2(key) mod m ] mod m
-        1.2:  如果要探查整个散列表，需要 hash2(key) 与 m 互为质数
-              a: h(key, 0) = hash1(key) mod m
-                 h(key, m) = ( hash1(key) + m*hash2(key) ) mod m
-                           = ( hash1(key) mod m + m*hash2(key) mod m ) mod m
-                           = ( h(key, 0) + m*hash2(key) mod m ) mod m
-                           = h(key, 0)
-                 即，h(key, m) == h(key, 0), h(key, m+1) == h(key, 1), ...
-              b: 如果hash2(key) 与 m 互为质数, 则依次按 i=0, 1, ..., m-1 探查，将不重复的遍历整个桶下标
-                 证明: 对任意i∈[0, m-1], 有h(key, i); 对任意k∈(0, m-1]，有h(key, i+k), 只需证明 h(key, i) != h(key, i+k)
-                      h(key, i) = ( hash1(key) + i*hash2(key) ) mod m = a, 0<= a <=m-1
-                      h(key, i+k) = ( hash1(key) + (i+k)*hash2(key) ) mod m
-                                  = [ a + (k * hash2(key)) mod m ] mod m
-                      即，只需 (k*hash2(key)) mod m != 0 即可 ==>
-                         对任意k∈(0, m-1] (k * hash2(key)) mod m != 0 ==> hash2(key) 与 m互质
-         1.3: 通常为了满足1.2, 取m为质数，让 hash2(key) 的值小于m,如取 1 + (key mod (m-1))
-       2. 共m^2种探查序列, 每一种探查序列都不重复的遍历整个桶下标
-       3. 重合度低，如果起点相同，探查序列也不一定相同
-
-    todo, 开放寻址分析
      */
 
-
+    //思考题11-4, todo
 
 
 }
