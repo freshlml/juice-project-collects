@@ -145,30 +145,17 @@ public class Chapter11_4 {
 
             int m = table.length;
             int from = mapping(hash, m);
+            int candidate = -1;
+
             for(int i=0; i<m; i++) {
                 int idx = probe(from, m, i);
                 Node<K, V> e = table[idx];
 
                 if (e == null) {
-                    table[idx] = added;
+                    if(candidate == -1) candidate = idx;
                     break;
                 } else if(e.status == Node.DELETED) {
-                    for(int j=i+1; j<m; j++) {
-                        int jdx = probe(from, m, j);
-                        Node<K, V> je = table[jdx];
-
-                        if(je == null) {
-                            //table[idx] = added;
-                            break;
-                        } else if(je.status != Node.DELETED && Objects.equals(key, je.key)) {
-                            V oldV = je.value;
-                            je.value = value;
-                            return oldV;  //may null
-                        }
-                    }
-
-                    table[idx] = added;
-                    break;
+                    if(candidate == -1) candidate = idx;
                 } else if(Objects.equals(key, e.key)) {
                     V oldV = e.value;
                     e.value = value;
@@ -176,6 +163,7 @@ public class Chapter11_4 {
                 }
             }
 
+            table[candidate] = added;
             if(++size == m) {
                 resize();
             }
