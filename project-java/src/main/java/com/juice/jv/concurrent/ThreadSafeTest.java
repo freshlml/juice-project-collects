@@ -1,5 +1,6 @@
 package com.juice.jv.concurrent;
 
+@Deprecated
 public class ThreadSafeTest {
 
     /*
