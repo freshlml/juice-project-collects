@@ -1,6 +1,6 @@
 package com.juice.jv.concurrent;
 
-
+@SuppressWarnings("unused")
 public class FinalFieldVisibilityTest {
 
     //17.5 final Field Semantics (Java Language Specification for Java SE 8):

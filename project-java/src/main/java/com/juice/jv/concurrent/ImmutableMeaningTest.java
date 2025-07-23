@@ -1,8 +1,9 @@
 package com.juice.jv.concurrent;
 
+@SuppressWarnings("unused")
 public class ImmutableMeaningTest {
 
-    //An object is immutable: 该对象构造之后，其状态保持不变
+    //An object is immutable: 该对象构造之后，其状态保持不变(一个无状态对象是不可变的特殊情况)
 
     //class Boolean, Byte, Short, Integer, Long, Float, Double, String is immutable.
     //class Enum Constant, Annotation Instance is immutable.
@@ -40,7 +41,7 @@ public class ImmutableMeaningTest {
 
     //this object(or class) is immutable
     static class Immutable2 {
-        private final Immutable2Used immutable2Used;  //如果子类或者外部对该field可见，必须确保不修改该field指向对象的状态。
+        private final Immutable2Used immutable2Used;  //如果子类或者外部对该 field 可见，必须确保不修改该 field 指向对象的状态。
         public Immutable2(Immutable2Used immutable2Used) {
             //深拷贝一份，防止外部对该参数指向对象修改而导致 this object 的 immutable 性质受损。
             //也可以不拷贝，但要确保外部不会修改参数指向对象的的状态。
@@ -79,7 +80,7 @@ public class ImmutableMeaningTest {
 
     //this object(or class) is effectively immutable
     static class Immutable3 {
-        private Immutable3Used immutable3Used;  //如果子类或者外部对该field可见，必须确保不修改该field的引用值以及其指向的对象的状态。
+        private Immutable3Used immutable3Used;  //如果子类或者外部对该 field 可见，必须确保不修改该 field 的引用值以及其指向的对象的状态。
         public Immutable3(Immutable3Used immutable3Used) {
             //深拷贝一份，防止外部对该参数指向对象修改而导致此 object 的 immutable 性质受损。
             //也可以不拷贝，但要确保外部不会修改参数指向对象的的状态。
@@ -118,7 +119,7 @@ public class ImmutableMeaningTest {
 
     //this object(or class) is effectively immutable
     static class Immutable4 {
-        private Immutable4Used immutable4Used;  //如果子类或者外部对该field可见，必须确保不修改该field的引用值。
+        private Immutable4Used immutable4Used;  //如果子类或者外部对该 field 可见，必须确保不修改该 field 的引用值。
         public Immutable4(Immutable4Used immutable4Used) {
             this.immutable4Used = immutable4Used;
         }
@@ -147,7 +148,7 @@ public class ImmutableMeaningTest {
     //unmodified 封装
     /*static class UnmodifiedList<E> extends List<E> {  //this object(or class) is immutable
         private final List<E> list;               //private field, 外部不可见
-        public UnmodifiedList(List<E> list) {     //深拷贝一份，可杜绝外部的影响。对list深拷贝一份代价太大，则要确保外部不会修改参数 list 指向对象的状态。
+        public UnmodifiedList(List<E> list) {     //深拷贝一份，可杜绝外部的影响。对 list 深拷贝一份代价太大，则要确保外部不会修改参数 list 指向对象的状态。
             this.list = list;
         }
         @Override

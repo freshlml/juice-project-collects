@@ -114,6 +114,7 @@ load-load barrier, load-store barrier
 //2.If Thread A reads a volatile variable, then all all variables visible to Thread A
 //  when reading the volatile variable will also be re-read from main memory.
 
+@SuppressWarnings("unused")
 class MyClass {
     private int years;
     private int months;

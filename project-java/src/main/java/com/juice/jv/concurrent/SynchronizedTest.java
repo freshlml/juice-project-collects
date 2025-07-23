@@ -1,16 +1,19 @@
 package com.juice.jv.concurrent;
 
+@SuppressWarnings("unused")
 public class SynchronizedTest {
-    //原子性
+    //原子性: 不可打断，互斥
 
-    //可见性
-    //MonitorEnter    //清空缓存
-    //...
-    //MonitorExit     //刷新缓存
+    //从内存屏障角度来理解 synchronized 如何限制指令重排序和保证可见性:
+    /*
+    MonitorEnter
+    load-load barrier, load-store barrier
 
-    //对指令重排序的限制
-    //  1. synchronized 之中的变量读写不能重排序其范围外面
-    //  2. synchronized 之前的写不能重排序到 MonitorExit 之后
-    //  3. synchronized 之后的读不能重排序到 MonitorEnter 之前
+    ...
+
+    store-store barrier, load-store barrier
+    MonitorExit
+    store-load barrier
+    */
 
 }
