@@ -6,14 +6,14 @@ public class SynchronizedTest {
 
     //从内存屏障角度来理解 synchronized 如何限制指令重排序和保证可见性:
     /*
-    MonitorEnter
+    MonitorEnter                                          //清空线程本地缓存 (不仅包括 volatile 变量本身的缓存)
     load-load barrier, load-store barrier
 
     ...
 
-    store-store barrier, load-store barrier
+    store-store barrier, load-store barrier               //store-store barrier 刷新缓存
     MonitorExit
-    store-load barrier
+    store-load barrier                                    //store-load barrier 刷新缓存
     */
 
 }
