@@ -6,7 +6,7 @@ public class SynchronizedTest {
 
     //在 Java 存储模型(JMM) 下，synchronized 的内存屏障(限制指令重排序和保证可见性)如下:
     /*
-    MonitorEnter                                          //清空所有已失效的线程本地缓存
+    MonitorEnter                                          //清理所有已失效的线程本地缓存
     load-load barrier, load-store barrier
 
     ...

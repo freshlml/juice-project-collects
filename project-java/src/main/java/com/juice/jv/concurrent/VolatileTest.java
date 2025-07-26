@@ -86,18 +86,18 @@ public class VolatileTest {
 }
 
 
-//在 Java 存储模型(JMM) 下，volatile-read, volatile-write 的内存屏障如下:
+//在 Java 存储模型(JMM) 下，volatile 的内存屏障(限制指令重排序和保证可见性)如下:
 /*
 store-store barrier, load-store barrier           //store-store barrier 刷新线程本地缓存
 volatile-write
 store-load barrier                                //store-load barrier 刷新线程本地缓存
 
-volatile-read                                     //清空所有已失效的线程本地缓存
+volatile-read                                     //清理所有已失效的线程本地缓存
 load-load barrier, load-store barrier
 */
 
-//从内存屏障角度，即可理解 volatile 如何保证可见性（如上所示）
-//从内存屏障角度，即可理解 volatile 如何限制指令重排序:
+
+//volatile 限制了哪些指令重排序:
 //  1. 对 volatile-write 之前的变量读写，不能重排序到对 volatile-write 之后
 //
 //  2. 对 volatile-write 之后的 volatile-read，不能重排序到对 volatile-write 之前
