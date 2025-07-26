@@ -52,7 +52,7 @@ public class UnsafeApiTest {
         }
     }
 
-    static class NormalPlusReadTest {
+    static class NormalReadTest2 {
         private static int x;
 
         public static void main(String[] argv) {
@@ -65,14 +65,14 @@ public class UnsafeApiTest {
                 }
                 System.out.println("update begin...");
                 //x = 1;                                   //normal-write
-                unsafe.putIntVolatile(NormalPlusReadTest.class, xOffset, 1);  //volatile-write
+                unsafe.putIntVolatile(NormalReadTest2.class, xOffset, 1);  //volatile-write
                 //unsafe.putOrderedInt(NormalPlusReadTest.class, xOffset, 1);    //normal-write with store-store、load-store barrier
                 //unsafe.putInt(NormalPlusReadTest.class, xOffset, 1);           //normal-write
                 System.out.println("update end...");
             }).start();
 
             int i = 0;
-            while(unsafe.getInt(NormalPlusReadTest.class, xOffset) == 0) {      //Is normalPlus-read? no, is normal-read
+            while(unsafe.getInt(NormalReadTest2.class, xOffset) == 0) {      //Unsafe#getXXX() is normal-read
                 if(i == 0) {
                     System.out.println("running begin...");
                     i = 1;
@@ -90,7 +90,7 @@ public class UnsafeApiTest {
                 f.setAccessible(true);
                 unsafe = (Unsafe) f.get(null);
 
-                xOffset = unsafe.staticFieldOffset(NormalPlusReadTest.class.getDeclaredField("x"));
+                xOffset = unsafe.staticFieldOffset(NormalReadTest2.class.getDeclaredField("x"));
 
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
@@ -200,7 +200,7 @@ public class UnsafeApiTest {
                 for(int i=0; i < 100000; i++) {
                     int xv;
                     do {
-                        xv = x;
+                        xv = unsafe.getIntVolatile(CompareAndSwapTest1.class, xOffset);
                     } while(!unsafe.compareAndSwapInt(CompareAndSwapTest1.class, xOffset, xv, xv + 1));
                                                     //CAS 原子指令, 类 volatile-write, do not need variable modified with `volatile`
                     //x = x + 1;
@@ -217,7 +217,7 @@ public class UnsafeApiTest {
             for(int i=0; i < 100000; i++) {
                 int xv;
                 do {
-                    xv = x;
+                    xv = unsafe.getIntVolatile(CompareAndSwapTest1.class, xOffset);;
                 } while(!unsafe.compareAndSwapInt(CompareAndSwapTest1.class, xOffset, xv, xv + 1));
                 //x = x + 1;
             }
@@ -242,7 +242,7 @@ public class UnsafeApiTest {
     }
 
 
-    static class CompareAndSwapTestTODO {
+    static class ReorderingTest {
         private static int x;
 
         public static void main(String[] argv) {
@@ -254,7 +254,6 @@ public class UnsafeApiTest {
                         e.printStackTrace();
                     }
                     System.out.println("one': " + x);
-                    //unsafe.compareAndSwapInt(CompareAndSwapTestTODO.class, xOffset, 0, 1);
                     x = 1;
                 }
                 while(x == 1) {}  //System.out.println("one: " + x);
@@ -268,28 +267,12 @@ public class UnsafeApiTest {
                     e.printStackTrace();
                 }
                 System.out.println("two': " + x);
-                //unsafe.compareAndSwapInt(CompareAndSwapTestTODO.class, xOffset, 0, 2);
                 x = 2;
             }
             while(x == 2) {}  //System.out.println("two: " + x);
             System.out.println("two end...");
         }
 
-        private static final Unsafe unsafe;
-        private static final long xOffset;
-
-        static {
-            try {
-                Field f = Unsafe.class.getDeclaredField("theUnsafe");
-                f.setAccessible(true);
-                unsafe = (Unsafe) f.get(null);
-
-                xOffset = unsafe.staticFieldOffset(CompareAndSwapTestTODO.class.getDeclaredField("x"));
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
 }

@@ -4,16 +4,16 @@ package com.juice.jv.concurrent;
 public class SynchronizedTest {
     //原子性: 不可打断，互斥
 
-    //从内存屏障角度来理解 synchronized 如何限制指令重排序和保证可见性:
+    //在 Java 存储模型(JMM) 下，synchronized 的内存屏障(限制指令重排序和保证可见性)如下:
     /*
-    MonitorEnter                                          //清空线程本地缓存
+    MonitorEnter                                          //清空所有已失效的线程本地缓存
     load-load barrier, load-store barrier
 
     ...
 
-    store-store barrier, load-store barrier               //store-store barrier 刷新缓存
+    store-store barrier, load-store barrier               //store-store barrier 刷新线程本地缓存
     MonitorExit
-    store-load barrier                                    //store-load barrier 刷新缓存
+    store-load barrier                                    //store-load barrier 刷新线程本地缓存
     */
 
 }

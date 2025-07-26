@@ -4,7 +4,6 @@ import sun.misc.Unsafe;
 
 public class VolatileTest {
 
-    //volatile visibility test
     static class VolatileTest1 {
         private static int x;
         public static void main(String[] argv) {
@@ -86,23 +85,24 @@ public class VolatileTest {
     }
 }
 
-//volatile-read/write，对指令重排序的限制如下:
+
+//在 Java 存储模型(JMM) 下，volatile-read, volatile-write 的内存屏障如下:
+/*
+store-store barrier, load-store barrier           //store-store barrier 刷新线程本地缓存
+volatile-write
+store-load barrier                                //store-load barrier 刷新线程本地缓存
+
+volatile-read                                     //清空所有已失效的线程本地缓存
+load-load barrier, load-store barrier
+*/
+
+//从内存屏障角度，即可理解 volatile 如何保证可见性（如上所示）
+//从内存屏障角度，即可理解 volatile 如何限制指令重排序:
 //  1. 对 volatile-write 之前的变量读写，不能重排序到对 volatile-write 之后
 //
 //  2. 对 volatile-write 之后的 volatile-read，不能重排序到对 volatile-write 之前
 //
 //  3. 对 volatile-read 之后的变量读写，不能重排序到对 volatile-read 之前
-
-
-//从内存屏障角度来理解 volatile-read/write 如何限制指令重排序和保证可见性:
-/*
-store-store barrier, load-store barrier           //store-store barrier 刷新缓存
-volatile-write
-store-load barrier                                //store-load barrier 刷新缓存
-
-volatile-read                                     //清空线程本地缓存 (不仅包括 volatile 变量本身的缓存)
-load-load barrier, load-store barrier
-*/
 
 
 //Full volatile Visibility Guarantee:
@@ -123,7 +123,7 @@ class MyClass {
     public void update(int years, int months, int days){
         this.years  = years;
         this.months = months;
-        this.days   = days;    //volatile-write，直接刷新线程本地缓存
+        this.days   = days;    //volatile-write，刷新线程本地缓存
         // when a value is written to `days`, then all variables "visible" to the thread are also written to main memory.
         // That means, that when a value is written to `days`, the values of `years` and `months` are also written to main memory.
     }
