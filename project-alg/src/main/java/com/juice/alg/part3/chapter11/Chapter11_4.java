@@ -78,7 +78,7 @@ public class Chapter11_4 {
          *线性探查散列表
          *  - cannot contain duplicate keys
          *  - non-ordered guarantee
-         *  - permits null key and null value
+         *  - permit null key and null value
          */
         static final int DEFAULT_CAPACITY = 16;
         static final int MAXIMUM_CAPACITY = 1 << 30;
