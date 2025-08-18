@@ -62,10 +62,10 @@ public class Chapter10_4 {
     }
 
     //练习10.4-5
-    static void L_T_R1(Node node) {
-        if(node == null) return;
+    static void L_T_R1(Node root) {
+        if(root == null) return;
 
-        Node t = firstKey_L_T_R(node);
+        Node t = firstKey_L_T_R(root);
         while(t != null) {
             System.out.print(t.key);
             System.out.print(" ");
