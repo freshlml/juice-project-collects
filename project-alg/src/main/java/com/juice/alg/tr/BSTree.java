@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 
 一个有序(逆序)序列A{a1, a2, a3, ..., an}依次插入，形成一棵树，树高 h = n-1
 */
+@Deprecated
 public class BSTree implements Tree {
     protected Node root;
     protected int size;

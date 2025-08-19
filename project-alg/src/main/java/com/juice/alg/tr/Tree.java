@@ -1,6 +1,7 @@
 package com.juice.alg.tr;
 
 
+@Deprecated
 public interface Tree {
 
     void putAll(int[][] es);
