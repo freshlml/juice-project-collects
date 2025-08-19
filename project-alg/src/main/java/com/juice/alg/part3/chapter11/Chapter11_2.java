@@ -347,20 +347,12 @@ public class Chapter11_2 {
          */
         @Override
         public boolean replace(K key, V oldValue, V newValue) {
-            return replaceNode(key, oldValue, newValue, true) != null;
-        }
-
-        private Node<K, V> replaceNode(Object key, Object oldValue, V newValue, boolean matchValue) {
-            int idx = mapping(hash(key), table.length);
-            Node<K, V> e = table[idx];
-            while(e != null && !Objects.equals(key, e.key)) {
-                e = e.next;
+            Node<K, V> node = entry(key);
+            if(node != null && Objects.equals(oldValue, node.value)) {
+                node.value = newValue;
+                return true;
             }
-            if(e != null && (!matchValue || (Objects.equals(oldValue, e.value)))) {
-                e.value = newValue;
-                return e;
-            }
-            return null;
+            return false;  //no mapping or value is not equal
         }
 
         /**
@@ -375,17 +367,13 @@ public class Chapter11_2 {
          */
         @Override
         public V replace(K key, V value) {
-            int idx = mapping(hash(key), table.length);
-            Node<K, V> e = table[idx];
-            while(e != null && !Objects.equals(key, e.key)) {
-                e = e.next;
-            }
-            if(e != null) {
-                V oldV = e.value;
-                e.value = value;
+            Node<K, V> node = entry(key);
+            if(node != null) {
+                V oldV = node.value;
+                node.value = value;
                 return oldV;  //may null
             }
-            return null;
+            return null;   //no mapping
         }
 
         private static int hash(Object key) {
