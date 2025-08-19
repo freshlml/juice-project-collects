@@ -1,7 +1,7 @@
 package com.juice.alg.part3.chapter12;
 
 
-public class Chapter3_12_4 {
+public class Chapter12_Practice {
 
     /**
      *二叉搜索树的高度h(n个数的序列，依次调用{ Chapter10_4.BinaryTree#put(int)}形成的树的高度)
