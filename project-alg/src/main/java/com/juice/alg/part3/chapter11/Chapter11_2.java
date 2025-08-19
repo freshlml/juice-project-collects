@@ -608,19 +608,19 @@ public class Chapter11_2 {
             }
 
             @Override
-            public boolean contains(Object entry) {
-                if(!(entry instanceof HashTable.Node)) return false;
+            public boolean contains(Object o) {
+                if(!(o instanceof HashTable.Node)) return false;
+                HashTable.Node<?, ?> entry = (HashTable.Node<?, ?>) o;
 
-                HashTable.Node<?, ?> etr = (HashTable.Node<?, ?>) entry;
-                return node(etr) != null;
+                return node(entry) != null;
             }
 
             @Override
-            public boolean remove(Object entry) {
-                if(!(entry instanceof HashTable.Node)) return false;
-                HashTable.Node<?, ?> etr = (HashTable.Node<?, ?>) entry;
+            public boolean remove(Object o) {
+                if(!(o instanceof HashTable.Node)) return false;
+                HashTable.Node<?, ?> entry = (HashTable.Node<?, ?>) o;
 
-                return HashTable.this.removeNode(etr.key, etr.value, true) != null;
+                return HashTable.this.removeNode(entry.key, entry.value, true) != null;
             }
 
             @Override
