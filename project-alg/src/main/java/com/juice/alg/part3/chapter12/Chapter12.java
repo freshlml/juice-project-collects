@@ -1278,6 +1278,25 @@ public class Chapter12 {
         System.out.println("--------------------------------------------set view----------------------------------------");
     }
 
+
+    //练习 12.1-3
+    //栈: BSTree#L_T_R2(BSTree.Node), 回溯法: BSTree#L_T_R1(BSTree.Node)
+
+    //练习 12.1-4
+    // BSTree#T_L_R(), BSTree#L_R_T()
+
+
+    //练习 12.2-3
+    // BSTree#prev(Node<K, V>)
+
+    //练习 12.2-7
+    // BSTree#L_T_R1(BSTree.Node)
+    // 运行时间: 每个节点最多被访问 3 次，n 个节点共被访问 3*n 次。故 T(n) = Θ(n)
+
+
+    //练习 12.3-3
+    // n * f(h). f(h)'max = Θ(n), f(h)'min = Θ(lgn)
+
     //练习12.3-5
     /*
     static class Node {
@@ -1285,7 +1304,7 @@ public class Chapter12 {
         Node parent;
         Node left;
         Node right;
-        Node succ; //额外succ指针，指向后继
+        Node succ; //额外 succ 指针，指向后继
 
         public Node(int key, Node parent) {
             this.key = key;
@@ -1299,7 +1318,8 @@ public class Chapter12 {
             print t.key;
             t = t.succ;
         }
-    put(int e): 额外维护succ指针，画图(两种情况)
+
+    put(int e): 额外维护 succ 指针
         if(this.root == null) {
             this.root = new Node(e, null);
         } else {
@@ -1312,37 +1332,59 @@ public class Chapter12 {
                 } else if(e > t.key) {
                     pt = t;
                     t = t.right;
-                } else { //duplicate key
+                } else {           //duplicate key
                     t.key = e;
                     return;
                 }
             }
-            Node ppt = pt.parent;
             Node t = new Node(e, pt);
             if(e < pt.key) {
                 pt.left = t;
 
-                if(ppt != null && ppt.right == pt) {
-                    ppt.succ = t;
+                Node r = pt;
+                Node pr = r.parent;
+                while(pr != null && pr.left == r) {
+                    r = pr;
+                    pr = pr.parent;
+                }
+
+                if(pr == null)
                     t.succ = pt
-                } else {
+                else {
+                    pr.succ = t;
                     t.succ = pt;
                 }
             } else {
                 pt.right = t;
 
-                if(ppt != null && ppt.left == pt) {
+                Node r = pt;
+                Node pr = r.parent;
+                while(pr != null && pr.right == r) {
+                    r = pr;
+                    pr = pr.parent;
+                }
+                
+                if(pr == null)
+                    pt.succ = t
+                else {
                     pt.succ = t;
-                    t.succ = ppt;
-                } else {
-                    pt.succ = t;
+                    t.succ = pr;
                 }
             }
         }
-
         this.size++;
+
      remove(int e):
-        只需额外维护succ指针，将t的前驱.succ = next即可
+        只需额外维护 succ 指针，将 t 的前驱.succ = next 即可
+     */
+
+    //练习12.3-6
+    /* 修改 removeNode(Node<K, V>:
+         if (t.left != null && t.right != null) {
+            Node<K, V> predecessor = firstKey_R_T_L(t.left);  //not null
+            this.exchange(t, predecessor);
+            //t = predecessor;  //needed for exchange 的简便写法
+        }
      */
 
 }
