@@ -270,6 +270,7 @@ public class Chapter12 {
             if (t.left != null && t.right != null) {
                 Node<K, V> successor = firstKey_L_T_R(t.right);  //not null
                 this.exchange(t, successor);
+                //t = successor;  //needed for exchange 的简便写法
             }
 
             Node<K, V> pt = t.parent;
@@ -328,6 +329,11 @@ public class Chapter12 {
                 two.right = r;
             }
             if(two.right != null) two.right.parent = two;
+
+            /*exchange 的简便写法
+            one.key = two.key;
+            one.value = two.value;
+            */
         }
 
         void transplant(Node<K, V> pt, Node<K, V> t, Node<K, V> next) {
@@ -648,6 +654,10 @@ public class Chapter12 {
                 if(last == null)
                     throw new IllegalStateException("can not remove before the next method called or can not call remove method again");
 
+                /*needed for exchange 的简便写法
+                if(last.left != null && last.right != null)
+                    current = last;
+                */
                 BSTree.this.removeNode(last);
                 last = null;
             }
