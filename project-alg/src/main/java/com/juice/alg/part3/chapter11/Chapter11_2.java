@@ -506,7 +506,7 @@ public class Chapter11_2 {
 
                     @Override
                     public boolean remove(Object k) {
-                        return HashTable.this.remove(k) != null;
+                        return HashTable.this.removeNode(k, null, false) != null;
                     }
 
                     @Override
@@ -514,6 +514,7 @@ public class Chapter11_2 {
                         HashTable.this.clear();
                     }
                 };
+                keySet = ks;
             }
             return ks;
         }
