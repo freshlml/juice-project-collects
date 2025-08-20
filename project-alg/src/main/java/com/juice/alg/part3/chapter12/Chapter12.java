@@ -4,6 +4,7 @@ import com.juice.alg.part3.chapter10.Chapter10_1.FixedArrayDeque;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public class Chapter12 {
 
     /**
@@ -13,7 +14,6 @@ public class Chapter12 {
      * @param <K> key type
      * @param <V> value type
      */
-    @SuppressWarnings("unused")
     public static class BSTree<K, V> extends AbstractMap<K, V> implements NavigableMap<K, V>, Tree {
         /*
          *二叉搜索树
@@ -267,23 +267,58 @@ public class Chapter12 {
 
         private void removeNode(Node<K, V> t) {
             //assert t != null
+
             if (t.left != null && t.right != null) {
-                Node<K, V> successor = firstKey_L_T_R(t.right);  //not null
-                this.exchange(t, successor);
-                //t = successor;  //needed for exchange 的简便写法
+                Node<K, V> s = firstKey_L_T_R(t.right);  //not null
+
+                //不改变二叉树的结构，仅将要删除节点的 key, value 替换为后继节点的 key, value 后转而删除后继节点
+                t.key = s.key;
+                t.value = s.value;
+                t = s;
             }
 
-            Node<K, V> pt = t.parent;
-            Node<K, V> next = t.left;
-            if (t.right != null) next = t.right;
-
-            transplant(pt, t, next);
+            transplant(t.parent, t, t.right != null ? t.right : t.left);
 
             t.parent = t.left = t.right = null;
             this.size--;
         }
 
-        void exchange(Node<K, V> one, Node<K, V> two) {
+        void transplant(Node<K, V> pt, Node<K, V> t, Node<K, V> next) {
+            if (next != null)
+                next.parent = pt;
+
+            if (pt == null) {
+                this.root = next;
+            } else if (pt.left == t) {
+                pt.left = next;
+            } else {
+                pt.right = next;
+            }
+        }
+
+        private void removeNode1(Node<K, V> t) {
+            //assert t != null
+
+            if(t.left != null && t.right != null) {
+                Node<K, V> s = firstKey_L_T_R(t.right);  //not null
+                if(s.parent != t) {
+                    transplant(s.parent, s, s.right);
+                    s.right = t.right;            //t.right != null
+                    s.right.parent = s;
+                }
+                transplant(t.parent, t, s);
+                s.left = t.left;                  //t.left != null
+                t.left.parent = s;
+
+            } else {
+                transplant(t.parent, t, t.right != null ? t.right : t.left);
+            }
+
+            t.parent = t.left = t.right = null;
+            this.size--;
+        }
+
+        private void exchange(Node<K, V> one, Node<K, V> two) {
             if(one.parent == two) { //exchange
                 Node<K, V> e = one;
                 one = two;
@@ -329,24 +364,22 @@ public class Chapter12 {
                 two.right = r;
             }
             if(two.right != null) two.right.parent = two;
-
-            /*exchange 的简便写法
-            one.key = two.key;
-            one.value = two.value;
-            */
         }
 
-        void transplant(Node<K, V> pt, Node<K, V> t, Node<K, V> next) {
-            if (next != null)
-                next.parent = pt;
+        private void removeNode2(Node<K, V> t) {
+            //assert t != null
 
-            if (pt == null) {
-                this.root = next;
-            } else if (pt.left == t) {
-                pt.left = next;
-            } else {
-                pt.right = next;
+            if (t.left != null && t.right != null) {
+                Node<K, V> s = firstKey_L_T_R(t.right);  //not null
+
+                //交换两个节点的位置
+                this.exchange(t, s);
             }
+
+            transplant(t.parent, t, t.right != null ? t.right : t.left);
+
+            t.parent = t.left = t.right = null;
+            this.size--;
         }
 
         /**
@@ -654,10 +687,8 @@ public class Chapter12 {
                 if(last == null)
                     throw new IllegalStateException("can not remove before the next method called or can not call remove method again");
 
-                /*needed for exchange 的简便写法
-                if(last.left != null && last.right != null)
+                if(last.left != null && last.right != null)  //for removeNode 补丁
                     current = last;
-                */
                 BSTree.this.removeNode(last);
                 last = null;
             }
@@ -1184,7 +1215,7 @@ public class Chapter12 {
         }
 
         static class Node<K, V> implements Entry<K, V> {
-            final K key;
+            /*final*/ K key;
             V value;
 
             Node<K, V> parent;
@@ -1215,7 +1246,6 @@ public class Chapter12 {
         }
     }
 
-    @SuppressWarnings("unused")
     public interface Tree {
         void L_T_R();
         void T_L_R();
@@ -1246,7 +1276,7 @@ public class Chapter12 {
         tree.BFS();
         System.out.println("--------------------------------------------遍历-------------------------------------------");
 
-        System.out.println("prev: " + tree.prev(tree.entry(19)));
+        System.out.println("prev: " + tree.prev(tree.entry(19)).key);
         System.out.println("next: " + tree.next(tree.entry(19)).key);
         System.out.println("least key: " + BSTree.firstKey_L_T_R(tree.root).key);
         System.out.println("greatest key: " + BSTree.firstKey_R_T_L(tree.root).key);
