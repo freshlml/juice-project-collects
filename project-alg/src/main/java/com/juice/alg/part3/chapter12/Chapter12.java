@@ -102,31 +102,12 @@ public class Chapter12 {
             return entry(key) != null;
         }
 
-        @SuppressWarnings("unchecked")
         private Node<K, V> entry(Object key) {
             Node<K, V> t = this.root;
 
-            Comparator<? super K> comparator = null;
-            Comparable<K> comp = null;
-            K k = null;
-            if(this.comparator != null) {
-                comparator = this.comparator;
-                k = (K) key;
-                //comparator.compare(k, k);
-            } else if(key == null) {
-                throw new NullPointerException("key is not allowed null for natural ordering");
-            } else {
-                comp = (Comparable<K>) key;
-            }
-
+            //note that: when using natural ordering and the specified key is null and this tree is empty, do not throw NullPointerException
             while(t != null) {
-                int r;
-
-                if(comparator != null) {
-                    r = comparator.compare(k, t.key);
-                } else {
-                    r = comp.compareTo(t.key);
-                }
+                int r = compare(key, t.key);
 
                 if(r == 0) return t;
                 else if(r < 0) {
@@ -137,6 +118,12 @@ public class Chapter12 {
             }
 
             return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        private int compare(Object k1, Object k2) {
+            return comparator != null ? comparator.compare((K) k1, (K) k2)
+                    : ((Comparable<K>) k1).compareTo((K) k2);
         }
 
         /**
@@ -788,111 +775,191 @@ public class Chapter12 {
         }
 
         /**
-         * Returns the greatest key-value mapping with the key strictly less than the given key, or null if there is no such key.
+         * Returns the greatest key-value mapping with the key strictly less than the given key, or null if there is no such entry.
          *
-         * @param key the key
-         * @return the greatest key-value mapping with the key strictly less than the given key, or null if there is no such key
+         * @param key the key, may not contained in this tree
+         * @return the greatest key-value mapping with the key strictly less than the given key, or null if there is no such entry
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public Entry<K, V> lowerEntry(K key) {
-            return this.prev(this.entry(key));
+            Node<K, V> t = this.root;
+
+            while(t != null) {
+                int r = compare(key, t.key);
+
+                if(r <= 0) {
+                    if(t.left == null)
+                        return prev(t);  //may null
+                    else
+                        t = t.left;
+                } else {
+                    if(t.right == null)
+                        return t;
+                    else
+                        t = t.right;
+                }
+            }
+
+            return null;
         }
 
         /**
-         * Returns the greatest key strictly less than the given key, or null if there is no such key.
+         * Returns the greatest key strictly less than the given key, or null if there is no such key (or the returned key is null).
          *
-         * @param key the key
+         * @param key the key, may not contained in this tree
          * @return the greatest key strictly less than the given key, or null if there is no such key
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public K lowerKey(K key) {
-            Node<K, V> node = this.prev(this.entry(key));
-            return node == null ? null : node.key;
+            Entry<K, V> node = lowerEntry(key);
+            return node == null
+                    ? null                //no such entry, thus no such key
+                    : node.getKey();      //may null if this tree permit null key
         }
 
         /**
-         * Returns the greatest key-value mapping with the key less than or equal to the given key, or null if there is no such key.
+         * Returns the greatest key-value mapping with the key less than or equal to the given key, or null if there is no such entry.
          *
-         * @param key the key
-         * @return the greatest key-value mapping with the key less than or equal to the given key, or null if there is no such key
+         * @param key the key, may not contained in this tree
+         * @return the greatest key-value mapping with the key less than or equal to the given key, or null if there is no such entry
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public Entry<K, V> floorEntry(K key) {
-            return this.prev(this.entry(key));
+            Node<K, V> t = this.root;
+
+            while(t != null) {
+                int r = compare(key, t.key);
+
+                if(r < 0) {
+                    if(t.left == null)
+                        return prev(t);  //may null
+                    else
+                        t = t.left;
+                } else {
+                    if(t.right == null)
+                        return t;
+                    else
+                        t = t.right;
+                }
+            }
+
+            return null;
         }
 
         /**
-         * Returns the the key less than or equal to the given key, or null if there is no such key.
+         * Returns the the key less than or equal to the given key, or null if there is no such key (or the returned key is null).
          *
-         * @param key the key
+         * @param key the key, may not contained in this tree
          * @return the the key less than or equal to the given key, or null if there is no such key
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public K floorKey(K key) {
-            Node<K, V> node = this.prev(this.entry(key));
-            return node == null ? null : node.key;
+            Entry<K, V> node = floorEntry(key);
+            return node == null
+                    ? null                //no such entry, thus no such key
+                    : node.getKey();      //may null if this tree permit null key
         }
 
         /**
-         * Returns the least key-value mapping with the key strictly greater than the given key, or null if there is no such key.
+         * Returns the least key-value mapping with the key strictly greater than the given key, or null if there is no such entry.
          *
-         * @param key the key
-         * @return the least key-value mapping with the key strictly greater than the given key, or null if there is no such key
+         * @param key the key, may not contained in this tree
+         * @return the least key-value mapping with the key strictly greater than the given key, or null if there is no such entry
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public Entry<K, V> higherEntry(K key) {
-            return this.next(this.entry(key));
+            Node<K, V> t = this.root;
+
+            while(t != null) {
+                int r = compare(key, t.key);
+
+                if(r >= 0) {
+                    if(t.right == null)
+                        return next(t);  //may null
+                    else
+                        t = t.right;
+                } else {
+                    if(t.left == null)
+                        return t;
+                    else
+                        t = t.left;
+                }
+            }
+
+            return null;
         }
 
         /**
-         * Returns the least key strictly greater than the given key, or null if there is no such key.
+         * Returns the least key strictly greater than the given key, or null if there is no such key (or the returned key is null).
          *
-         * @param key the key
+         * @param key the key, may not contained in this tree
          * @return the least key strictly greater than the given key, or null if there is no such key
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public K higherKey(K key) {
-            Node<K, V> node = this.next(this.entry(key));
-            return node == null ? null : node.key;
+            Entry<K, V> node = higherEntry(key);
+            return node == null
+                    ? null                //no such entry, thus no such key
+                    : node.getKey();      //may null if this tree permit null key
         }
 
         /**
-         * Returns the least key-value mapping with the key greater than or equal to the given key, or null if there is no such key.
+         * Returns the least key-value mapping with the key greater than or equal to the given key, or null if there is no such entry.
          *
-         * @param key the key
-         * @return the least key-value mapping with the key greater than the given key, or null if there is no such key
+         * @param key the key, may not contained in this tree
+         * @return the least key-value mapping with the key greater than the given key, or null if there is no such entry
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public Entry<K, V> ceilingEntry(K key) {
-            return this.next(this.entry(key));
+            Node<K, V> t = this.root;
+
+            while(t != null) {
+                int r = compare(key, t.key);
+
+                if(r > 0) {
+                    if(t.right == null)
+                        return next(t);  //may null
+                    else
+                        t = t.right;
+                } else {
+                    if(t.left == null)
+                        return t;
+                    else
+                        t = t.left;
+                }
+            }
+
+            return null;
         }
 
         /**
-         * Returns the least key greater than or equal to the given key, or null if there is no such key.
+         * Returns the least key greater than or equal to the given key, or null if there is no such key (or the returned key is null).
          *
-         * @param key the key
+         * @param key the key, may not contained in this tree
          * @return the least key greater than the given key, or null if there is no such key
          * @throws NullPointerException if the specified key is null and this tree uses natural ordering or its comparator does not permit null keys
          * @throws ClassCastException if the type of the specified key is incompatible and can not be compared with this tree
          */
         @Override
         public K ceilingKey(K key) {
-            Node<K, V> node = this.next(this.entry(key));
-            return node == null ? null : node.key;
+            Entry<K, V> node = ceilingEntry(key);
+            return node == null
+                    ? null                //no such entry, thus no such key
+                    : node.getKey();      //may null if this tree permit null key
         }
 
         @Override
@@ -939,6 +1006,7 @@ public class Chapter12 {
         public SortedMap<K, V> tailMap(K fromKey) {
             return null;  //todo
         }
+
 
         //// Tree
 
@@ -1276,10 +1344,14 @@ public class Chapter12 {
         tree.BFS();
         System.out.println("--------------------------------------------遍历-------------------------------------------");
 
-        System.out.println("prev: " + tree.prev(tree.entry(19)).key);
-        System.out.println("next: " + tree.next(tree.entry(19)).key);
         System.out.println("least key: " + BSTree.firstKey_L_T_R(tree.root).key);
         System.out.println("greatest key: " + BSTree.firstKey_R_T_L(tree.root).key);
+        System.out.println("19'prev: " + tree.prev(tree.entry(19)).key);
+        System.out.println("19'next: " + tree.next(tree.entry(19)).key);
+
+        Integer k = 19;
+        System.out.println("greater than " + k + ": " + tree.higherKey(k));
+        System.out.println("greater than or eq to " + k + ": " + tree.ceilingKey(k));
 
         System.out.println("--------------------------------------------前驱、后继--------------------------------------");
 
