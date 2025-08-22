@@ -392,7 +392,7 @@ public class Chapter12 {
             this.root = null;
             this.size = 0;
             this.comparator = null;
-            this.fullMapView = new AscendingMapView();  //reset
+            //this.fullMapView = new AscendingMapView();  //do not need reset
         }
 
         /**
