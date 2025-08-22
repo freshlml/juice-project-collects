@@ -138,7 +138,7 @@ public class Chapter12 {
          */
         @Override
         public boolean containsValue(Object value) {
-            return super.containsValue(value);
+            return fullMapView.containsValue(value);
         }
 
         /**
@@ -392,6 +392,7 @@ public class Chapter12 {
             this.root = null;
             this.size = 0;
             this.comparator = null;
+            this.fullMapView = new AscendingMapView();  //reset
         }
 
         /**
@@ -485,9 +486,6 @@ public class Chapter12 {
             return null;  //no mapping
         }
 
-        Set<K>           keySet;
-        Set<Entry<K, V>> entrySet;
-
         /**
          * 返回 this tree 中 keys 的 set view，which iterator 迭代 keys in "按 key 排序过的 key 序列"
          *
@@ -501,56 +499,15 @@ public class Chapter12 {
          */
         @Override
         public Set<K> keySet() {
-            Set<K> ks = keySet;
-            if(ks == null) {
-                ks = new AbstractSet<K>() {
-                    @Override
-                    public Iterator<K> iterator() {
-                        return new KeyIterator();
-                    }
-
-                    @Override
-                    public Spliterator<K> spliterator() {
-                        return null;  //todo
-                    }
-
-                    @Override
-                    public int size() {
-                        return BSTree.this.size();
-                    }
-
-                    @Override
-                    public boolean isEmpty() {
-                        return BSTree.this.isEmpty();
-                    }
-
-                    @Override
-                    public boolean contains(Object k) {
-                        return BSTree.this.containsKey(k);
-                    }
-
-                    @Override
-                    public boolean remove(Object k) {
-                        Node<K, V> node = BSTree.this.entry(k);
-                        if(node != null) {
-                            BSTree.this.removeNode(node);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public void clear() {
-                        BSTree.this.clear();
-                    }
-                };
-                keySet = ks;
-            }
-            return ks;
+            return fullMapView.keySet();
         }
 
         private class KeyIterator implements Iterator<K> {
-            private final EntryIterator it = new EntryIterator();
+            private final Iterator<Entry<K, V>> it;
+
+            KeyIterator(Iterator<Entry<K, V>> it) {
+                this.it = it;
+            }
 
             @Override
             public boolean hasNext() {
@@ -582,7 +539,7 @@ public class Chapter12 {
          */
         @Override
         public Collection<V> values() {
-            return super.values();
+            return fullMapView.values();
         }
 
         /**
@@ -598,88 +555,94 @@ public class Chapter12 {
          */
         @Override
         public Set<Entry<K, V>> entrySet() {
-            if(entrySet == null) {
-                entrySet = new AbstractSet<Entry<K, V>>() {
-                    @Override
-                    public Iterator<Entry<K, V>> iterator() {
-                        return new EntryIterator();
-                    }
-
-                    @Override
-                    public Spliterator<Entry<K, V>> spliterator() {
-                        return null;  //todo
-                    }
-
-                    @Override
-                    public int size() {
-                        return BSTree.this.size();
-                    }
-
-                    @Override
-                    public boolean isEmpty() {
-                        return BSTree.this.isEmpty();
-                    }
-
-                    @Override
-                    public boolean contains(Object entry) {
-                        if(!(entry instanceof BSTree.Node)) return false;
-                        BSTree.Node<?, ?> node = (BSTree.Node<?, ?>) entry;
-
-                        BSTree.Node<?, ?> e = BSTree.this.entry(node.key);
-                        return e != null && Objects.equals(e.value, node.value);
-                    }
-
-                    @Override
-                    public boolean remove(Object entry) {
-                        if(!(entry instanceof BSTree.Node)) return false;
-                        BSTree.Node<?, ?> node = (BSTree.Node<?, ?>) entry;
-
-                        Node<K, V> e = BSTree.this.entry(node.key);
-                        if(e != null && Objects.equals(node.value, e.value)) {
-                            BSTree.this.removeNode(e);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public void clear() {
-                        BSTree.this.clear();
-                    }
-                };
-            }
-            return entrySet;
+            return fullMapView.entrySet();
         }
 
-        private class EntryIterator implements Iterator<Entry<K, V>> {
-            Node<K, V> current = BSTree.firstKey_L_T_R(BSTree.this.root), last;
+        private abstract class EntryIterator implements Iterator<Entry<K, V>> {
+            Node<K, V> current, fence, lastRet;
+
+            EntryIterator(Node<K, V> current, Node<K, V> fence) {
+                this.current = current;
+                this.fence = fence;
+            }
 
             @Override
             public boolean hasNext() {
-                return current != null;
+                return current != fence;
             }
 
             @Override
             public Entry<K, V> next() {
-                if(current == null)
+                if(current == fence)
                     throw new NoSuchElementException("has no more elements");
 
-                last = current;
-                current = BSTree.this.next(current);
-                return last;
+                lastRet = current;
+                current = stepOne(current);
+                return lastRet;
+            }
+
+            abstract Node<K, V> stepOne(Node<K, V> node);
+
+            void removeAscending() {
+                if(lastRet == null)
+                    throw new IllegalStateException("can not remove before the next method called or can not call remove method again");
+
+                if(lastRet.left != null && lastRet.right != null)  //for removeNode 补丁
+                    current = lastRet;
+                BSTree.this.removeNode(lastRet);
+                lastRet = null;
+            }
+
+            void removeDescending() {
+                if(lastRet == null)
+                    throw new IllegalStateException("can not remove before the next method called or can not call remove method again");
+
+                BSTree.this.removeNode(lastRet);
+                lastRet = null;
+            }
+
+        }
+
+        private class AscendingEntryIterator extends EntryIterator {
+            AscendingEntryIterator(Node<K, V> first) {
+                this(first, null);
+            }
+
+            AscendingEntryIterator(Node<K, V> first, Node<K, V> fence) {
+                super(first, fence);
             }
 
             @Override
             public void remove() {
-                if(last == null)
-                    throw new IllegalStateException("can not remove before the next method called or can not call remove method again");
+                removeAscending();
+            }
 
-                if(last.left != null && last.right != null)  //for removeNode 补丁
-                    current = last;
-                BSTree.this.removeNode(last);
-                last = null;
+            @Override
+            Node<K, V> stepOne(Node<K, V> node) {
+                return BSTree.this.next(node);
             }
         }
+
+        private class DescendingEntryIterator extends EntryIterator {
+            DescendingEntryIterator(Node<K, V> first) {
+                this(first, null);
+            }
+
+            DescendingEntryIterator(Node<K, V> first, Node<K, V> fence) {
+                super(first, fence);
+            }
+
+            @Override
+            public void remove() {
+                removeDescending();
+            }
+
+            @Override
+            Node<K, V> stepOne(Node<K, V> node) {
+                return BSTree.this.prev(node);
+            }
+        }
+
 
         //// SortedMap
 
@@ -719,6 +682,71 @@ public class Chapter12 {
             if(node == null)
                 throw new NoSuchElementException("this tree is empty");
             return node.getKey();
+        }
+
+        /**
+         * Returns a view of the portion(部分) of this map whose keys range [fromKey，toKey).
+         *
+         * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+         *
+         * The returned map supports all optional map operations that this map supports.
+         *
+         * The returned map will throw an `IllegalArgumentException` on an attempt to insert a key outside its range
+         *
+         * @param fromKey the from key
+         * @param toKey the to key
+         * @return a view of the portion of this map
+         * @throws ClassCastException         if fromKey and toKey cannot be compared to one another using this map's comparator (or, no comparator, using natural ordering)
+         *                                    Implementations may, but are not required to, throw this exception
+         * @throws NullPointerException       if fromKey or toKey is null and this map does not permit null keys
+         * @throws IllegalArgumentException   if fromKey is greater than toKey;
+         *                                 or if this map itself has a restricted range, and fromKey or toKey lies outside the bounds of the range
+         */
+        @Override
+        public SortedMap<K, V> subMap(K fromKey, K toKey) {
+            return subMap(fromKey, true, toKey, false);
+        }
+
+        /**
+         * Returns a view of the portion(部分) of this map whose keys < toKey.
+         *
+         * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+         *
+         * The returned map supports all optional map operations that this map supports.
+         *
+         * The returned map will throw an `IllegalArgumentException` on an attempt to insert a key outside its range.
+         *
+         * @param toKey the to key
+         * @return a view of the portion of this map
+         * @throws ClassCastException         if the toKey is not compatible with this map's comparator (or, no comparator, using natural ordering)
+         *                                    Implementations may, but are not required to, throw this exception
+         * @throws NullPointerException       if fromKey or toKey is null and this map does not permit null keys
+         * @throws IllegalArgumentException   if this map itself has a restricted range, and fromKey or toKey lies outside the bounds of the range
+         */
+        @Override
+        public SortedMap<K, V> headMap(K toKey) {
+            return headMap(toKey, false);
+        }
+
+        /**
+         * Returns a view of the portion(部分) of this map whose keys >= fromKey.
+         *
+         * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+         *
+         * The returned map supports all optional map operations that this map supports.
+         *
+         * The returned map will throw an `IllegalArgumentException` on an attempt to insert a key outside its range.
+         *
+         * @param fromKey the from key
+         * @return a view of the portion of this map
+         * @throws ClassCastException         if the from is not compatible with this map's comparator (or, no comparator, using natural ordering)
+         *                                    Implementations may, but are not required to, throw this exception
+         * @throws NullPointerException       if fromKey or toKey is null and this map does not permit null keys
+         * @throws IllegalArgumentException   if this map itself has a restricted range, and fromKey or toKey lies outside the bounds of the range
+         */
+        @Override
+        public SortedMap<K, V> tailMap(K fromKey) {
+            return tailMap(fromKey, true);
         }
 
 
@@ -962,49 +990,907 @@ public class Chapter12 {
                     : node.getKey();      //may null if this tree permit null key
         }
 
-        @Override
-        public NavigableMap<K, V> descendingMap() {
-            return null;  //todo
-        }
-
+        /**
+         * 返回 this map 中 keys 的 NavigableSet view，which iterator 迭代 keys in "按 key 排序过的 key 序列".
+         *
+         * The set is backed by the map, so changes to the map are reflected in the set, and 反之亦然.
+         *
+         * 如果一个迭代器在穿越 set 期间，this map 被修改了(排除迭代器的 remove() 方法产生的修改)，迭代的结果是未定义的.
+         *
+         * the set 支持元素删除：Iterator#remove, Set#remove, Set#removeAll, Set#tetainAll, Set#clear 方法，不支持元素添加：Set#add, Set#addAll 方法.
+         *
+         * @return a navigable set view of the keys in this map
+         */
         @Override
         public NavigableSet<K> navigableKeySet() {
-            return null;  //todo
+            return fullMapView.navigableKeySet();
         }
 
+        /**
+         * 返回 this map 中 keys 的 reverse order NavigableSet view，which iterator 迭代 keys in "按 key 排序过的 key 序列"的反序.
+         *
+         * The set is backed by the map, so changes to the map are reflected in the set, and 反之亦然.
+         *
+         * 如果一个迭代器在穿越 set 期间，this map 被修改了(排除迭代器的 remove() 方法产生的修改)，迭代的结果是未定义的.
+         *
+         * the set 支持元素删除：Iterator#remove, Set#remove, Set#removeAll, Set#tetainAll, Set#clear 方法，不支持元素添加：Set#add, Set#addAll 方法.
+         *
+         * @return a reverse order navigable set view of the keys in this map
+         */
         @Override
         public NavigableSet<K> descendingKeySet() {
-            return null;  //todo
+            return fullMapView.descendingKeySet();
         }
 
+        NavigableMap<K, V> fullMapView = new AscendingMapView();
+        /**
+         * Returns a reverse order view of the mappings contained in this map.
+         *
+         * The descending map is backed by this map, so changes to the map are reflected in the descending map, and 反之亦然.
+         *
+         * If either map is modified while an iteration over a collection view of either map is in progress (except through the iterator's own remove), the results of the iteration are undefined.
+         *
+         * The returned map has an ordering equivalent to `Collections.reverseOrder(comparator())`.
+         *
+         * The expression `m.descendingMap().descendingMap()` returns a view essentially equivalent to m.
+         *
+         * @return a reverse order view of this map
+         */
+        @Override
+        public NavigableMap<K, V> descendingMap() {
+            return fullMapView.descendingMap();
+        }
+
+        private class SetView extends AbstractSet<K> implements NavigableSet<K> {
+            MapView mapView;
+
+            SetView(MapView mapView) {
+                this.mapView = mapView;
+            }
+
+            @Override
+            public int size() {
+                return mapView.size();
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return mapView.isEmpty();
+            }
+
+            @Override
+            public boolean contains(Object k) {
+                return mapView.containsKey(k);
+            }
+
+            @Override
+            public boolean remove(Object k) {
+                Node<K, V> node = BSTree.this.entry(k);
+                if(node != null) {
+                    BSTree.this.removeNode(node);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void clear() {
+                mapView.clear();
+            }
+
+            @Override
+            public Iterator<K> iterator() {
+                return new KeyIterator(mapView.createEntryIterator());
+            }
+
+            @Override
+            public Iterator<K> descendingIterator() {
+                return descendingSet().iterator();
+            }
+
+            @Override
+            public NavigableSet<K> descendingSet() {
+                return mapView.descendingKeySet();
+            }
+
+            @Override
+            public Spliterator<K> spliterator() {
+                return null;  //todo
+            }
+
+            @Override
+            public Comparator<? super K> comparator() {
+                return mapView.comparator();
+            }
+
+            @Override
+            public K first() {
+                return mapView.firstKey();
+            }
+
+            @Override
+            public K last() {
+                return mapView.lastKey();
+            }
+
+            @Override
+            public SortedSet<K> subSet(K fromElement, K toElement) {
+                return subSet(fromElement, true, toElement, false);
+            }
+
+            @Override
+            public SortedSet<K> headSet(K toElement) {
+                return headSet(toElement, false);
+            }
+
+            @Override
+            public SortedSet<K> tailSet(K fromElement) {
+                return tailSet(fromElement, true);
+            }
+
+            @Override
+            public K pollFirst() {
+                Entry<K, V> node = mapView.pollFirstEntry();
+                return node == null
+                        ? null
+                        : node.getKey();
+            }
+
+            @Override
+            public K pollLast() {
+                Entry<K, V> node = mapView.pollLastEntry();
+                return node == null
+                        ? null
+                        : node.getKey();
+            }
+
+            @Override
+            public K lower(K k) {
+                return mapView.lowerKey(k);
+            }
+
+            @Override
+            public K floor(K k) {
+                return mapView.floorKey(k);
+            }
+
+            @Override
+            public K ceiling(K k) {
+                return mapView.ceilingKey(k);
+            }
+
+            @Override
+            public K higher(K k) {
+                return mapView.higherKey(k);
+            }
+
+            @Override
+            public NavigableSet<K> subSet(K fromElement, boolean fromInclusive, K toElement, boolean toInclusive) {
+                return new SetView((MapView) mapView.subMap(fromElement, fromInclusive, toElement, toInclusive));
+            }
+
+            @Override
+            public NavigableSet<K> headSet(K toElement, boolean inclusive) {
+                return new SetView((MapView) mapView.headMap(toElement, inclusive));
+            }
+
+            @Override
+            public NavigableSet<K> tailSet(K fromElement, boolean inclusive) {
+                return new SetView((MapView) mapView.tailMap(fromElement, inclusive));
+            }
+        }
+
+        /**
+         * Returns a view of the portion(部分) of this map whose keys range from fromKey to toKey, fromInclusive, toInclusive defines the bound.
+         *
+         * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+         *
+         * The returned map supports all optional map operations that this map supports.
+         *
+         * The returned map will throw an `IllegalArgumentException` on an attempt to insert a key outside its range.
+         *
+         * @param fromKey fromKey
+         * @param fromInclusive fromInclusive
+         * @param toKey toKey
+         * @param toInclusive toInclusive
+         * @return a view of the portion of this map
+         * @throws ClassCastException         if fromKey and toKey cannot be compared to one another using this map's comparator (or, no comparator, using natural ordering)
+         *                                    Implementations may, but are not required to, throw this exception
+         * @throws NullPointerException       if fromKey or toKey is null and this map does not permit null keys
+         * @throws IllegalArgumentException   if fromKey is greater than toKey;
+         *                                 or if this map itself has a restricted range, and fromKey or toKey lies outside the bounds of the range
+         */
         @Override
         public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
-            return null;  //todo
+            return fullMapView.subMap(fromKey, fromInclusive, toKey, toInclusive);
         }
 
+        /**
+         * Returns a view of the portion(部分) of this map whose keys < toKey, or <= toKey when inclusive is true.
+         *
+         * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+         *
+         * The returned map supports all optional map operations that this map supports.
+         *
+         * The returned map will throw an `IllegalArgumentException` on an attempt to insert a key outside its range.
+         *
+         * @param toKey toKey
+         * @param inclusive inclusive
+         * @return a view of the portion of this map
+         * @throws ClassCastException         if the toKey is not compatible with this map's comparator (or, no comparator, using natural ordering)
+         *                                    Implementations may, but are not required to, throw this exception
+         * @throws NullPointerException       if fromKey or toKey is null and this map does not permit null keys
+         * @throws IllegalArgumentException   if this map itself has a restricted range, and fromKey or toKey lies outside the bounds of the range
+         */
         @Override
         public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
-            return null;  //todo
+            return fullMapView.headMap(toKey, inclusive);
         }
 
+        /**
+         * Returns a view of the portion(部分) of this map whose keys > fromKey, or >= fromKey when inclusive is true.
+         *
+         * The returned map is backed by this map, so changes in the returned map are reflected in this map, and vice-versa.
+         *
+         * The returned map supports all optional map operations that this map supports.
+         *
+         * The returned map will throw an `IllegalArgumentException` on an attempt to insert a key outside its range.
+         *
+         * @param fromKey fromKey
+         * @param inclusive inclusive
+         * @return a view of the portion of this map
+         * @throws ClassCastException         if the fromKey is not compatible with this map's comparator (or, no comparator, using natural ordering)
+         *                                    Implementations may, but are not required to, throw this exception
+         * @throws NullPointerException       if fromKey or toKey is null and this map does not permit null keys
+         * @throws IllegalArgumentException   if this map itself has a restricted range, and fromKey or toKey lies outside the bounds of the range
+         */
         @Override
         public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
-            return null;  //todo
+            return fullMapView.tailMap(fromKey, inclusive);
         }
 
-        @Override
-        public SortedMap<K, V> subMap(K fromKey, K toKey) {
-            return null;  //todo
+        private abstract class MapView extends AbstractMap<K,V> implements NavigableMap<K,V> {
+            K fromKey;
+            boolean fromInclusive;
+            boolean usingFromKey;
+            K toKey;
+            boolean toInclusive;
+            boolean usingToKey;
+
+            MapView() {
+                this.usingFromKey = this.usingToKey = false;
+            }
+
+            MapView(K fromKey, boolean fromInclusive, boolean usingFromKey,
+                    K toKey, boolean toInclusive, boolean usingToKey) {
+                check(fromKey, usingFromKey, toKey, usingToKey);
+                this.usingFromKey = usingFromKey;
+                this.usingToKey = usingToKey;
+
+                this.fromKey = fromKey;
+                this.fromInclusive = fromInclusive;
+                this.toKey = toKey;
+                this.toInclusive = toInclusive;
+            }
+
+            private void check(K k1, boolean usingFromKey, K k2, boolean usingToKey) {
+                if(usingFromKey && usingToKey) {
+                    int r = BSTree.this.compare(k1, k2);
+                    if(BSTree.this.comparator == null && k2 == null)
+                        throw new NullPointerException("key is not allowed null for natural ordering");
+
+                    if(r > 0)
+                        throw new IllegalArgumentException("the fromKey is greater than toKey");
+                } else if(usingFromKey) {
+                    BSTree.this.compare(k1, k1);
+                } else if(usingToKey) {
+                    BSTree.this.compare(k2, k2);
+                }
+            }
+
+            @Override
+            public int size() {
+                if(!usingFromKey && !usingToKey)
+                    return BSTree.this.size();
+
+                int count = 0;
+                for (Entry<K, V> kvEntry : entrySet()) {
+                    count++;
+                }
+                return count;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return size() == 0;
+            }
+
+            boolean inRange(Object key) {
+                return inLowerBound(key) && inUpperBound(key);
+            }
+
+            boolean inLowerBound(Object key) {
+                int r;
+                return !usingFromKey || (r = BSTree.this.compare(key, fromKey)) > 0 || (r == 0 && fromInclusive);
+            }
+
+            boolean inUpperBound(Object key) {
+                int r;
+                return !usingToKey || (r = BSTree.this.compare(key, toKey)) < 0 || ( r == 0 && toInclusive);
+            }
+
+            @Override
+            public boolean containsKey(Object key) {
+                return inRange(key) && BSTree.this.containsKey(key);
+            }
+
+            @Override
+            public boolean containsValue(Object value) {
+                for(Entry<K, V> entry : entrySet()) {
+                    if(Objects.equals(value, entry.getValue()))
+                        return true;
+                }
+                return false;
+            }
+
+            @Override
+            public V get(Object key) {
+                return inRange(key)
+                        ? BSTree.this.get(key)
+                        : null;
+            }
+
+            @Override
+            public V put(K key, V value) {
+                if(!inRange(key))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return BSTree.this.put(key, value);
+            }
+
+            @Override
+            public V remove(Object key) {
+                return inRange(key)
+                        ? BSTree.this.remove(key)
+                        : null;
+            }
+
+            @Override
+            public void putAll(Map<? extends K, ? extends V> m) {
+                BSTree.this.putAll(m);
+            }
+
+            @Override
+            public void clear() {
+                if(!usingFromKey && !usingToKey) {
+                    BSTree.this.clear();
+                    return;
+                }
+                Iterator<Entry<K, V>> it = entrySet().iterator();
+                while(it.hasNext()) {
+                    it.next();
+                    it.remove();
+                }
+            }
+
+            @Override
+            public V getOrDefault(Object key, V defaultValue) {
+                return inRange(key)
+                        ? BSTree.this.getOrDefault(key, defaultValue)
+                        : defaultValue;
+            }
+
+            @Override
+            public V putIfAbsent(K key, V value) {
+                if(!inRange(key))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return BSTree.this.putIfAbsent(key, value);
+            }
+
+            @Override
+            public boolean remove(Object key, Object value) {
+                return inRange(key) && BSTree.this.remove(key, value);
+            }
+
+            @Override
+            public boolean replace(K key, V oldValue, V newValue) {
+                return inRange(key) && BSTree.this.replace(key, oldValue, newValue);
+            }
+
+            @Override
+            public V replace(K key, V value) {
+                return inRange(key)
+                        ? BSTree.this.replace(key, value)
+                        : null;
+            }
+
+            Set<K> keySet;
+            @Override
+            public Set<K> keySet() {
+                if(keySet == null) {
+                    keySet = new AbstractSet<K>() {
+                        @Override
+                        public Iterator<K> iterator() {
+                            return new KeyIterator(MapView.this.entrySet().iterator());
+                        }
+
+                        @Override
+                        public Spliterator<K> spliterator() {
+                            return null;  //todo
+                        }
+
+                        @Override
+                        public int size() {
+                            return MapView.this.size();
+                        }
+
+                        @Override
+                        public boolean isEmpty() {
+                            return MapView.this.isEmpty();
+                        }
+
+                        @Override
+                        public boolean contains(Object k) {
+                            return MapView.this.containsKey(k);
+                        }
+
+                        @Override
+                        public boolean remove(Object k) {
+                            if(!inRange(k)) return false;
+                            Node<K, V> node = BSTree.this.entry(k);
+                            if(node != null) {
+                                BSTree.this.removeNode(node);
+                                return true;
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public void clear() {
+                            MapView.this.clear();
+                        }
+                    };
+                }
+                return keySet;
+            }
+
+            @Override
+            public Collection<V> values() {
+                return super.values();
+            }
+
+            abstract Iterator<Entry<K, V>> createEntryIterator();
+
+            Set<Entry<K, V>> entrySet;
+            @Override
+            public Set<Entry<K, V>> entrySet() {
+                if(entrySet == null) {
+                    entrySet = new AbstractSet<Entry<K, V>>() {
+
+                        @Override
+                        public Iterator<Entry<K, V>> iterator() {
+                            return MapView.this.createEntryIterator();
+                        }
+
+                        @Override
+                        public Spliterator<Entry<K, V>> spliterator() {
+                            return null;  //todo
+                        }
+
+                        @Override
+                        public int size() {
+                            return MapView.this.size();
+                        }
+
+                        @Override
+                        public boolean isEmpty() {
+                            return MapView.this.isEmpty();
+                        }
+
+                        @Override
+                        public boolean contains(Object entry) {
+                            if(!(entry instanceof BSTree.Node)) return false;
+                            BSTree.Node<?, ?> node = (BSTree.Node<?, ?>) entry;
+                            if(!inRange(node.key)) return false;
+
+                            BSTree.Node<?, ?> e = BSTree.this.entry(node.key);
+                            return e != null && Objects.equals(e.value, node.value);
+                        }
+
+                        @Override
+                        public boolean remove(Object entry) {
+                            if(!(entry instanceof BSTree.Node)) return false;
+                            BSTree.Node<?, ?> node = (BSTree.Node<?, ?>) entry;
+                            if(!inRange(node.key)) return false;
+
+                            Node<K, V> e = BSTree.this.entry(node.key);
+                            if(e != null && Objects.equals(node.value, e.value)) {
+                                BSTree.this.removeNode(e);
+                                return true;
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public void clear() {
+                            MapView.this.clear();
+                        }
+                    };
+                }
+                return entrySet;
+            }
+
+            @Override
+            public Entry<K, V> pollFirstEntry() {
+                Entry<K, V> entry = firstEntry();
+                if(entry != null) {
+                    BSTree.this.removeNode((Node<K, V>) entry);
+                    return entry;
+                }
+                return null;
+            }
+
+            @Override
+            public Entry<K, V> pollLastEntry() {
+                Entry<K, V> entry = lastEntry();
+                if(entry != null) {
+                    BSTree.this.removeNode((Node<K, V>) entry);
+                    return entry;
+                }
+                return null;
+            }
+
+            @Override
+            public SortedMap<K, V> subMap(K fromKey, K toKey) {
+                return subMap(fromKey, true, toKey, false);
+            }
+
+            @Override
+            public SortedMap<K, V> headMap(K toKey) {
+                return headMap(toKey, false);
+            }
+
+            @Override
+            public SortedMap<K, V> tailMap(K fromKey) {
+                return tailMap(fromKey, true);
+            }
+
+            @Override
+            public K lowerKey(K key) {
+                Entry<K, V> e = lowerEntry(key);
+                return e == null
+                        ? null
+                        : e.getKey();
+            }
+
+            @Override
+            public K floorKey(K key) {
+                Entry<K, V> e = floorEntry(key);
+                return e == null
+                        ? null
+                        : e.getKey();
+            }
+
+            @Override
+            public K ceilingKey(K key) {
+                Entry<K, V> e = ceilingEntry(key);
+                return e == null
+                        ? null
+                        : e.getKey();
+            }
+
+            @Override
+            public K higherKey(K key) {
+                Entry<K, V> e = higherEntry(key);
+                return e == null
+                        ? null
+                        : e.getKey();
+            }
+
+            NavigableMap<K, V> descendingMap;
+
+            void setDescendingMap(NavigableMap<K, V> descendingMap) {
+                this.descendingMap = descendingMap;
+            }
+
+            NavigableSet<K> navigableKeySet;
+
+            @Override
+            public NavigableSet<K> navigableKeySet() {
+                if(navigableKeySet == null)
+                    navigableKeySet = new SetView(this);
+
+                return navigableKeySet;
+            }
+
+            @Override
+            public NavigableSet<K> descendingKeySet() {
+                return this.descendingMap().navigableKeySet();
+            }
         }
 
-        @Override
-        public SortedMap<K, V> headMap(K toKey) {
-            return null;  //todo
+        private class DescendingMapView extends MapView {
+
+            DescendingMapView() {}
+
+            DescendingMapView(K fromKey, boolean fromInclusive, boolean usingFromKey,
+                              K toKey, boolean toInclusive, boolean usingToKey) {
+                super(fromKey, fromInclusive, usingFromKey, toKey, toInclusive, usingToKey);
+            }
+
+            @Override
+            Iterator<Entry<K, V>> createEntryIterator() {
+                return new DescendingEntryIterator((Node<K, V>) first(), (Node<K, V>) fence());
+            }
+
+            Entry<K, V> first() {
+                return !usingToKey ? BSTree.this.lastEntry()
+                        : toInclusive ? BSTree.this.floorEntry(toKey)
+                        : BSTree.this.lowerEntry(toKey);
+            }
+
+            Entry<K, V> fence() {
+                return !usingFromKey ? null
+                        : fromInclusive ? BSTree.this.lowerEntry(fromKey)
+                        : BSTree.this.floorEntry(fromKey);
+            }
+
+            @Override
+            public Comparator<? super K> comparator() {
+                return Collections.reverseOrder(BSTree.this.comparator());
+            }
+
+            @Override
+            public K firstKey() {
+                return !usingToKey ? BSTree.this.lastKey()
+                        : toInclusive ? ceilingKey(toKey)
+                        : higherKey(toKey);
+            }
+
+            @Override
+            public K lastKey() {
+                return !usingFromKey ? BSTree.this.firstKey()
+                        : fromInclusive ? floorKey(fromKey)
+                        : lowerKey(fromKey);
+            }
+
+            @Override
+            public Entry<K, V> firstEntry() {
+                return !usingToKey ? BSTree.this.lastEntry()
+                        : toInclusive ? ceilingEntry(toKey)
+                        : higherEntry(toKey);
+            }
+
+            @Override
+            public Entry<K, V> lastEntry() {
+                return !usingFromKey ? BSTree.this.firstEntry()
+                        : fromInclusive ? floorEntry(fromKey)
+                        : lowerEntry(fromKey);
+            }
+
+            @Override
+            public Entry<K, V> lowerEntry(K key) {
+                Entry<K, V> e = BSTree.this.higherEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public Entry<K, V> floorEntry(K key) {
+                Entry<K, V> e = BSTree.this.ceilingEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public Entry<K, V> ceilingEntry(K key) {
+                Entry<K, V> e = BSTree.this.floorEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public Entry<K, V> higherEntry(K key) {
+                Entry<K, V> e = BSTree.this.lowerEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public NavigableMap<K, V> descendingMap() {
+                if(descendingMap == null) {
+                    descendingMap = new AscendingMapView(fromKey, fromInclusive, usingFromKey,
+                            toKey, toInclusive, usingToKey);
+                    ((AscendingMapView) descendingMap).setDescendingMap(this);
+                }
+                return descendingMap;
+            }
+
+            @Override
+            public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+                if(!inRange(fromKey) || !inRange(toKey))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return new DescendingMapView(fromKey, fromInclusive, true, toKey, toInclusive, true);
+            }
+
+            @Override
+            public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+                if(!inRange(toKey))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return new DescendingMapView(null, false, false, toKey, inclusive, true);
+            }
+
+            @Override
+            public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+                if(!inRange(fromKey))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return new DescendingMapView(fromKey, inclusive, true, null, false, false);
+            }
         }
 
-        @Override
-        public SortedMap<K, V> tailMap(K fromKey) {
-            return null;  //todo
+        private class AscendingMapView extends MapView {
+
+            AscendingMapView() {}
+
+            AscendingMapView(K fromKey, boolean fromInclusive, boolean usingFromKey,
+                             K toKey, boolean toInclusive, boolean usingToKey) {
+                super(fromKey, fromInclusive, usingFromKey, toKey, toInclusive, usingToKey);
+            }
+
+            @Override
+            Iterator<Entry<K, V>> createEntryIterator() {
+                return new AscendingEntryIterator((Node<K, V>) first(), (Node<K, V>) fence());
+            }
+
+            Entry<K, V> first() {
+                return !usingFromKey ? BSTree.this.firstEntry()
+                        : fromInclusive ? BSTree.this.ceilingEntry(fromKey)
+                        : BSTree.this.higherEntry(toKey);
+            }
+
+            Entry<K, V> fence() {
+                return !usingToKey ? null
+                        : toInclusive ? BSTree.this.higherEntry(toKey)
+                        : BSTree.this.ceilingEntry(toKey);
+            }
+
+            @Override
+            public Comparator<? super K> comparator() {
+                return BSTree.this.comparator();
+            }
+
+            @Override
+            public K firstKey() {
+                return !usingFromKey ? BSTree.this.firstKey()
+                        : fromInclusive ? ceilingKey(fromKey)
+                        : higherKey(fromKey);
+            }
+
+            @Override
+            public K lastKey() {
+                return !usingToKey ? BSTree.this.lastKey()
+                        : toInclusive ? floorKey(toKey)
+                        : lowerKey(toKey);
+            }
+
+            @Override
+            public Entry<K, V> firstEntry() {
+                return !usingFromKey ? BSTree.this.firstEntry()
+                        : fromInclusive ? ceilingEntry(fromKey)
+                        : higherEntry(fromKey);
+            }
+
+            @Override
+            public Entry<K, V> lastEntry() {
+                return !usingToKey ? BSTree.this.lastEntry()
+                        : toInclusive ? floorEntry(toKey)
+                        : lowerEntry(toKey);
+            }
+
+            @Override
+            public Entry<K, V> lowerEntry(K key) {
+                Entry<K, V> e = BSTree.this.lowerEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public Entry<K, V> floorEntry(K key) {
+                Entry<K, V> e = BSTree.this.floorEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public Entry<K, V> ceilingEntry(K key) {
+                Entry<K, V> e = BSTree.this.ceilingEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public Entry<K, V> higherEntry(K key) {
+                Entry<K, V> e = BSTree.this.higherEntry(key);
+                return e == null || !inRange(e.getKey())
+                        ? null
+                        : e;
+            }
+
+            @Override
+            public NavigableMap<K, V> descendingMap() {
+                if(descendingMap == null) {
+                    descendingMap = new DescendingMapView(fromKey, fromInclusive, usingFromKey,
+                            toKey, toInclusive, usingToKey);
+                    ((DescendingMapView) descendingMap).setDescendingMap(this);
+                }
+                return descendingMap;
+            }
+
+            @Override
+            public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+                if(!inRange(fromKey) || !inRange(toKey))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return new AscendingMapView(fromKey, fromInclusive, true, toKey, toInclusive, true);
+            }
+
+            @Override
+            public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+                if(!inRange(toKey))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return new AscendingMapView(null, false, false, toKey, inclusive, true);
+            }
+
+            @Override
+            public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+                if(!inRange(fromKey))
+                    throw new IllegalArgumentException("key is not in range");
+
+                return new AscendingMapView(fromKey, inclusive, true, null, false, false);
+            }
+        }
+
+        static class Node<K, V> implements Entry<K, V> {
+            /*final*/ K key;
+            V value;
+
+            Node<K, V> parent;
+            Node<K, V> left, right;
+
+            Node(K key, V value, Node<K, V> parent) {
+                this.key = key;
+                this.value = value;
+                this.parent = parent;
+            }
+
+            @Override
+            public K getKey() {
+                return this.key;
+            }
+
+            @Override
+            public V getValue() {
+                return this.value;
+            }
+
+            @Override
+            public V setValue(V value) {
+                V oldV = this.value;
+                this.value = value;
+                return oldV;
+            }
         }
 
 
@@ -1281,37 +2167,6 @@ public class Chapter12 {
             }
             return null;
         }
-
-        static class Node<K, V> implements Entry<K, V> {
-            /*final*/ K key;
-            V value;
-
-            Node<K, V> parent;
-            Node<K, V> left, right;
-
-            Node(K key, V value, Node<K, V> parent) {
-                this.key = key;
-                this.value = value;
-                this.parent = parent;
-            }
-
-            @Override
-            public K getKey() {
-                return this.key;
-            }
-
-            @Override
-            public V getValue() {
-                return this.value;
-            }
-
-            @Override
-            public V setValue(V value) {
-                V oldV = this.value;
-                this.value = value;
-                return oldV;
-            }
-        }
     }
 
     public interface Tree {
@@ -1377,7 +2232,40 @@ public class Chapter12 {
         }
         System.out.println();
         tree.BFS();
-        System.out.println("--------------------------------------------set view----------------------------------------");
+
+        System.out.println("--------------------------------------------entry set---------------------------------------");
+
+        NavigableMap<Integer, Integer> fullReverseMapView = tree.descendingMap();
+        System.out.println(fullReverseMapView.descendingMap().descendingMap() == fullReverseMapView);  //true
+
+        NavigableSet<Integer> fullSetView = tree.navigableKeySet();
+        System.out.println(fullSetView == fullReverseMapView.descendingKeySet());  //true
+
+        NavigableSet<Integer> fullReverseSetView = tree.descendingKeySet();
+        System.out.println(fullReverseSetView == fullReverseMapView.navigableKeySet());  //true
+
+        NavigableMap<Integer, Integer> subMapView =
+                tree.subMap(11, true, 23, false);
+        for(Map.Entry<Integer, Integer> entry : subMapView.entrySet()) {
+            System.out.print(entry.getKey() + " ");
+        }
+        System.out.println("subMapView");
+
+        NavigableSet<Integer> subSetView = subMapView.navigableKeySet();
+        for(Integer key : subSetView) {
+            System.out.print(key + " ");
+        }
+        System.out.println("subSetView");
+
+        NavigableSet<Integer> subReverseSetView = subSetView.descendingSet();
+        System.out.println(subReverseSetView.descendingSet() == subSetView);  //true
+
+        for(Integer key : subReverseSetView) {
+            System.out.print(key + " ");
+        }
+        System.out.println("subReverseSetView");
+
+        System.out.println("--------------------------------------------MapView、SetView--------------------------------");
     }
 
 
