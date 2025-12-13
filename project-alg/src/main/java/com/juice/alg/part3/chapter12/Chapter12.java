@@ -2371,10 +2371,11 @@ public class Chapter12 {
     //练习12.3-6
     /* 修改 removeNode(Node<K, V>:
          if (t.left != null && t.right != null) {
-            Node<K, V> predecessor = firstKey_R_T_L(t.left);  //not null
-            this.exchange(t, predecessor);
-            //t = predecessor;  //needed for exchange 的简便写法
-        }
+            Node<K, V> ps = firstKey_R_T_L(t.left);  //not null
+            t.key = ps.key;
+            t.value = ps.value;
+            t = ps;
+         }
      */
 
 }
