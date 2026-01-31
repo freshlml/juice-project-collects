@@ -8,7 +8,7 @@ import java.util.HashMap;
  *  其中 byte, short, int, long 分别以 8-bit, 16-bit, 32-bit and 64-bit signed two's-complement(二进制补码)存储整数值本身。
  *  char 类型中存储的是 16-bits unsigned integers(格式当然也是二进制补码)，其代表的意义是 UTF-16 的代码单元。
  *
- *第一: 以long类型为例，long类型的范围限定为[-2^63, 2^63-1]
+ *第一: 以 long 类型为例，long 类型的范围限定为 [-2^63, 2^63-1]
  * 十进制 -2^63            -2^63 + 1           -2^63 + 2        ...    -1                 0                   1               ...   2^63-2            2^63-1
  * 原码  1,000 ,,, 0000   1,111 ,,, 1111      1,111 ,,, 1110   ...    1,000 ,,, 0001     0,000 ,,, 0000      0,000 ,,, 0001  ...   0,111 ,,, 1110    0,111 ,,, 1111
  * 补码  1,000 ,,, 0000   1,000 ,,, 0001      1,000 ,,, 0010   ...    1,111 ,,, 1111     0,000 ,,, 0000      0,000 ,,, 0001  ...   0,111 ,,, 1110    0,111 ,,, 1111
@@ -39,8 +39,8 @@ import java.util.HashMap;
  *  2. 在数轴上理解乘法: 镜像法 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6
  *                        1. a=3,  b=2
  *                        2. a=-3, b=2
- *                        3. a=3,  b=-2 ==> a=-3, b=2
- *                        4. a=-3, b=-2 ==> a=3,  b=2
+ *                        3. a=3,  b=-2 ==> a=-3, b=2. 等价代换
+ *                        4. a=-3, b=-2 ==> a=3,  b=2. 等价代换
  *
  *  note: Long.MIN_VALUE 乘 一个整数, 只有两个结果: Long.MIN_VALUE 或 0
  *
@@ -55,10 +55,10 @@ import java.util.HashMap;
  *      例外: -Long.MIN_VALUE / -1   ==   -Long.MIN_VALUE
  *
  *  2. floordiv, floormod: 除数、被除数异号，mod 结果不等于0，并且与被除数异号时，产生一个借位。fresh/.../11_Month
- *  3. 在数轴上理解 div，mod 运算: |除数| 按 |被除数| 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
+ *  3. 在数轴上理解 div，mod 运算: "除数" 按 "被除数" 分成了几组，不够一组的数量余下多少 (div, mod 运算不会 overflow 或 underflow)
  *  4. 数学中 ÷ 与 整数 div(/) 的关系可以描述为: a ÷ b <==> a/b + (a%b) ÷ b
  *
- *第七: overflow 判断
+ *第七: 常见 overflow 判断方法
  * 1. 将 "938" 转化为数字
  *   1). 最低有效位
  *       0  + 8*10^0 = 8
@@ -70,11 +70,11 @@ import java.util.HashMap;
  *       93*10 + 8 = 938
  *       如上每一步的乘法运算，加法运算皆可能 overflow
  * 2. a>0, a*10 的 overflow 判断
- *   1). a*10 如果发生 overflow, 则将得到一个与 a*10 在数学上的运算结果不同的值。该值可能大于a, 小于a, 等于a
+ *   1). a*10 如果发生 overflow, 则将得到一个与 a*10 在数学上的运算结果不同的值。该值可能大于 a, 小于 a, 等于 a
  *   2). 使用 a <= MAX / 10 来判断 a*10 是否 overflow，其中 MAX / 10 不会 overflow
  * 3. a>0, b>0, a+b 的 overflow 判断
- *   1). a+b 如果发生 overflow, 则将得到一个与 a+b 在数学上的运算结果不同的值。该值小于a
- *   2). 使用 a <= MAX - b 来判断 a+b 是否 overflow，其中 MAX - b 不会 overflow
+ *   1). a + b 如果发生 overflow, 则将得到一个与 a + b 在数学上的运算结果不同的值。该值小于 a
+ *   2). 使用 a <= MAX - b 来判断 a + b 是否 overflow，其中 MAX - b 不会 overflow
  * 4. a>0, b>0
  *   1). a+b, may overflow
  *   2). a-b, no overflow
