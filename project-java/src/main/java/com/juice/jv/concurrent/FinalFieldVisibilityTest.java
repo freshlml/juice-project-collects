@@ -13,7 +13,7 @@ public class FinalFieldVisibilityTest {
     //  1. 在构造函数内对一个 final 域的写入，与随后把这个构造函数的引用赋值给一个引用变量，两个操作不能重排序
     //     x.finalField = v; StoreStore; sharedRef = x;
     //  2. 初次读一个包含 final 域对象的引用，和随后初次读这个 final 域，这两个操作不能重排序
-    //     x = sharedRef; ... ; LoadLoad; i = x.finalField;
+    //     x = sharedRef; ... LoadLoad; i = x.finalField;
     //
     //插入内存屏障指令的位置: 一般在构造函数结束之前，也可能在构造函数之中，总之要保证，其他线程看到该构造函数的引用之前插入内存屏障指令
 

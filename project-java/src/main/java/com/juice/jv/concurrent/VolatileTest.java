@@ -111,7 +111,7 @@ load-load barrier, load-store barrier
 //1.If Thread A writes to a volatile variable and Thread B subsequently(随后地) reads the same volatile variable,
 //  then all variables visible to Thread A before writing the volatile variable,
 //  will also be visible to Thread B after it has read the volatile variable.
-//2.If Thread A reads a volatile variable, then all all variables visible to Thread A
+//2.If Thread A reads a volatile variable, then all variables visible to Thread A
 //  when reading the volatile variable will also be re-read from main memory.
 
 @SuppressWarnings("unused")
