@@ -81,11 +81,8 @@ public class Chapter2 {
 
     }
 
-
     public static void merge_sort(int[] a) {
         if(a == null) return;
-        if(a.length == 0 || a.length == 1) return;
-
         merge_sort(a, 0, a.length);
     }
     /**
@@ -107,8 +104,9 @@ public class Chapter2 {
      *注: C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
      */
     public static void merge_sort(int[] a, int begin, int end) {
+        //assert a != null
         int n = end - begin;
-        if(n == 1) return;
+        if(n <= 1) return;
 
         int mi = begin + n/2;   // ⌊n÷2⌋
         merge_sort(a, begin, mi);
@@ -117,21 +115,25 @@ public class Chapter2 {
         merge(a, begin, mi, end);
     }
     public static void merge(int[] a, int p, int q, int r) {
+        //assert a != null
+        //assert 0 <= p <= q <= r <= a.length
+        int[] left = new int[q-p];   //q-p may 0
+        System.arraycopy(a, p, left, 0, left.length);
+        int[] right = new int[r-q];  //r-q may 0
+        System.arraycopy(a, q, right, 0, right.length);
 
-        /*for(int i=p, j=q; i<j && j<r; ) {
+        for(int k=p, i=0, j=0; k < r; k++) {
 
-            if(a[i] >= a[j]) {
-                int t = a[j];
-                for(int l=j; l>i; l--) {
-                    a[l] = a[l-1];
-                }
-                a[i] = t;
+            if(j >= right.length || (i < left.length && left[i] <= right[j])) {
+                a[k] = left[i];
+                i++;
+            } else {
+                a[k] = right[j];
                 j++;
             }
-            i++;
-        }*/
+        }
 
-        int[] left = new int[q-p+1];
+        /*int[] left = new int[q-p+1];
         left[left.length-1] = Integer.MAX_VALUE;
         int[] right = new int[r-q+1];
         right[right.length-1] = Integer.MAX_VALUE;
@@ -146,27 +148,19 @@ public class Chapter2 {
                 a[l] = left[i];
                 i++;
             }
-        }
+        }*/
 
-        /*int[] left = new int[q-p];
-        System.arraycopy(a, p, left, 0, left.length);
-
-        int[] right = new int[r-q];
-        System.arraycopy(a, q, right, 0, right.length);
-
-        for(int i = 0, j = 0, k = p; k < r; k++) {
-            if(j == right.length || (i != left.length && left[i] < right[j])) {
-                a[k] = left[i];
-                i++;
-            } else if(i == left.length || left[i] > right[j]) {
-                a[k] = right[j];
-                j++;
-            } else {  //j != right.length && i != left.length && left[i] == right[j]
-                a[k] = left[i];
-                i++;
-                a[++k] = right[j];
+        /*
+        for(int i=p, j=q; i<j && j<r; ) {
+            if(a[i] >= a[j]) {
+                int t = a[j];
+                for(int l=j; l>i; l--) {
+                    a[l] = a[l-1];
+                }
+                a[i] = t;
                 j++;
             }
+            i++;
         }*/
     }
 
