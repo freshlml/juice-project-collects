@@ -1,1 +1,1 @@
-juice
+groupId: com.fresh.juice

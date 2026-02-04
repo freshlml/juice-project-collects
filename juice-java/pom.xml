@@ -3,17 +3,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>com.juice</groupId>
+        <groupId>com.fresh.juice</groupId>
         <artifactId>juice-project-collects</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.juice.mq</groupId>
-    <artifactId>project-mq</artifactId>
-    <version>${project-mq.version}</version>
+    <groupId>com.fresh.juice</groupId>
+    <artifactId>juice-java</artifactId>
+    <version>${juice-java.version}</version>
     <packaging>jar</packaging>
-    <name>project-mq</name>
+    <name>juice-java</name>
 
     <properties>
         <skipTests>true</skipTests>
@@ -26,20 +27,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-logappender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-openmessaging</artifactId>
+            <groupId>com.fresh</groupId>
+            <artifactId>fresh-core</artifactId>
         </dependency>
     </dependencies>
 

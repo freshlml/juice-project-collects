@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.juice</groupId>
+        <groupId>com.fresh.juice</groupId>
         <artifactId>juice-project-collects</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.juice.alg</groupId>
-    <artifactId>project-alg</artifactId>
-    <version>${project-alg.version}</version>
+    <groupId>com.fresh.juice</groupId>
+    <artifactId>juice-alg</artifactId>
+    <version>${juice-alg.version}</version>
     <packaging>jar</packaging>
-    <name>project-alg</name>
+    <name>juice-alg</name>
 
     <properties>
         <skipTests>true</skipTests>

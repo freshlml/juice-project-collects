@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.juice</groupId>
+        <groupId>com.fresh.juice</groupId>
         <artifactId>juice-project-collects</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.juice.jv</groupId>
-    <artifactId>project-java</artifactId>
-    <version>${project-java.version}</version>
+    <groupId>com.fresh.juice</groupId>
+    <artifactId>juice-reactor</artifactId>
+    <version>${juice-reactor.version}</version>
     <packaging>jar</packaging>
-    <name>project-java</name>
+    <name>juice-reactor</name>
 
     <properties>
         <skipTests>true</skipTests>
@@ -25,15 +25,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>com.fresh</groupId>
-            <artifactId>fresh-core</artifactId>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
         </dependency>
     </dependencies>
 

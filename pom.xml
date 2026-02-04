@@ -4,31 +4,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>project-reactor</module>
-        <module>project-mq</module>
-        <module>project-alg</module>
-        <module>project-spring</module>
-        <module>project-java</module>
+        <module>juice-reactor</module>
+        <module>juice-mq</module>
+        <module>juice-alg</module>
+        <module>juice-spring</module>
+        <module>juice-java</module>
     </modules>
 
     <parent>
-        <groupId>com.juice</groupId>
+        <groupId>com.fresh.juice</groupId>
         <artifactId>juice-common-parent</artifactId>
         <version>1.0.0</version>
         <relativePath/>
     </parent>
-    <groupId>com.juice</groupId>
+    <groupId>com.fresh.juice</groupId>
     <artifactId>juice-project-collects</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>juice-project-collects</name>
 
     <properties>
-        <project-reactor.version>1.0.0</project-reactor.version>
-        <project-mq.version>1.0.0</project-mq.version>
-        <project-alg.version>1.0.0</project-alg.version>
-        <project-spring.version>1.0.0</project-spring.version>
-        <project-java.version>1.0.0</project-java.version>
+        <juice-reactor.version>1.0.0</juice-reactor.version>
+        <juice-mq.version>1.0.0</juice-mq.version>
+        <juice-alg.version>1.0.0</juice-alg.version>
+        <juice-spring.version>1.0.0</juice-spring.version>
+        <juice-java.version>1.0.0</juice-java.version>
 
         <fresh-core.verison>1.0.0</fresh-core.verison>
     </properties>
@@ -36,7 +36,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.juice</groupId>
+                <groupId>com.fresh.juice</groupId>
                 <artifactId>juice-common-dependencies</artifactId>
                 <version>1.0.0</version>
                 <type>pom</type>
@@ -44,29 +44,29 @@
             </dependency>
 
             <dependency>
-                <groupId>com.juice.reactor</groupId>
-                <artifactId>project-reactor</artifactId>
-                <version>${project-reactor.version}</version>
+                <groupId>com.fresh.juice.reactor</groupId>
+                <artifactId>juice-reactor</artifactId>
+                <version>${juice-reactor.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.juice.mq</groupId>
-                <artifactId>project-mq</artifactId>
-                <version>${project-mq.version}</version>
+                <groupId>com.fresh.juice.mq</groupId>
+                <artifactId>juice-mq</artifactId>
+                <version>${juice-mq.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.juice.alg</groupId>
-                <artifactId>project-alg</artifactId>
-                <version>${project-alg.version}</version>
+                <groupId>com.fresh.juice.alg</groupId>
+                <artifactId>juice-alg</artifactId>
+                <version>${juice-alg.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.juice.spring</groupId>
-                <artifactId>project-spring</artifactId>
-                <version>${project-spring.version}</version>
+                <groupId>com.fresh.juice.spring</groupId>
+                <artifactId>juice-spring</artifactId>
+                <version>${juice-spring.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.juice.jv</groupId>
-                <artifactId>project-java</artifactId>
-                <version>${project-java.version}</version>
+                <groupId>com.fresh.juice.jv</groupId>
+                <artifactId>juice-java</artifactId>
+                <version>${juice-java.version}</version>
             </dependency>
 
             <dependency>
