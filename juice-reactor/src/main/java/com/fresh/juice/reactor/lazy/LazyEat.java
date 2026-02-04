@@ -1,4 +1,4 @@
-package com.juice.reactor.lazy;
+package com.fresh.juice.reactor.lazy;
 
 
 public class LazyEat {

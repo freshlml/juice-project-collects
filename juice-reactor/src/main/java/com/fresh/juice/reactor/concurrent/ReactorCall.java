@@ -1,4 +1,4 @@
-package com.juice.reactor.concurrent;
+package com.fresh.juice.reactor.concurrent;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

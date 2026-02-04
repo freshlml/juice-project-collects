@@ -1,4 +1,4 @@
-package com.juice.reactor.lazy;
+package com.fresh.juice.reactor.lazy;
 
 import java.util.function.Predicate;
 

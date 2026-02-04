@@ -1,4 +1,4 @@
-package com.juice.reactor.functional;
+package com.fresh.juice.reactor.functional;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;

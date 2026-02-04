@@ -1,4 +1,4 @@
-package com.juice.reactor.concurrent;
+package com.fresh.juice.reactor.concurrent;
 
 public class FutureShop {
     private String name;

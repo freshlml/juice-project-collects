@@ -1,4 +1,4 @@
-package com.juice.reactor.functional;
+package com.fresh.juice.reactor.functional;
 
 import java.util.*;
 import java.util.function.DoubleFunction;
