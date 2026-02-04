@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 public class ExpParser {
 
     /**
-     * @see com.fresh.common.exp.SimpleLogicExp
+     * @see com.fresh.core.exp.SimpleLogicExp
      */
 
     public static void main(String argv[]) {

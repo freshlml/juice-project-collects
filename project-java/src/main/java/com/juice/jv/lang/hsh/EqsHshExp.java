@@ -1,6 +1,6 @@
 package com.juice.jv.lang.hsh;
 
-import com.fresh.common.utils.ObjectUtils;
+import com.fresh.core.utils.ObjectUtils;
 
 public class EqsHshExp {
     private final int code;

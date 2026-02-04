@@ -14,7 +14,7 @@ public class PropertyResolverTest {
 
     /**
      * placeholder解析
-     * @see com.fresh.common.placeholder.SimplePlaceHolderResolver
+     * @see com.fresh.core.placeholder.SimplePlaceHolderResolver
      */
 
     public static void main(String argv[]) {

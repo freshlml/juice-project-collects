@@ -1,6 +1,6 @@
 package com.juice.jv.xml;
 
-import com.fresh.common.utils.ClazzUtils;
+import com.fresh.core.utils.ClazzUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
