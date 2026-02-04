@@ -30,7 +30,7 @@
         <project-spring.version>1.0.0</project-spring.version>
         <project-java.version>1.0.0</project-java.version>
 
-        <fresh-common.verison>1.0.0</fresh-common.verison>
+        <fresh-core.verison>1.0.0</fresh-core.verison>
     </properties>
 
     <dependencyManagement>
@@ -71,8 +71,8 @@
 
             <dependency>
                 <groupId>com.fresh</groupId>
-                <artifactId>fresh-common</artifactId>
-                <version>${fresh-common.verison}</version>
+                <artifactId>fresh-core</artifactId>
+                <version>${fresh-core.verison}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

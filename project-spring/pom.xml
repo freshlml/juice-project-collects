@@ -64,7 +64,7 @@
 
         <dependency>
             <groupId>com.fresh</groupId>
-            <artifactId>fresh-common</artifactId>
+            <artifactId>fresh-core</artifactId>
         </dependency>
     </dependencies>
 
