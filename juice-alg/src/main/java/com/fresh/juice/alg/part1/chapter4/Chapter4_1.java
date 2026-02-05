@@ -29,7 +29,7 @@ public class Chapter4_1 {
         if(a == null || a.length == 0) return new SubArrayNode<>();
 
         int i = 0;
-        SubArrayNode<Integer> result = new SubArrayNode<>(a[0], i, i);
+        SubArrayNode<Integer> result = new SubArrayNode<>(a[0], i, i+1);
         for(; i < a.length; i++) {
             int accum = 0;
             for(int j=i; j < a.length; j++) {
@@ -37,7 +37,7 @@ public class Chapter4_1 {
                 if(result.v < accum) {
                     result.v = accum;
                     result.i = i;
-                    result.j = j;
+                    result.j = j+1;
                 }
             }
         }
@@ -49,8 +49,19 @@ public class Chapter4_1 {
 
         return fzMaxSubArray(a, 0, a.length);
     }
-    public static SubArrayNode<Integer> fzMaxSubArray(int[] a, int begin, int end) {
+    public static SubArrayNode<Integer> fzMaxSubArray(int[] a, int begin, int end, boolean newPos) {
+        if(a == null || a.length == 0) return new SubArrayNode<>();
 
+        SubArrayNode<Integer> max = fzMaxSubArray(a, begin, end);
+        if(newPos) {
+            max.setI(max.getI() - begin);
+            max.setJ(max.getJ() - begin);
+        }
+        return max;
+    }
+    static SubArrayNode<Integer> fzMaxSubArray(int[] a, int begin, int end) {
+        //assert a != null
+        //assert end - begin >= 1
         int n = end - begin;
         if(n == 1) return new SubArrayNode<>(a[begin], begin, end);
 
@@ -130,6 +141,10 @@ public class Chapter4_1 {
         //a = new int[] {-13, -3, -25, -1, -1, -5};
         SubArrayNode<Integer> fzSub = fzMaxSubArray(a);
         IntArrayTraversal.of(a).forEach(SubArrayNodeArrayPrinter.of(fzSub)::print);
+        System.out.println("##########################################################################################");
+
+        SubArrayNode<Integer> fzSub2 = fzMaxSubArray(a, 4, 11, true);
+        IntArrayTraversal.of(a, 4, 11).forEach(SubArrayNodeArrayPrinter.of(fzSub2)::print);
         System.out.println("##########################################################################################");
 
         IntArrayTraversal.of(a).forEach(SubArrayNodeArrayPrinter.of(new SubArrayNode<>(null, a.length, 7000))::print);
