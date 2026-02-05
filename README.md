@@ -9,8 +9,8 @@ juice 项目由多个程序（工程）组成：
 | juice-reactor | com.fresh.juice | juice-reactor | com.fresh.juice.reactor |
 | juice-spring  | com.fresh.juice | juice-spring | com.fresh.juice.spring |
 
-juice 项目下多个程序（工程）有相同的 groupId: com.fresh.juice，多个程序（工程）通过 artifactId 区分，artifactId 带有项目名称前缀。
-（工程名称一般与 artifactId 相同，打包名称默认为 artifactId-version）多个程序（工程）有不同的 package name。  
+juice 项目下多个程序（工程）有相同的 groupId: com.fresh.juice，多个程序（工程）通过 artifactId 区分，artifactId 带有项目名称前缀，
+工程名称一般与 artifactId 相同，打包名称默认为 artifactId-version。多个程序（工程）有不同的 package name。  
 
 juice-common-parent, juice-common-dependencies 为 juice 项目的公共 maven 配置依赖，
 其 pom.xml 中写入公共的 maven 配置，以上工程 pom.xml 均继承自 juice-common-parent，均导入 juice-common-dependencies。  
