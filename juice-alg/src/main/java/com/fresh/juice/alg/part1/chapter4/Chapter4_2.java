@@ -190,26 +190,25 @@ public class Chapter4_2 {
         System.out.println("------------------------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.TRANSPOSE).forEach(MatrixPrinter.of()::print);
-        System.out.println("------------------------------");
+        System.out.println("--------------TRANSPOSE----------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.REVERSE).forEach(MatrixPrinter.of()::print);
-        System.out.println("------------------------------");
+        System.out.println("--------------REVERSE----------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.REVERSE_TRANSPOSE).forEach(MatrixPrinter.of()::print);
-        System.out.println("------------------------------");
+        System.out.println("--------------REVERSE_TRANSPOSE----------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.ROW_REVERSE).forEach(MatrixPrinter.of()::print);
-        System.out.println("------------------------------");
+        System.out.println("--------------ROW_REVERSE----------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.ROW_REVERSE_TRANSPOSE).forEach(MatrixPrinter.of()::print);
-        System.out.println("------------------------------");
+        System.out.println("--------------ROW_REVERSE_TRANSPOSE----------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.COLUMN_REVERSE).forEach(MatrixPrinter.of()::print);
-        System.out.println("------------------------------");
+        System.out.println("--------------COLUMN_REVERSE----------------");
 
         IntMatrixTraversal.of(c, IntMatrixTraversal.TraversalMode.COLUMN_REVERSE_TRANSPOSE).forEach(MatrixPrinter.of()::print);
-
-        System.out.println("#############################################");
+        System.out.println("--------------COLUMN_REVERSE_TRANSPOSE----------------");
 
         c = new int[][] {{1}, {1, 2, 3, 4, 5, 10000, 109876}, {4, 555, 600, 4, 5}, {7, 8}, {1, 2, 3, 4, 5, 6}, {1}};
         IntMatrixTraversal.of(c, 1, 5, 2, 6).forEach(MatrixPrinter.of()::print);
