@@ -82,7 +82,7 @@ public class Chapter4_Practice {
     //    A[i][j]    +   A[i+1][j+1] <= A[i][j+1]    +  A[i+1][j]   ①
     //    A[i][j+1]  +   A[i+1][j+2] <= A[i+1][j+1]  +  A[i][j+2]   ②
     //    A[i+1][j]  +   A[i+2][j+2] <= A[i+2][j]    +  A[i+1][j+1] ③
-    // ① + ② 得 A[i][j] + A[i=1][j+2] <= A[i+1][j] + A[i][j+2]
+    // ① + ② 得 A[i][j] + A[i+1][j+2] <= A[i+1][j] + A[i][j+2]
     // ① + ③ 得 A[i][j] + A[i+2][j+1] <= A[i+2][j] + A[i][j+1]
     //
     // c: 根据 Monge 矩阵性质，得 A[i][j-1] + A[i+1][j] <= A[i+1][j-1] + A[i][j] ①
