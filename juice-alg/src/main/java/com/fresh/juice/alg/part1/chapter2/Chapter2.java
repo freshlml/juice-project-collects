@@ -41,6 +41,7 @@ public class Chapter2 {
 
     }
     /**
+     *<pre>
      *"循环不变时式"的数学归纳法证明
      *
      * 初始化: 初始化令i=1，因为A[0]是有序的
@@ -58,6 +59,7 @@ public class Chapter2 {
      *          ≈ n^2              //忽略低阶项和常数倍数
      *
      * 注: C3=while循环执行时间; C4=while中所有语句执行一次的时间之和; C1=for; C2=for中除while之外的语句
+     *</pre>
      */
 
 
@@ -86,6 +88,7 @@ public class Chapter2 {
         merge_sort(a, 0, a.length);
     }
     /**
+     *<pre>
      *merge_sort运行时间分析 (递归树)
      *                        [n]
      *           [n/2]                      [n/2]                   第 1 次分解, n/2^1   2^0 次 merge
@@ -102,6 +105,7 @@ public class Chapter2 {
      *     ≈ n*lg(n)           //忽略低阶项和常数倍数
      *
      *注: C3=merge,for比较; C4=merge,for中语句一次执行的时间之和; C1=merge_sort中外围的语句之和; C2=merge中for之外的语句之和
+     *</pre>
      */
     public static void merge_sort(int[] a, int begin, int end) {
         //assert a != null
@@ -150,8 +154,7 @@ public class Chapter2 {
             }
         }*/
 
-        /*
-        for(int i=p, j=q; i<j && j<r; ) {
+        /*for(int i=p, j=q; i<j && j<r; ) {
             if(a[i] >= a[j]) {
                 int t = a[j];
                 for(int l=j; l>i; l--) {

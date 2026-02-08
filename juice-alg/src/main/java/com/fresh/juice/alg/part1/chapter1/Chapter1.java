@@ -2,6 +2,7 @@ package com.fresh.juice.alg.part1.chapter1;
 
 public class Chapter1 {
     /**
+     *<pre>
      *第一: 子序列数量计算
      *   n 个元素的集合 {A1, A2, A3, ... , An}, 其子集个数: 2^n = ΣC(n, i)[i=0->n]
      *   n 个元素的序列 <X1, X2, X3, ... , Xn>, 其子序列（如: X1,X3）数量: 2^n - 1
@@ -34,7 +35,7 @@ public class Chapter1 {
      *  F(44) > 0
      *
      *  得，当 n <= 43 时，8*n^2 优于 64*n*lgN
-     *
+     *</pre>
      */
     public static void main(String[] argv) {
 

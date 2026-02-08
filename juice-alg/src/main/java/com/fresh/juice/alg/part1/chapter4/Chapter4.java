@@ -4,8 +4,8 @@ import com.fresh.juice.alg.part1.chapter2.Chapter2;
 
 public class Chapter4 {
     /**
-     *Chapter 4 分治策略
-     *
+     *<h1>Chapter 4 分治策略</h1>
+     *<pre>
      *分治策略思想
      *  分解(Divide):  将问题划分成若干子问题，子问题的形式和原问题相同，只是规模更小
      *  解决(Conquer): 递归地求解子问题，当子问题的规模足够小，停止递归，直接求解
@@ -22,7 +22,7 @@ public class Chapter4 {
      *    - Chapter 4.3 用代入法求解递归式, 猜测一个界，然后证明之
      *    - Chapter 4.4 用递归树求解递归式, 将递归式转化成递归树求解
      *    - Chapter 4.5 用主方法求解递归式, 可求解 T(n) = a*T(n/b) + f(n), a>=1, b>1 此种递归式的界
-     *
+     *</pre>
      */
     public static void main(String[] argv) {
         chapter4_3();
@@ -30,6 +30,7 @@ public class Chapter4 {
         chapter4_5();
     }
     /**
+     *<pre>
      *Chapter 4.3 用代入法求解递归式
      *  1. 猜测解的形式
      *  2. 用数学归纳法求出解中的常数，并证明解是正确的
@@ -45,9 +46,11 @@ public class Chapter4 {
      *  1. 令 m = lgn, 得: T(2^m) = 2*T(2^(m/2)) + m    自变量代换
      *  2. 令 S(m) = T(2^m), 得 S(m/2) = T(2^(m/2))     因变量代换？
      *       T(2^m) = S(m) = 2*S(m/2) + m
+     *</pre>
      */
     static void chapter4_3() {}
     /**
+     *<pre>
      *Chapter 4.4 用递归树求解递归式
      *
      *T(n) = m*T(n/k) + f(n), f(n)为本次分解+合并的消耗。影响速度的因素: m, k, f(n)
@@ -94,9 +97,11 @@ public class Chapter4 {
      * m=2, k=2: cn*lgn
      * m=3, k=2: c*2 * n^(lg3) - cn*2 = c*2 * n^(lg3)  >= c * 2/3 * n^(1.5) >= c * 2/3 * n * n^(0.5)     ,lg3 ≈ 1.5849625
      * m=4, k=2: c * n^2 - cn  = c * n^2
+     *</pre>
      */
     static void chapter4_4() {}
     /**
+     *<pre>
      *Chapter 4.5 用主方法求解递归式
      * 所谓主方法，即对 T(n) = m*T(n/k) + f(n) 的通项解:
      *        [n]
@@ -110,6 +115,7 @@ public class Chapter4 {
      * 2. 分解加合并的消耗之和
      *    1 * f(n) + m * f(n/k) + m^2 * f(n/k^2) + ... + m^(x-1) * f(n/k^(x-1))
      *    todo
+     *</pre>
      */
     static void chapter4_5() {}
 

@@ -2,6 +2,7 @@ package com.fresh.juice.alg.part1.chapter3;
 
 public class Chapter3 {
     /**
+     *<pre>
      *算法运行效率的刻画:
      *   1. 虽然有时我们能够确定一个算法的精确运行时间，如插入排序的运行时间 T(n) = C1*n^2 + C2*n + C3，但是
      *      通常并不值得花力气计算多余的精度。对于足够大的输入，精确运行时间中的"倍增常量"和"低阶项"被输入规模本身的影响所支配
@@ -34,9 +35,9 @@ public class Chapter3 {
      *
      *     1). T(n) = w(g(n)):  D1*g(n)  <  T(n)  and  lim T(n)/g(n) = ∞
      *         w 描述了 D1*g(n) 是 T(n) 的渐近下界，而且不是紧确的
+     *</pre>
      *
-     *
-     *part8/appendix.md/附录 A 求和
+     *<p>part8/appendix.md/附录 A 求和</p>
      */
 
     public static void main(String[] argv) {

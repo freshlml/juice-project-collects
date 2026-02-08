@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 public class Chapter4_1 {
     /**
+     *<pre>
      *最大子数组: 所有连续子数组中和最大的子数组
      *  1. 连续子数组的数量
      *     n + (n-1) + ... + 1 = n*(n+1)/2
@@ -23,6 +24,7 @@ public class Chapter4_1 {
      *  4. 分治法的递归式
      *     T(n) = 2*T(n/2) + Θ(n)
      *     解得 T(n) = Θ(n*lgn)
+     *</pre>
      */
     //穷举法
     public static SubArrayNode<Integer> blMaxSubArray(int[] a) {

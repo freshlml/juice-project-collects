@@ -3,6 +3,7 @@ package com.fresh.juice.alg.part1.chapter4;
 
 public class Chapter4_2 {
     /**
+     *<pre>
      *矩阵乘法
      *  1.穷举法
      *    3层循环，Θ(n^3)
@@ -14,6 +15,7 @@ public class Chapter4_2 {
      *    合并:
      *      A * B = A1*B1 + A2*B4, A1*B2 + A2*B3
      *              A4*B1 + A3*B4, A4*B2 + A3*B3
+     *</pre>
      */
     //穷举法
     public static int[][] blMatrixMulti(int[][] a, int[][] b) {

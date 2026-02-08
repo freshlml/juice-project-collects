@@ -65,6 +65,7 @@ public class Chapter2_Practice2 {
         }
     }
     /**
+     *<pre>
      *merge_insert_sort 运行时间分析
      *                        [n]
      *           [n/2]                      [n/2]                   第1次分解   2^1   2^0次merge
@@ -124,7 +125,7 @@ public class Chapter2_Practice2 {
      *            ...
      *            k=23时，H(k) = 451*l + 409 - 92*log2(23) <=0 ==> l<=0.0561
      *            k=24时，H(k) = 540*l + 496 - 96*log2(24) <=0 恒不成立
-     *
+     *</pre>
      */
 
 
@@ -189,9 +190,9 @@ public class Chapter2_Practice2 {
         }
 
         /**
-         * Traversal the specified array.
+         * <p>Traversal the specified array.</p>
          *
-         * This constructor is equivalent to IntArrayTraversal(array, begin, end, TraversalMode.NORMAL, false).
+         * <p>This constructor is equivalent to IntArrayTraversal(array, begin, end, TraversalMode.NORMAL, false).</p>
          *
          * @param array the array to traversal
          * @param begin the start position of traversal, [0, array.length)
@@ -206,15 +207,15 @@ public class Chapter2_Practice2 {
         }
 
         /**
-         * Traversal the specified array.
+         * <p>Traversal the specified array.</p>
          *
-         * If `begin < end`: traversal from `begin`(inclusive) to `end`(exclusive) and the specified mode define the order of traversal.
+         * <p>If `begin < end`: traversal from `begin`(inclusive) to `end`(exclusive) and the specified mode define the order of traversal.</p>
          *
-         * If `begin == end`: traversal nothing when `equalPolicy==false`, otherwise traversal from `begin`(inclusive) to
-         * the end of array and 0(inclusive) to `end`(exclusive), with the specified `mode` define the order of traversal.
+         * <p>If `begin == end`: traversal nothing when `equalPolicy==false`, otherwise traversal from `begin`(inclusive) to
+         * the end of array and 0(inclusive) to `end`(exclusive), with the specified `mode` define the order of traversal.</p>
          *
-         * If `begin > end`: traversal from `begin`(inclusive) to the end of array and 0(inclusive) to `end`(exclusive), with
-         * the specified `mode` define the order of traversal.
+         * <p>If `begin > end`: traversal from `begin`(inclusive) to the end of array and 0(inclusive) to `end`(exclusive), with
+         * the specified `mode` define the order of traversal.</p>
          *
          * @param array the array to traversal
          * @param begin the start position of traversal, [0, array.length)
