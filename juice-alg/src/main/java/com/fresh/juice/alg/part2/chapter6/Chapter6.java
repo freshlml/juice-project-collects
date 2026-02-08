@@ -7,8 +7,8 @@ import com.fresh.juice.alg.part1.chapter2.Chapter2_Practice2.IntArrayTraversal;
 public class Chapter6 {
 
     /**
-     *chapter 6.1 and 6.2 and 6.3 and 6.4
-     *
+     *<h1>chapter 6.1 and 6.2 and 6.3 and 6.4</h1>
+     *<pre>
      *(二叉)堆
      *  使用数组表示的二叉堆可以看成是一棵近似的完全二叉树(除了最底层外，该树是完全充满的，最底层从左往右填充)
      *     0,  1,  2,  3, 4, 5, 6, 7, 8, 9
@@ -25,8 +25,8 @@ public class Chapter6 {
      *
      *  2.下标计算法
      *      1).每一层的最左节点的下标: i(x) = i(x-1) + 2^(x-2)   x 表示层数，x = 2, ..., h+1
-     *      2).叶子节点的下标: ⌊(n/2)⌋, floor(n/2) + 1, ..., n-1                                               //练习6.1-7
-     *         设第一个叶子节点的下标为 x, left(x) = 2x + 1, 2x + 1 = n + 1 (n 为偶数) 或者 2x + 1 = n (n 为奇数) ==> x = ⌊(n/2)⌋
+     *      2).叶子节点的下标: ⌊(n/2)⌋, ⌊(n/2)⌋ + 1, ..., n-1                                                                                     //练习6.1-7
+     *         设第一个叶子节点的下标为 x, left(x) = 2x + 1, 2x + 1 = n + 1 (n 为偶数) 或者 2x + 1 = n (n 为奇数) ==> x = ⌊(n/2)⌋（或 floor(n/2)）
      *      3).下标 i 的节点，parent(i) = ⌊(i+1)/2⌋ - 1; left_child(i) = 2*i + 1; right_child(i) = 2*i + 2
      *
      *  3.A.length: 堆中元素个数(数组大小)。heap_size: 堆大小，heap_size <= A.length
@@ -38,11 +38,11 @@ public class Chapter6 {
      *           数的高度 = 最大深度
      *
      *      堆高度(二叉树高度): 设堆高度为 h，节点个数为 n
-     *          n = 2^0 + 2^1 + ... + 2^(h-1) + S(h), S(h)'max = 2^h, S(h)'min = 1             //练习6.1-1
+     *          n = 2^0 + 2^1 + ... + 2^(h-1) + S(h), S(h)'max = 2^h, S(h)'min = 1                          //练习6.1-1
      *          可得: 2^0 + 2^1 + ... + 2^(h-1) + 1 <= n <= 2^0 + 2^1 + ... + 2^(h-1) + 2^h
      *          ===>  2^h <= n <= 2^(h+1) - 1 < 2^(h+1)
      *          ===>  lg(n)-1 < h <= lg(n)
-     *          故, h = ⌊lg(n)⌋                          //练习6.1-2
+     *          故, h = ⌊lg(n)⌋                                                                             //练习6.1-2
      *
      *  5.最大堆
      *      除了根节点，所有节点都要满足 A[i] <= A[parent(i)]
@@ -53,18 +53,20 @@ public class Chapter6 {
      *      除了根节点，所有节点都要满足 A[i] >= A[parent(i)]
      *      1.根节点最小值
      *      2.任一子树的所有节点都不小于子树的根节点
-     *
+     *</pre>
      */
     static class MaxHeap {  //最大堆
         private final int[] a;
 
-        //构造最大堆
         MaxHeap(int[] a) {
             //assert a != null
             this.a = a;
+            make_max_heap();        //构造最大堆
+        }
+        void make_max_heap() {
             int n = a.length;
             //从最后一个非叶子节点到第一个节点
-            for(int i=n/2-1; i>=0; i--) {
+            for(int i=n/2-1; i >= 0; i--) {
                 max_heapify(i, n);
             }
         }

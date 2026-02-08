@@ -18,7 +18,7 @@ public class Chapter6_Practice2 {
     [d*(d*1+1)+1] ...                                         第 4 层    高度为 3
       ...
       每一层的最左节点的下标: i(x) = i(x-1) + d^(x-2)   x 表示层数，x = 2, ..., h+1
-      下标 i 的节点，parent(i) = ⌊(i+d-1)/d⌋ - 1; first_child(i) = i*d + 1; last_child(i) = i*d + d
+      下标 i 的节点，parent(i) = ⌊(i+d-1)/d⌋ - 1; first_child(i) = d*i + 1; last_child(i) = d*i + d
     */
     /*b: n 个元素的 d 叉堆，设高度为 h
         n = d^0 + d^1 + d^2 + ... + d^(h-1) + s(h),    s(h)'max = d^h, s(h)'min = 1
@@ -150,11 +150,7 @@ public class Chapter6_Practice2 {
             min_heapify(0, 0, m, n);
             return ret;
         }
-        private boolean isOutRange(int i, int j, int heap_size_i, int heap_size_j) {
-            return  i > heap_size_i ||
-                    (i == heap_size_i && j >= heap_size_j)
-                    ;
-        }
+
         private void min_heapify(int i, int j, int heap_size_i, int heap_size_j) {
 
             int l = i;
@@ -178,6 +174,11 @@ public class Chapter6_Practice2 {
                 min_heapify(l, j, heap_size_i, heap_size_j);
             }
 
+        }
+        private boolean isOutRange(int i, int j, int heap_size_i, int heap_size_j) {
+            return  i > heap_size_i ||
+                    (i == heap_size_i && j >= heap_size_j)
+                    ;
         }
 
         //e

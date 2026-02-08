@@ -21,10 +21,10 @@ public class Chapter6_5 {
         }
 
         private void heapify(int i) {
+            Node<Integer> i_node = this.queue.get(i);
 
             int ci = i;
             int pi = (ci+1)/2 - 1;
-            Node<Integer> i_node = this.queue.get(i);
             while (pi >= 0 && this.queue.get(pi).lt(i_node)) {
                 this.queue.set(ci, this.queue.get(pi));
 
@@ -36,12 +36,12 @@ public class Chapter6_5 {
         }
 
         public Node<Integer> max() {
-            if (this.queue.size() == 0) return null;
+            if (this.queue.isEmpty()) return null;
             return this.queue.get(0);
         }
 
         public Node<Integer> next() {
-            if (this.queue.size() == 0) return null;
+            if (this.queue.isEmpty()) return null;
             if(this.queue.size() == 1) return this.queue.remove(0);
 
             Node<Integer> ret = this.queue.get(0);

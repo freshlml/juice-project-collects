@@ -1,12 +1,13 @@
 package com.fresh.juice.alg.part2.chapter6;
 
-import com.fresh.juice.alg.part1.chapter2.Chapter2;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiFunction;
+import com.fresh.juice.alg.part1.chapter2.Chapter2_Practice2.IntArrayTraversal;
+import com.fresh.juice.alg.part1.chapter2.Chapter2;
+import com.fresh.juice.alg.part1.chapter2.Chapter2.ArrayPrinter;
+import com.fresh.juice.alg.part1.chapter4.Chapter4_2;
+import com.fresh.juice.alg.part1.chapter4.Chapter4_2.MatrixPrinter;
+import com.fresh.juice.alg.part1.chapter4.Chapter4_2.IntMatrixTraversal;
 
 public class Chapter6_Practice1 {
     //练习6.1-4: 位于叶子节点
@@ -53,10 +54,10 @@ public class Chapter6_Practice1 {
         }
 
         private void heapify(int i) {
-            int ci = i;
-            int pi = (i+1)/2 - 1;
             Chapter6_5.Node<T> i_node = this.queue.get(i);
 
+            int ci = i;
+            int pi = (i+1)/2 - 1;
             while(pi >= 0 && func.apply(this.queue.get(pi), i_node)) {
                 this.queue.set(ci, this.queue.get(pi));
 
@@ -68,7 +69,7 @@ public class Chapter6_Practice1 {
         }
 
         protected Chapter6_5.Node<T> peek() {
-            if (this.queue.size() == 0) return null;
+            if (this.queue.isEmpty()) return null;
             return this.queue.get(0);
         }
 
@@ -76,7 +77,7 @@ public class Chapter6_Practice1 {
         public abstract Chapter6_5.Node<T> max();
 
         protected Chapter6_5.Node<T> poll() {
-            if (this.queue.size() == 0) return null;
+            if (this.queue.isEmpty()) return null;
             if(this.queue.size() == 1) return this.queue.remove(0);
 
             Chapter6_5.Node<T> ret = this.queue.get(0);
@@ -179,12 +180,12 @@ public class Chapter6_Practice1 {
 
         List<Integer> k_list = build_k_list();
         check_k_list(k_list, a.length);
-        if(k_list == null || k_list.size() == 0) return;
+        if(k_list == null || k_list.isEmpty()) return;
 
         merge_list(a, k_list);
     }
     private void merge_list(int[] a, List<Integer> k_list) {
-        if (k_list.size() == 0) return;
+        if (k_list.isEmpty()) return;
 
         List<Integer> n_k_list = new ArrayList<>();
         //[0, k_list(0)) merge [k_list(0), k_list(1)); [k_list(1), k_list(2)) merge [k_list(2), k_list(3)); [k_list(3), n)
@@ -208,7 +209,7 @@ public class Chapter6_Practice1 {
 
     }
     public void check_k_list(List<Integer> k_list, int n) {
-        if(k_list == null || k_list.size() == 0) return;
+        if(k_list == null || k_list.isEmpty()) return;
         int size = k_list.size();
 
         if(k_list.get(0) < 0)
@@ -233,10 +234,10 @@ public class Chapter6_Practice1 {
     }
 
     //方法二
-    public void merge_list(int[][] a) {
-        if(a == null || a.length == 0) return;
+    public int[] merge_list(int[][] a) {
+        LinkedList<Integer> list = new LinkedList<>();
+        if(a == null || a.length == 0) return toArray(list);
 
-        StringBuilder sb = new StringBuilder();
         MinPriorityQueue<V> minPriorityQueue = new MinPriorityQueue<>();
         for(int i=0; i<a.length; i++) {
             if(a[i].length > 0) {
@@ -247,14 +248,22 @@ public class Chapter6_Practice1 {
 
         Chapter6_5.Node<V> min;
         while((min = minPriorityQueue.next()) != null) {
-            sb.append(min.weight).append(" ");
+            list.add(min.weight);
             int i, j;
             if((j = min.value.j + 1) < a[i = min.value.i].length) {
                 minPriorityQueue.insert(Chapter6_5.Node.build(a[i][j], new V(i, j)));
             }
         }
-
-        System.out.println(sb);
+        return toArray(list);
+    }
+    private int[] toArray(List<Integer> list) {
+        //assert list != null
+        int[] arr = new int[list.size()];  //may zero
+        int i = 0;
+        for(Integer item : list) {
+            arr[i++] = item;
+        }
+        return arr;
     }
     static class V {
         int i;
@@ -306,18 +315,18 @@ public class Chapter6_Practice1 {
 
         System.out.println(minPriorityQueue);
         System.out.println(minPriorityQueue.min());
-        System.out.println("#########################################################################");
+        System.out.println("############################ min #############################################");
 
         System.out.println(minPriorityQueue);
         System.out.println(minPriorityQueue.next());
         System.out.println(minPriorityQueue);
-        System.out.println("#########################################################################");
+        System.out.println("############################ next #############################################");
 
         System.out.println(minPriorityQueue);
         minPriorityQueue.increase(node2, 100);
-        System.out.println("increase node2: 100");
+        System.out.println("increase node2 weight 2 with 100");
         System.out.println(minPriorityQueue);
-        System.out.println("#########################################################################");
+        System.out.println("############################ increase #############################################");
 
 
         Chapter6_Practice1 chapter6_Practice1 = new Chapter6_Practice1();
@@ -325,12 +334,14 @@ public class Chapter6_Practice1 {
         int[] a = new int[]{1,2,3, 5,7,9, 2,3,4,5,6, 1,1,2,2,3,3,4,5,7, -5,-2,-1};
         chapter6_Practice1.merge_list(a);
         System.out.println(Arrays.toString(a));
-        System.out.println("#########################################################################");
+        System.out.println("############################ merge list 方法一 #############################################");
 
-        chapter6_Practice1.merge_list(new int[][] {{1,2,3}, {5,7,9}, {2,3,4,5,6}, {}, {1,1,2,2,3,3,4,5,7}, {-5,-2,-1}});
-
+        int[][] b = new int[][] {{1,2,3}, {5,7,9}, {2,3,4,5,6}, {}, {1,1,2,2,3,3,4,5,7}, {-5,-2,-1}};
+        IntMatrixTraversal.of(b).forEach(MatrixPrinter.of()::print);
+        System.out.println("-------------------------------------------------------------------------");
+        int[] result = chapter6_Practice1.merge_list(b);
+        IntArrayTraversal.of(result).forEach(ArrayPrinter.of()::print);
+        System.out.println("############################ merge list #############################################");
     }
-
-
 
 }
