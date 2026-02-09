@@ -10,41 +10,40 @@ import java.util.Arrays;
 
 public class Chapter7_1 {
     /**
+     *<pre>
      *快速排序
      *  基本思想(分治): 给定数组 a[p, ..., r)，如果下标 q 满足: a[p, ..., q) <= a[q] <= a[q+1,..,r), 则下标 q 位置有序
      *               递归处理子数组 a[p, ..., q), a[q+1, ..., r)
-     *  给定数组求 q 的方法: (仅遍历一遍)
-     *    partition(...)
+     *
+     *  调用 partition(int[], int, int) 返回 q 位置，运行时间: θ(n)
+     *</pre>
      */
-    public static int partition(int[] a, int p, int r) {  //规模为 n 的数组，运行时间为 Θ(n)
+    public static int partition(int[] a, int p, int r) {
         //assert a!= null;
         //assert p ∈ [0, a.length); assert r ∈ [0, a.length]; assert p < r;
         int pos = r - 1;
         int e = a[pos];
-        int q = p - 1, k = p;
+        int q = p, k = p;
 
         while(k < pos) {
             if(a[k] <= e) {
-                q++;
-
                 int ex = a[q];
                 a[q] = a[k];
                 a[k] = ex;
+
+                q++;
             }
             k++;
         }
-
-        if(++q < pos) {
-            int ex = a[q];
+        if(q < pos) {
+            a[pos] = a[q];
             a[q] = e;
-            a[pos] = ex;
         }
         return q;
     }
     //快速排序
     public static void quick_sort(int[] a) {
         if(a == null) return;
-        if(a.length == 0 || a.length == 1) return;
 
         quick_sort(a, 0, a.length);
     }
