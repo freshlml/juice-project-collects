@@ -109,6 +109,7 @@ public class Chapter2 {
      */
     public static void merge_sort(int[] a, int begin, int end) {
         //assert a != null
+        //assert 0 <= begin < a.length, 0 <= end <= a.length
         int n = end - begin;
         if(n <= 1) return;
 
@@ -126,14 +127,11 @@ public class Chapter2 {
         int[] right = new int[r-q];  //r-q may 0
         System.arraycopy(a, q, right, 0, right.length);
 
-        for(int k=p, i=0, j=0; k < r; k++) {
-
-            if(j >= right.length || (i < left.length && left[i] <= right[j])) {
-                a[k] = left[i];
-                i++;
+        for(int i = p, li = 0, ri = 0; i < r; ) {
+            if(ri >= right.length || (li < left.length && left[li] <= right[ri])) {
+                a[i++] = left[li++];
             } else {
-                a[k] = right[j];
-                j++;
+                a[i++] = right[ri++];
             }
         }
 
