@@ -47,10 +47,15 @@ public class EqsHshExp {
         //2.判空; for 性质5
         if(o == null) return false;
 
-        //3.比较Class 或者 instanceof. 通常，不兼容的类型之间不具备比较性。
-        if(this.getClass() != o.getClass()) return false;  //this 与 o 要有相同的 Class。this 与 o 的所属类为 EqsHshExp 或其子类。
-        //if(!(o instanceof EqsHshExp)) return false;      //o 的所属类可为 EqsHshExp 或者其子类，this 的所属类亦可为 EqsHshExp 或者其子类，并且两者不一定有相同的所属类。
-        //if(EqsHshExp.class == this.getClass() && EqsHshExp.class == o.getClass()) return false;  //此种写法，则较为严格...
+        //3.比较Class 或者 instanceof. 通常，不兼容的类型之间不具备比较性
+        if(this.getClass() != o.getClass()) return false;  //已知 this 是 EqsHshExp 类型或其子类型。要求 o 与 this 是相同的类型。
+
+        //if(EqsHshExp.class == this.getClass() && EqsHshExp.class == o.getClass()) return false;  //更加严格...
+
+        //if(!(o instanceof EqsHshExp)) return false;      //已知 this 是 EqsHshExp 类型或其子类型。要求 o 也是 EqsHshExp 类型或其子类型。
+                                                           //但 this 与 o 可能不是同一类型，甚至两者不满足 subtype 关系链。
+                                                           //两者有共同的祖先 EqsHshExp，在 EqsHshExp 层面比较相等性。
+
 
         EqsHshExp that = (EqsHshExp) o;
         //4.比较字段值
