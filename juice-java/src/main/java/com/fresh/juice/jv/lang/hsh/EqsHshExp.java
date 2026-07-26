@@ -45,7 +45,7 @@ public class EqsHshExp {
         if(this == o) return true;
 
         //2.判空; for 性质5
-        if(o == null) return false;
+        if(o == null) return false;      //这条语句可被如下 o instanceof EqsHshExp 取代，因为 null instanceof EqsHshExp 返回 false
 
         //3.比较Class 或者 instanceof. 通常，不兼容的类型之间不具备比较性
         if(this.getClass() != o.getClass()) return false;  //已知 this 是 EqsHshExp 类型或其子类型。要求 o 与 this 是相同的类型。
