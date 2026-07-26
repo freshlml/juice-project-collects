@@ -21,25 +21,25 @@ public class Chapter7_1 {
     public static int partition(int[] a, int p, int r) {
         //assert a!= null;
         //assert p ∈ [0, a.length); assert r ∈ [0, a.length]; assert p < r;
-        int pos = r - 1;
-        int e = a[pos];
-        int q = p, k = p;
+        int k = r - 1;
+        int e = a[k];
+        int i = p, j = p;
 
-        while(k < pos) {
-            if(a[k] <= e) {
-                int ex = a[q];
-                a[q] = a[k];
-                a[k] = ex;
+        while(j < k) {
+            if(a[j] <= e) {
+                int ex = a[i];
+                a[i] = a[j];
+                a[j] = ex;
 
-                q++;
+                i++;
             }
-            k++;
+            j++;
         }
-        if(q < pos) {
-            a[pos] = a[q];
-            a[q] = e;
+        if(i < k) {
+            a[k] = a[i];
+            a[i] = e;
         }
-        return q;
+        return i;
     }
     //快速排序
     public static void quick_sort(int[] a) {
@@ -62,6 +62,7 @@ public class Chapter7_1 {
 
         int[] a = new int[] {100, 45, 56, 23, 1, 4, 3, 78, 3987, 242342, 1978, 44324232, 489, 500, 110, 343};
         IntArrayTraversal.of(a).forEach(PositionArrayPrinter.of(a.length - 1)::print);
+
         int q = partition(a, 0, a.length);
         IntArrayTraversal.of(a).forEach(PositionArrayPrinter.of(q)::print);
         System.out.println("------partition---------------------------------------------------------------");
