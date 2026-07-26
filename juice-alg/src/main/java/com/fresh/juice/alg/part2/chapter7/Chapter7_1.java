@@ -19,25 +19,25 @@ public class Chapter7_1 {
      *</pre>
      */
     public static int partition(int[] a, int p, int r) {
-        //assert a!= null;
-        //assert p ∈ [0, a.length); assert r ∈ [0, a.length]; assert p < r;
+        //assert a != null
+        //assert 0 <= p
+        //assert r <= a.length
         int k = r - 1;
-        int e = a[k];
-        int i = p, j = p;
+        int i = p - 1, j = p;
 
         while(j < k) {
-            if(a[j] <= e) {
+            if(a[j] <= a[k]) {
+                i++;
                 int ex = a[i];
                 a[i] = a[j];
                 a[j] = ex;
-
-                i++;
             }
             j++;
         }
-        if(i < k) {
-            a[k] = a[i];
-            a[i] = e;
+        if(++i < k) {
+            int ex = a[i];
+            a[i] = a[k];
+            a[k] = ex;
         }
         return i;
     }
@@ -49,7 +49,7 @@ public class Chapter7_1 {
     }
     public static void quick_sort(int[] a, int begin, int end) {
         //assert a != null
-        //assert begin ∈ [0, a.length); assert end ∈ [0, a.length];
+        //assert 0 <= begin < end <= a.length
         if((end - begin) <= 1) return;
 
         int q = partition(a, begin, end);
@@ -65,6 +65,9 @@ public class Chapter7_1 {
 
         int q = partition(a, 0, a.length);
         IntArrayTraversal.of(a).forEach(PositionArrayPrinter.of(q)::print);
+        //partition(a, 0, 0);
+        //partition(a, a.length, a.length);
+        //partition(a, 1000, -1000);
         System.out.println("------partition---------------------------------------------------------------");
 
         IntArrayTraversal.of(a).forEach(ArrayPrinter.of()::print);
