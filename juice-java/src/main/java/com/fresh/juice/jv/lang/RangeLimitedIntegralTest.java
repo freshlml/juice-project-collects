@@ -55,11 +55,10 @@ import java.util.HashMap;
  *  4. 数学中 ÷ 与 整数 div(/) 的关系可以描述为: a ÷ b <==> a/b + (a%b) ÷ b
  *
  *第六: overflow, underflow
- * 一、整数运算必须处理 overflow (如下所述只是一些常见的思考方法，具体 overflow 的处理应该结合代码逻辑灵活处理)
+ * 整数运算必须处理 overflow (如下所述只是一些常见的思考方法，具体 overflow 的处理应该结合代码逻辑灵活处理)
  *   1. 如果中间运算发生 overflow，并且最终结果也发生 overflow (或者 out of valid range)，则中间运算可抛出异常来标记该 overflow
  *   2. 将 overflow 公式"等价代换"成相对应的 no overflow 公式从而得到 no overflow 值，或者代换成可用 1 处理的公式
  *   3. 使用更长的整数类型或者 BigInteger 来消除 overflow
- * 二、使用位运算特别是移位运算优化运算效率
  *
  * 常见 overflow 判断方法
  * 1. 将 "938" 转化为数字
@@ -84,7 +83,10 @@ import java.util.HashMap;
  *   3). (-a) - (-b), may underflow
  *   4). (-a) + b, no overflow
  *
- *第七: 等价代换
+ *第七：使用位运算特别是移位运算优化运算效率
+ *
+ *
+ *第八: 等价代换
  * - `+`, `-`, `*` 运算等价代换成立. 如: (a - b) * c == a*c - b*c，a - b = a + (-b)
  * - `/`, `%` 运算，根据他们的运算法则，可得若干等价代换式子: fresh/.../11_Month
  * - `/` 参与的运算，通常需要证明(证明方法，如，看式子两边是否丢失相同精度的值)等价代换是否成立，如 (a + b/2) * c == a*c + (b/2)*c，但 (b/2)*c  不一定等于  (b*c)/2
@@ -93,7 +95,7 @@ import java.util.HashMap;
  * 2. 如果等式一边 overflow，而另一边 no overflow，则可用 no overflow 的一边来得到正确的结果
  * 3. 如果等式两边同时 overflow，则两边可能是不同的结果或者是相同的结果（即，即使两边同时发生 overflow，它们的结果仍然相同）
  *
- *第八: 整数类型转换原理
+ *第九: 整数类型转换原理
  *                                    -128    -127      ...        -1            0           1       ...        127
  * byte                               0x80    0x81      ...       0xff          0x00        0x01     ...        0x7f
  *
