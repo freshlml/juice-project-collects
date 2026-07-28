@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  *第一: unicode
- *  unicode码的概念: 对世界上所有可能出现的字符，分配一个唯一的数字值表示;
+ *  unicode 字符集: 对世界上所有可能出现的字符，分配一个唯一的数字值表示;
  *                 unicode字符集只是规定字符的数字值，而没有规定数字值的存储格式
  *
  *  码点(code point): unicode字符集中某个字符对应的数字值,目前unicode的码点范围为 U+0000 ~ U+10FFFF，共1114112个码点,1 0000 1111 1111 1111 1111（21个比特位）
@@ -37,7 +37,6 @@ import java.nio.charset.StandardCharsets;
  *      Halfwidth and Fullwidth Forms block:          [U+FF00, U+FFEF],  用于英文字母/数字/日文/个别符号等一些字符的全角-半角相互转换
  *      Miscellaneous Symbols and Pictographs block:  [U+1F300, U+1F5FF], emoji表情
  *      Supplemental Symbols and Pictographs block:   [U+1F900, U+1F9FF], emoji表情
- *
  *
  *
  *
@@ -116,11 +115,10 @@ import java.nio.charset.StandardCharsets;
  *      2、unicode字符的码点∈(U+FFFF, U+10FFFF]时
  *        char[2](两个代码单元)分别存储高位代理、低位代理
  *
- *  char类型不建议使用
- *     eg: 数据库中存𝕆，如果entity用char c; 就乱了
- *                    应该使用String str; 但要注意此时str中的char[]长度为2，即高位代理和低位代理
+ *  一个char无法处理码点值大于U+FFFF的unicode字符：
+ *     若数据库中存𝕆，相应entity用char c; 则c无法保存𝕆，
+ *     应该使用String str; 而此时str中的char[]长度为2（高位代理和低位代理）
  *
- *  String中final char[] value;
  */
 public class UnicodeAndCharTest {
     //java中，因为有jvm的存在，其字符的编译，运行过程，@link java/lang/encoding.uxf
@@ -150,12 +148,19 @@ public class UnicodeAndCharTest {
         System.out.println("--------------------------------2-------------------------------");
 
 
-        //编码与解码
-        //编码: 将字符序列按照"编码"转换成字节序列
-        //解码: 将字节序列按照"编码"转换成字符序列
+////编码与解码（或，编码转换）
+        //编码: 字符序列 -> 字节序列
+        //解码: 字节序列 -> 字符序列
 
-        //java中编码，String#getBytes("编码"): byte[]
-        //java中解码，new String(bys, "编码"): String
+        //java 中编码:
+        //  unicode 字符序列（String 或 char[]） -> 字节序列（byte[]）：String#getBytes("编码"): byte[]
+        //java 中解码:
+        //  字节序列（byte[]） -> unicode 字符序列（String 或 char[]）：new String(bys, "编码"): String
+        //
+        //编码转换:
+        //  utf-16 字节序列（String 或 char[]） -> 字节序列（byte[]）：String#getBytes("编码"): byte[]
+        //  字节序列（byte[]） -> utf-16 字节序列（String 或 char[]）：new String(bys, "编码"): String
+
 
         /*第一: 在"utf编码"中编码与解码
             1、utf-8、utf-16、utf-32使用的都是unicode字符的码点
