@@ -5,6 +5,7 @@ public class Exercise1 {
     public static void main(String[] argv) {
 
         print('A', 50);
+        print('a', 51);
     }
 
     /**
