@@ -3,37 +3,48 @@ package com.fresh.juice.jv.lang.numerical;
 public class Exercise4 {
 
     public static void main(String[] argv) {
+        examine(16_777_215.9999f);   //16777216
+        examine(16_777_215.0001f);   //16777215
+        //1111 0000 0000 0000 0000 0000 |0011.000000...
+        examine(251_658_243.0001f);   //整数部分精度丢失: 251658240 == 1111 0000 0000 0000 0000 0000 |0000
 
-        //浮点数存储值分析:
-        //   一个整数部分数值∈[-2^54, 2^54]的小数存储为 double，将该 double 转化成的整数，要么是原小数的整数部分，还要么是原小数的整数部分+1
-        double result = 0;
-        double d = 1123.956789;
-        long dl = Double.doubleToLongBits(d);
-        long jm = dl & 0x7f_f0_00_00_00_00_00_00L;  //获取阶码
-        if(jm == 0x7f_f0_00_00_00_00_00_00L) {  //无穷或者 NaN
-            if(Double.isNaN(d)) result = 0;
-            else if(d == Double.POSITIVE_INFINITY) result = (1L << 54);
-            else result = -(1L << 54);
-        } else if(jm == 0) {  //非规格化小数
-            result = 0;
-        } else {
-            //计算指数值
-            long zs = (jm - 0x3f_f0_00_00_00_00_00_00L) & 0x7f_f0_00_00_00_00_00_00L;
-            System.out.println(zs << 1 >> 54);
-            if((zs << 1 >> 53) > 54) {
-                System.out.println("舍入造成的整数部分值与原小数整数部分值差距太大");
-                //result = (long) d;
+        System.out.println(calPolynome(10));
+        System.out.println(calPolynome(100));
+    }
+
+    //浮点数存储值分析
+    static void examine(float f) {
+        int fs = Float.floatToIntBits(f);
+
+        int E = fs & 0x7f_80_00_00;   //获取阶码
+        int M = fs & 0x00_7f_ff_ff;   //有效数位
+        int S = fs & 0x80_00_00_00;   //符号位
+
+        if(E == 0x7f_80_00_00) {      //无穷或 NaN
+            if(M != 0) {
+                System.out.println("NaN");                // result = 0?
+            } else if(S == 0) {
+                System.out.println("POSITIVE INFINITY");  // result =  (1 << 24)?
             } else {
-                result = (double) (long) d;
+                System.out.println("NEGATIVE INFINITY");  // result = -(1 << 24)?
+            }
+        } else if(E == 0) {  //非规格化数
+            System.out.println(0);
+        } else {  //规格化数
+            //计算指数值
+            int raw_e = (E - 0x3f_80_00_00) & 0x7f_80_00_00;
+            int e = raw_e << 1 >> 24;
+
+            if(e > 24) {
+                System.out.println("整数部分精度丢失: " + (int) f);
+            } else {
+                System.out.println((int) f);
             }
         }
-        System.out.println(result);
-
-        //System.out.println(calPolynome(Integer.MAX_VALUE));
     }
 
     /**
-     * 多项式求值：4*(1 - 1/3 + 1/5 - 1/7 ...)
+     * 多项式求值：4 * (1 - 1/3 + 1/5 - 1/7 ...)
      *
      * @param n  累计项数, from 1 to Integer.MAX_VALUE
      * @return   多项式的值
@@ -44,8 +55,8 @@ public class Exercise4 {
 
         double result = 0;
         int sign = 1;
-        for(int i=0; i<n; i++) {
-            result += sign*(1.0/(2.0*(i+1)-1.0));
+        for(int i = 0; i < n; i++) {
+            result += sign * ( 1.0 / (2.0 * i + 1.0) );
             sign *= -1;
         }
         result *= 4.0;
