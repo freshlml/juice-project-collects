@@ -64,9 +64,13 @@ public class Exercise3 {
 
         int dlt = n-1;
         long an = (long) a1 + (long) dlt * d;  //no overflow
-        if ((an & 0xffff_ffff_0000_0000L) == 0) {
+
+        if(an <= Integer.MAX_VALUE && an >= Integer.MIN_VALUE)
             return (int) an;
-        }
+
+        /*if ((an & 0xffff_ffff_0000_0000L) == 0) {
+            return (int) an;
+        }*/
 
         throw new ArithmeticException("第 n 项超过 int 的表示范围");
     }
