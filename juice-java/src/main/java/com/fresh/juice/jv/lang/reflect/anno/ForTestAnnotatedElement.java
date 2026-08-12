@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class ForTestAnnotatedElement {
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
 
         testAnnotatedElement();
     }

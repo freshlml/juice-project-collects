@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ClazzTest {
 
-    public static void main(String argv[]) throws Exception {
+    public static void main(String[] argv) throws Exception {
 
         classTest();
         forNameTest();
@@ -29,7 +29,7 @@ public class ClazzTest {
 
     }
 
-    //获取Class
+    //获取 Class
     private static void classTest() {
         //declared class, enum, interface, annotation, array, primitive
         Class<ClazzTest> declaredClassClazz = ClazzTest.class;
@@ -41,8 +41,7 @@ public class ClazzTest {
         Class<Boolean> primitiveClazz = boolean.class;
         Class<Void> voidClass = void.class;
         //error List<String>.class;
-        Class<List> listClass = List.class;  //带泛型的类型共用一个Class
-
+        Class<List> listClass = List.class;  //带泛型的类型共用一个 Class
         System.out.println("---------classTest-----------\n");
     }
 
@@ -87,7 +86,7 @@ public class ClazzTest {
 
         boolean enum_isIns = Enum.class.isInstance(NothingEnum.ONE);
 
-        //数组的isInstance
+        //数组的 isInstance
         boolean array_isIns1 = ClazzTest[][][].class.isInstance(new ClazzTest[10][10][100]);
         boolean array_isIns2 = Object[][].class.isInstance(new ClazzTest[10][10]);
 

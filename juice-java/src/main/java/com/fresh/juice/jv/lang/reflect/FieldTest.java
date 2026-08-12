@@ -19,7 +19,7 @@ public class FieldTest<T, E extends Number> {
     private GenericObj<T>[] genericObj1Array;
     private GenericObj<String>[] genericObj2Array;
 
-    public static void main(String argv[]) throws Exception {
+    public static void main(String[] argv) throws Exception {
         getTypeTest();
 
         getTest();
@@ -87,7 +87,7 @@ public class FieldTest<T, E extends Number> {
     private static class Field_Super {
         public String name = "super";
 
-        private String private_name = "private_name";
+        private final String private_name = "private_name";
     }
     private static class GetFieldTest extends Field_Super {
 
@@ -97,7 +97,7 @@ public class FieldTest<T, E extends Number> {
         //找到Field_Super的Field
         Field super_private_field = Field_Super.class.getDeclaredField("private_name");
         try {
-            //在GetFieldTest的实例对象上获取此Field值
+            //在 GetFieldTest 的实例对象上获取此 Field 值
             super_private_field.setAccessible(true);
             System.out.println(super_private_field.get(new GetFieldTest()));
 

@@ -7,7 +7,7 @@ public enum NothingEnum {
         this.value = value;
         this.text = text;
     }
-    private String value;
-    private String text;
+    private final String value;
+    private final String text;
 
 }
